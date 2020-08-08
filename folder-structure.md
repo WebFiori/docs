@@ -1,5 +1,5 @@
 # Folder Structure
-<meta name="description" content="Learn about the folders at which the framework uses to keep your code and the content of each folder."
+<meta name="description" content="Learn about the folders at which the framework uses to keep your code and the content of each folder.">
 
 In this page:
 * [The `app` Folder](#the-app-folder)
