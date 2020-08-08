@@ -1,5 +1,7 @@
 # Coding Standards of WebFiori Framework
 
+<meta name="description" content="Here you will find some coding standards which where put in mind while bulding the code base of the framework.">
+
 In this page:
 * [Autoloading](#autoloading)
 * [Coding Style](#coding-style)
