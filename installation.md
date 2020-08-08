@@ -1,6 +1,14 @@
 # Installation
+In this page:
 * [Requirements](#requirements)
-* [Server Configuration](#server-configuration)
+  * [General Requirements](#general-requirements)
+* [Setup Local Development Environment In Windows](#setup-local-development-environment-in-windows)
+  * [Downloading WAMP Stack](#downloading-wamp-stack)
+  * [Downloading Composer](#downloading-composer)
+  * [Installing The Framework](#installing-the-framework)
+    * [Create Project Using Composer](#create-project-using-composer)
+    * [Download The Framework](#download-the-framework)
+  * [Setting Document Root](3setting-document-root)
 
 ## Requirements
 The following set of requirements must be met in order for the framework to work accordingly. Most of them are available with any AMP stack.
