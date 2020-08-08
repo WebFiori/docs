@@ -1,4 +1,7 @@
 # Command Line Interface
+
+<meta name="description" content="One of the features of the framework is the ability to run it as a command line application using terminals. Learn about the functionality which is provided by the CLI of the framework.">
+
 In this page:
 * [Introduction](#introduction)
 * [Setup](#setup)
@@ -13,6 +16,7 @@ In this page:
    * [Confirm](#confirm)
    * [Multiple Choice](#multiple-choice)
 * [Coloring Output](#coloring-output)
+
 ## Introduction
 One of the features of the framework is the ability to run it as a command line application using terminals. This can be usefull if the server that the application is deployed in have SSH access. The command line interface of the framework has a limit functionality but the developer can extend it by creating custom commands.
 
