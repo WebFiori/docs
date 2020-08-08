@@ -1,6 +1,8 @@
 # Themes
 <meta name="description" content="Themes in webfiori framework works like a UI template which can change the whole look and feel of a web page. Learn how to use themes and create them.">
+
 In this page:
+
 * [Introduction](#introduction)
 * [Using Themes](#using-themes)
 * [Creating Custom Theme](#creating-custom-theme)
