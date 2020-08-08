@@ -30,7 +30,7 @@ There are 2 ways to install the framework:
 
 #### Create Project Using Composer
 Assuming that composer is placed in the folder `C:\Server\apache2\htdocs`, the framework can be installed by creating a composer project which is based on the framework inside the same folder. To do that, simply open comand promte and run the following command:
-```
+``` bash
 C:\Server\php\php.exe composer.phar create-project --prefer-dist webfiori/framework my-site
 ```
 This command will create new folder which has the name `my-site` and install the framework with all its dependencies insite. The name of the folder can be changed as needed. Once this is finished, your workspace will be the folder `C:\Server\apache2\htdocs\my-site\src\app`. The last step is to set document root of the local development server to `C:\Server\apache2\htdocs\my-site\src\public`.
@@ -44,7 +44,7 @@ Document root is the location at which the server will send every request to. It
 Once this step is finished, save the file and close it. After that, apache server must be restarted to apply the changes. The server can be restarted using server manager. To open server manager, go to the folder `C:\Server` and click the executable which has the name `manager-windows.exe`. Click on the tap "Manage Servers" and click on "Apache Server" and hit "Restart". 
 
 Now when we open the web browser and navigate to `localhost`, a page with the following text will appear:
-```
+``` bash
 This is the default page
 Add pages inside the folder 'app/pages'.
 Add routes for each page inside the class app/routes/ViewRoutes.php
