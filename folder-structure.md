@@ -1,4 +1,19 @@
 # Folder Structure
+<meta name="description" content="Learn about the folders at which the framework uses to keep your code and the content of each folder."
+
+In this page:
+* [The `app` Folder](#the-app-folder)
+  * [The `app/apis` Folder](#the-appapis-folder)
+  * [The `app/commands` Folder](#the-appcommands-folder)
+  * [The `app/jobs` Folder](#the-appjobs-folder)
+  * [The `app/langs` Folder ](#the-applangs-folder)
+  * [The `app/routes` Folder](#the-approutes-folder)
+* [The `conf` Folder](#the-conf-folder)
+* [The `entity` Folder](#the-entity-folder)
+* [The `ini` Folder](#the-ini-folder)
+* [The `public` Folder](#the-public-folder)
+* [The `logic` Folder](#the-logic-folder)
+
 
 ## The `app` Folder
 The folder `app` will contain all your application files. Anything that created by you must exist inside this folder. The folder can be kept under source control because of this reason. This folder can have extra sub-folders for maintaining your code. The folders are:
