@@ -1,4 +1,5 @@
 # Themes
+<meta name="description" content="Themes in webfiori framework works like a UI template which can change the whole look and feel of a web page. Learn how to use themes and create them.">
 In this page:
 * [Introduction](#introduction)
 * [Using Themes](#using-themes)
@@ -8,12 +9,15 @@ In this page:
   * [Implementing The Theme](#implementing-the-theme)
 
 ## Introduction
-A web application or a website which provide useful content isn't good enough if it does not proved good and easy to use user interface. User interface is one of the important factors that can be used to mesure how good a website is. For that reason, WebFiori Framework provide the needed tools to create a custom UIs for your website or web application and use them as needed.
+
+A web application or a website which provide useful content isn't good enough if it does not provide good and easy to use user interface. User interface is one of the important factors that can be used to mesure how good a website is. For that reason, WebFiori Framework provide the needed tools to create a custom UIs for your website or web application and use them as needed.
 
 Themes in WebFiori Framework are used to create different custom user interfaces for your website or web application. In addition, they work like a plug-ins and can provide additional functionality. Themes can be found inside the folder `themes` of the framework.
 
 ## Using Themes
+
 In order to apply a theme to your web page, all what you need to know about the theme is its name. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`Page::theme()`](https://webfiori.com/docs/webfiori/entity/Page#theme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
+
 ``` php
 use webfiori\entity\Page;
 
@@ -31,6 +35,7 @@ return __NAMESPACE__;
 Note that if the method [`Page::theme()`](https://webfiori.com/docs/webfiori/entity/page#theme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in the class [`SiteConfig`](https://webfiori.com/docs/webfiori/conf/SiteConfig).
 
 ## Creating Custom Theme
+
 Creating new theme is very simple. In general, theme creation process consist of the following:
 * Creating theme folder inside the directory `/themes`.
 * Creating resources folders inside (JavaScript, CSS and Images).
@@ -49,6 +54,7 @@ Themes in WebFiori Framework exist inside the folder `/themes`. The first step i
 ### Adding Theme Resources
 
 At this step, we will create one CSS file. The file will be added in the folder `/themes/custom-theme/css`. Let's give the file the name `theme.css` This CSS file will only contain selectors to give different colors for each section within the page. The code within the file will be something like the following:
+
 ``` css
 #page-body{
     color: white;
@@ -154,6 +160,7 @@ class CustomTheme extends Theme {
 }
 ```
 Once this step is finished, our basic theme is ready. What we can do now is to test the look and feel of the theme. Using the `ExamplePage` which comes with the framework by default, we can apply the theme as follows:
+
 ``` php 
 <?php
 
