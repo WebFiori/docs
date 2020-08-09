@@ -2,6 +2,8 @@
 
 Here you will find topics which can help you getting started with WebFiori framework.
 
+<meta name="description" content="A set of topics which helps in getting started with WebFiori Framework.">
+
 * [Installation](learn/installation)
 * [Folder Structure](learn/folder-structure)
 * [Basic Usage](learn/basic-usage)
