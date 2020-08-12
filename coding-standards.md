@@ -26,6 +26,7 @@ It is recommended to follow the following rules while writing any PHP code. Note
 * Never use `elseif`. Always use `else if`.
 * Always include access modifiers for class methods even if they are public.
 * Private methods names should always start with underscore.
+* When extending a class, the first statement in the child's constructor should be calling the parent's constructor.
 
 ## Documentation Style
 The PHPDoc block must be similar to the following style:
