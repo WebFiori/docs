@@ -16,7 +16,7 @@ The framework has its owon autoloader implementation which follows <a href="http
 The framework can be configured to not throw an exception. This can be performed during the process of initializing the autoloader <a href="https://webfiori.com/docs/webfiori/entity/AutoLoader" target="_blank">AutoLoader</a>.
 
 ## Coding Style
-It is recommended to follow the following rules while writing any PHP code. Note that not all rules follow PSR. The rules are:
+It is recommended to follow the following rules while writing any PHP code using the framework or writing code which is part of the framework. Note that not all rules follow PSR. Also, some of them violate PHP and PSR coding standards. The rules are:
 
 * Namespaces must be all `lower\case`.
 * Class constants and global constants names must be decalred in `ALL_CAPS`.
@@ -27,6 +27,7 @@ It is recommended to follow the following rules while writing any PHP code. Note
 * Always include access modifiers for class methods even if they are public.
 * Private methods names should always start with underscore.
 * When extending a class, the first statement in the child's constructor should be calling the parent's constructor.
+* Do not use aliases for imported classes or class constants (e.g. `use webfiori\MyClass as XYZ`).
 
 ## Documentation Style
 The PHPDoc block must be similar to the following style:
