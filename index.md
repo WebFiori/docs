@@ -12,5 +12,5 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Uploading Files](learn/uploading-files)
 * [Sending Emails](learn/sending-emails)
 * [Command Line Interface](learn/command-line-interface)
+* [Sessions Management](learn/sessions-management)
 * [Coding Standards](learn/coding-standards)
-* [The MVC](learn/mvc)
