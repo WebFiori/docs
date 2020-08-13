@@ -1,7 +1,7 @@
 
 # Sessions Management
 
-<meta name="description" content=""
+<meta name="description" content="Every web application must have a way to manage users sessions. The management may differe from one web development framework to another. A session in simple terms is a way to keep track of user intractions through your web application.">
 
 In this page:
 [Introduction](#introduction)
