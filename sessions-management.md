@@ -19,6 +19,30 @@ SessionsManager::start('hello-session');
 echo SessionsManager::getActiveSession();
 ```
 
+The output of the code would be something similar to this:
+
+``` json
+{
+    "name": "hello-session",
+    "started-at": 1597414742,
+    "duration": 7200,
+    "resumed-at": 1597414795,
+    "passed-time": 53,
+    "remaining-time": 7147,
+    "id": "d9c6e61cc21e16b0cb5a39eb6f9be63e45f92c7e2e1a76460deed083a9972065",
+    "is-refresh": false,
+    "is-persistent": true,
+    "status": "status_resumed",
+    "user": {
+        "user-id": -1,
+        "email": "",
+        "display-name": null,
+        "username": ""
+    },
+    "vars": []
+}
+```
+
 ## Resuming a Session
 ## Destroying a Session
 ## Adding Data to a Session
