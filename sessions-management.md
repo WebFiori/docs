@@ -12,7 +12,6 @@ In this page:
 * [Adding Data to a Session](#adding-data-to-a-session)
 * [Retrieving Stored Data](#retrieving-stored-data)
 * [Generating New ID](#generating-new-id)
-* [Generating New ID](#-generating-new-id)
 * []()
 
 ## Introduction
