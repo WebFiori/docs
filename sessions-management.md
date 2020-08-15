@@ -5,6 +5,15 @@
 
 In this page:
 * [Introduction](#introduction)
+* [Starting New Session](#starting-new-session)
+  * [Customizing The Session](#customizing-the-session)
+* [Resuming a Session](#resuming-a-session)
+* [Destroying a Session](#destroying-a-session)
+* [Adding Data to a Session](#adding-data-to-a-session)
+* [Retrieving Stored Data](#retrieving-stored-data)
+* [Generating New ID](#generating-new-id)
+* [Generating New ID](#-generating-new-id)
+* []()
 
 ## Introduction
 
@@ -59,9 +68,12 @@ SessionsManager::start('hello-session', [
 ]);
 ```
 
+To create a non-persistent session, use the value 0 for session duration. If the duration is 0, the session will be destroyed once the user closes his web browser.
+
 ## Resuming a Session
 
-To resume a session, simply use the same method which is used to start a new session.
+To resume a session, simply use the same method which is used to start a new session. In the following code sample, we start a new session, close it and resume it again. Note that when resuming a session, options array is ignored.
+
 ``` php
 SessionsManager::start('hello-session');
 SessionsManager::close();
@@ -70,5 +82,52 @@ echo SessionsManager::getActiveSession();
 ```
 
 ## Destroying a Session
+
+To destroy an active session, simply call the method  [`SessionsManager::destroy()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#destroy).
+
+``` php
+SessionsManager::start('hello-session');
+SessionsManager::destroy();
+```
+
+This method can be used in case the user has performed an action like logout.
+
 ## Adding Data to a Session
-## Multiple Sessions
+
+It is possible to store data in the session for use across different requests. For example, it is possible to create a shopping cart and add items to it. To add values to an active session or to update an existing value, the method [`SessionsManager::set()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#set) can be used.
+``` php
+SessionsManager::start('hello-session');
+SessionsManager::set('products', [
+    'Apple', 'Orange', 'Lemon'
+]);
+```
+
+## Retrieving Stored Data
+
+There are two ways at which data can be retrived from an active session. One way is to get the data without removing it. This can be achived using the method [`SessionsManager::get()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#get). And the other way is to pull the data using the method [`SessionsManager::pull()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#pull). The pull method will remove the value from the session once retrived.
+
+``` php
+SessionsManager::start('hello-session');
+SessionsManager::set('var-1', 'Hello World!');
+SessionsManager::set('var-2', 'Hello World Again!');
+
+$v1 = SessionsManager::get('var-1');
+$v2 = SessionsManager::pull('var-2');
+$v3 = SessionsManager::get('var-1');
+$v4 = SessionsManager::pull('var-2');
+
+//$v1 and $v3 will have same value
+//$v4 will be null
+```
+
+## Generating New ID
+
+In some cases, the ID of the session must be changed to prevent malicious users from exploiting a [session fixation](https://en.wikipedia.org/wiki/Session_fixation) attack on the system. The developer can generate new session ID for the active using the method [`SessionsManager::newId()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#newId)
+
+``` php
+SessionsManager::start('hello-session');
+echo SessionsManager::getActiveSession()->getId().'<br/>';
+SessionsManager::newId();
+// This will show different ID.
+echo SessionsManager::getActiveSession()->getId().'<br/>';
+```
