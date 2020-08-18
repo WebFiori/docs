@@ -24,7 +24,7 @@ Starting new session is very simple. The developer can use the method [`Sessions
 
 ``` php
 SessionsManager::start('hello-session');
-echo SessionsManager::getActiveSession();
+Response::append(SessionsManager::getActiveSession()->toJSON());
 ```
 
 The output of the code would be something similar to this:
@@ -77,7 +77,7 @@ To resume a session, simply use the same method which is used to start a new ses
 SessionsManager::start('hello-session');
 SessionsManager::close();
 SessionsManager::start('hello-session');
-echo SessionsManager::getActiveSession();
+Response::append(SessionsManager::getActiveSession()->toJSON());
 ```
 
 ## Destroying a Session
@@ -125,8 +125,9 @@ In some cases, the ID of the session must be changed to prevent malicious users 
 
 ``` php
 SessionsManager::start('hello-session');
-echo SessionsManager::getActiveSession()->getId().'<br/>';
+Response::append('Old Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
 SessionsManager::newId();
 // This will show different ID.
-echo SessionsManager::getActiveSession()->getId().'<br/>';
+Response::append('New Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
 ```
+
