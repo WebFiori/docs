@@ -18,6 +18,7 @@ The framework can be configured to not throw an exception. This can be performed
 ## Coding Style
 It is recommended to follow the following rules while writing any PHP code using the framework or writing code which is part of the framework. Note that not all rules follow PSR. Also, some of them violate PHP and PSR coding standards. The rules are:
 
+* Always use `<?php` for PHP tags.
 * Namespaces must be all `lower\case`.
 * Class constants and global constants names must be decalred in `ALL_CAPS`.
 * Methods names, non-static class attributes must be decalred in `camelCase`.
@@ -28,6 +29,8 @@ It is recommended to follow the following rules while writing any PHP code using
 * Private methods names should always start with underscore.
 * When extending a class, the first statement in the child's constructor should be calling the parent's constructor.
 * Do not use aliases for imported classes or class constants (e.g. `use webfiori\MyClass as XYZ`).
+* Method names and attributes must be defined as follows, first include access modifier followed by `static` or/then `final` (e.g. `public static final function myFunc()`).
+* For comparison, you should always use strict comparison (`===` or `!==`) when comparing booleans or `null`.
 
 ## Documentation Style
 The PHPDoc block must be similar to the following style:
