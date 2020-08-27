@@ -1,4 +1,4 @@
-# The Labriry JsonX
+# The Library JsonX
 
 <meta name="description" content="The library JsonX can be used to create well formatted JSON strings. This page explains how it can be used.">
 
@@ -10,6 +10,9 @@ In this page:
 * [Adding Extra Properties](#adding-extra-properties)
 * [Working With Arrays](#working-with-arrays)
   * [Adding Arrays as Objects](#adding-arrays-as-objects)
+    * [Example 1: Indexed Array as Object](#example-1-indexed-array-as-object)
+    * [Example 2: Associative Array as Object](#example-2-associative-array-as-object)
+    * [Example 3: Indexed and Associative Array as Object](#example-3-indexed-and-associative-array-as-object)
 * [Working With Objects](#working-with-objects)
 * [Converting JSON String to JsonX](#converting-json-string-to-jsonx)
 * [Properties Style](#properties-style)
@@ -127,7 +130,7 @@ It is possible to add arrays as objects to `JsonX` instance. This can be achived
 
 Note that if the index is associative, its key will be used as property name. If the array is indexed, the names of the properties will be numbers.
 
-> Note: If the array has sub-arrays and is added as object, sub arrays will also be added as objects.
+> **Note:** If the array has sub-arrays and is added as object, sub arrays will also be added as objects.
 
 #### Example 1: Indexed Array as Object
 ``` php
@@ -198,7 +201,62 @@ $jsonxObj->addArray("array", $arr, true);
     }
 }
 ```
+
 ## Working With Objects
+
+It is possible to add any object to an instance of `JsonX` but there is a catch here. If the object does not implement the interface [`JsonI`](https://webfiori.com/docs/jsonx/JsonI), then the properties that will be added will depend on the public `get` methods of the object. 
+
+### Object Does not Implement `JsonI`
+
+Let's assume that we would like to add an instance of the following class to an instance of `JsonX`:
+
+``` php
+class Employee {
+    private $fName;
+    private $lName;
+    private $salary;
+    public function __construct($fName, $lName, $salary) {
+        $this->fName = $fName;
+        $this->lName = $lName;
+        $this->salary = $salary;
+    }
+    public function getFirstName() {
+        return $this->fName;
+    }
+    public function getLastName() {
+        return $this->lName;
+    }
+    public function getFullName() {
+        return $this->getFirstName().' '.$this->getLastName();
+    }
+    public function salary() {
+        return $this->salary;
+    }
+}
+```
+Assuming that we add the object as follows:
+``` php
+$jsonxObj = new JsonX();
+$jsonxObj->addObject("obj", new \MyClass('Ibrahim', 'BinAlshikh', 7200));
+```
+The JSON output that will be created will be similar to the following:
+
+``` json
+{
+    "obj": {
+        "FirstName": "Ibrahim",
+        "LastName": "BinAlshikh",
+        "FullName": "Ibrahim BinAlshikh"
+    }
+}
+```
+
+What happend here is the following, the method [`JsonX::addObject()`](https://webfiori.com/docs/jsonx/JsonX#addObject) will try to access the public methods of the instance. After that, it will search for the methods that has the word `get` in there name. Based on that, it will detect the name of the property. If the name of the method is `getFirstName`, the name of the proprty will be `FirstName`.
+
+> **Note:** The final name of the property will depend on the style of the properties names. For example, if properties style is set to `snake`, then the name of the proprty `LastName` would be `last_name`.
+
+### Object Implement `JsonI`
+
 ## Converting JSON String to JsonX
 ## Properties Style
 
