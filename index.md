@@ -7,6 +7,7 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Installation](learn/installation)
 * [Folder Structure](learn/folder-structure)
 * [Basic Usage](learn/basic-usage)
+* [The Class `Response`](learn/class-response)
 * [Routing](learn/routing)
 * [Themes](learn/themes)
 * [Uploading Files](learn/uploading-files)
