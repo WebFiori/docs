@@ -274,7 +274,7 @@ What happend here is the following, the method [`JsonX::addObject()`](https://we
 
 The interface [`JsonI`](https://webfiori.com/docs/jsonx/JsonI) is used to customize the generated JSON output of an object. The interface has one method at which the developer must implement which is [`JsonI::toJSON()`](https://webfiori.com/docs/jsonx/JsonI#toJSON). The developer must implement the method in a way it returns an instance of the class [`JsonX`](https://webfiori.com/docs/jsonx/JsonX).
 
-Let's assume that we have the same `Employee` class. We can use the interface `JsonI` to customize JSON output as follows:
+Assuming that we have the same `Employee` class from previous example, we can use the interface `JsonI` to customize JSON output as follows:
 
 ``` php
 
