@@ -221,7 +221,7 @@ It is possible to add any object to an instance of `JsonX` but there is a catch 
 
 ### Object Does not Implement `JsonI`
 
-Let's assume that we would like to add an instance of the following class to an instance of `JsonX`:
+Assuming that we would like to add an instance of the following class to an instance of `JsonX`:
 
 ``` php
 class Employee {
@@ -248,7 +248,7 @@ class Employee {
 }
 ```
 
-Assuming that we add the object as follows:
+Also, assuming that we add the object as follows:
 
 ``` php
 $jsonxObj = new JsonX();
