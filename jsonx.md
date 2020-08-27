@@ -14,6 +14,8 @@ In this page:
     * [Example 2: Associative Array as Object](#example-2-associative-array-as-object)
     * [Example 3: Indexed and Associative Array as Object](#example-3-indexed-and-associative-array-as-object)
 * [Working With Objects](#working-with-objects)
+  * [Object Does not Implement `JsonI`](#object-does-not-implement-jsoni)
+  * [Object Implement `JsonI`](#object-implement-jsoni)
 * [Converting JSON String to JsonX](#converting-json-string-to-jsonx)
 * [Properties Style](#properties-style)
 
@@ -133,11 +135,13 @@ Note that if the index is associative, its key will be used as property name. If
 > **Note:** If the array has sub-arrays and is added as object, sub arrays will also be added as objects.
 
 #### Example 1: Indexed Array as Object
+
 ``` php
 $jsonxObj = new JsonX();
 $arr = ["one", "two", 3, 3.5, "hello"];
 $jsonxObj->addArray("array", $arr, true);
 ```
+
 ``` json
 {
     "array": {
@@ -162,6 +166,7 @@ $jsonxObj->add("array", $arr, [
     'array-as-object' => true
 ]);
 ```
+
 ``` json 
 {
     "array": {
@@ -173,6 +178,7 @@ $jsonxObj->add("array", $arr, [
 ```
 
 #### Example 3: Indexed and Associative Array as Object
+
 ``` php
 $jsonxObj = new JsonX();
 $arr = [
@@ -187,6 +193,7 @@ $arr = [
 ];
 $jsonxObj->addArray("array", $arr, true);
 ```
+
 ``` json
 {
     "array": {
@@ -234,10 +241,12 @@ class Employee {
     }
 }
 ```
+
 Assuming that we add the object as follows:
+
 ``` php
 $jsonxObj = new JsonX();
-$jsonxObj->addObject("obj", new \MyClass('Ibrahim', 'BinAlshikh', 7200));
+$jsonxObj->addObject("obj", new Employee('Ibrahim', 'BinAlshikh', 7200));
 ```
 The JSON output that will be created will be similar to the following:
 
@@ -257,7 +266,79 @@ What happend here is the following, the method [`JsonX::addObject()`](https://we
 
 ### Object Implement `JsonI`
 
+The interface [`JsonI`](https://webfiori.com/docs/jsonx/JsonI) is used to customize the generated JSON output of an object. The interface has one method at which the developer must implement which is [`JsonI::toJSON()`](https://webfiori.com/docs/jsonx/JsonI#toJSON). The developer must implement the method in a way it returns an instance of the class [`JsonX`](https://webfiori.com/docs/jsonx/JsonX).
+
+Let's assume that we have the same `Employee` class. We can use the interface `JsonI` to customize JSON output as follows:
+
+``` php
+
+use jsonx\JsonI;
+use jsonx\JsonX;
+
+class MyClass implements JsonI {
+    private $fName;
+    private $lName;
+    private $salary;
+    public function __construct($fName, $lName, $salary) {
+        $this->fName = $fName;
+        $this->lName = $lName;
+        $this->salary = $salary;
+    }
+    public function getFirstName() {
+        return $this->fName;
+    }
+    public function getLastName() {
+        return $this->lName;
+    }
+    public function getFullName() {
+        return $this->getFirstName().' '.$this->getLastName();
+    }
+    public function salary() {
+        return $this->salary;
+    }
+
+    public function toJSON() {
+        return new JsonX([
+            'first-name' => $this->getFirstName(),
+            'last-name' => $this->getLastName(),
+            'salary' => $this->salary()
+        ]);
+    }
+}
+```
+
+JSON output of the given code would be similar to the following:
+
+``` json
+{
+    "obj": {
+        "first-name": "Ibrahim",
+        "last-name": "BinAlshikh",
+        "salary": 7200
+    }
+}
+```
+
 ## Converting JSON String to JsonX
+
+The library supports converting JSON-like strings to `JsonX` instance. The static method [`JsonX:decode()`](https://webfiori.com/docs/jsonx/JsonX#decode) is used to perform that task. This can be useful if the developer would like to add extra properties to JSON input which was sent by a web browser or HTTP client. The following code sample shows how to use the method.
+
+``` php
+$jsonxObj =JsonX::decode('{"hello":"world","sub-obj":{},"an-array":[]}');
+                
+$jsonxObj->get('sub-obj')->addMultiple([
+    'first-name' => 'Ibrahim',
+    'last-name' => 'BinAlshikh',
+    'salary' => 7200
+]);
+
+$arr = $jsonxObj->get('an-array');
+$arr[] = "Hello";
+$arr[] = "World";
+$arr[] = "of";
+$arr[] = "PHP";
+```
+
 ## Properties Style
 
 
