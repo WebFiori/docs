@@ -18,6 +18,10 @@ In this page:
   * [Object Implement `JsonI`](#object-implement-jsoni)
 * [Converting JSON String to JsonX](#converting-json-string-to-jsonx)
 * [Properties Style](#properties-style)
+  * [Snake Style Example](#snake-style-example)
+  * [Kebab Style Example](#kebab-style-example)
+  * [Camel Style Example](#camel-style-example)
+* [Reading JSON File](#reading-json-file)
 
 ## Introduction
 
@@ -321,10 +325,10 @@ JSON output of the given code would be similar to the following:
 
 ## Converting JSON String to JsonX
 
-The library supports converting JSON-like strings to `JsonX` instance. The static method [`JsonX:decode()`](https://webfiori.com/docs/jsonx/JsonX#decode) is used to perform that task. This can be useful if the developer would like to add extra properties to JSON input which was sent by a web browser or HTTP client. The following code sample shows how to use the method.
+The library supports converting JSON-like strings to `JsonX` instance. The static method [`JsonX::decode()`](https://webfiori.com/docs/jsonx/JsonX#decode) is used to perform that task. This can be useful if the developer would like to add extra properties to JSON input which was sent by a web browser or HTTP client. The following code sample shows how to use the method.
 
 ``` php
-$jsonxObj =JsonX::decode('{"hello":"world","sub-obj":{},"an-array":[]}');
+$jsonxObj =JsonX::decode('{"hello":"world","sub-obj":{},"an-array":["First Item"]}');
                 
 $jsonxObj->get('sub-obj')->addMultiple([
     'first-name' => 'Ibrahim',
@@ -333,12 +337,108 @@ $jsonxObj->get('sub-obj')->addMultiple([
 ]);
 
 $arr = $jsonxObj->get('an-array');
-$arr[] = "Hello";
-$arr[] = "World";
-$arr[] = "of";
-$arr[] = "PHP";
+$arr[] = "Second Item";
+$jsonxObj->add('an-array', $arr);
+```
+
+What we have done is to add properties to the `sub-obj` and add one extra item to the array `an-array`. The JSON output will be similar to the following.
+
+``` json
+{
+    "hello": "world",
+        "sub-obj": {
+        "first-name": "Ibrahim",
+        "last-name": "BinAlshikh",
+        "salary": 7200
+    },
+    "an-array": [
+        "First Item",
+        "Second Item"
+    ]
+}
 ```
 
 ## Properties Style
 
+It is possible to set a custom style for the properties to use. By default, the style is set to `none`. In this case, propery style will be exactly the same as when it was added. In addition to the `none` style, the class `JsonX` supports 3 styles, `snake`, `kebab` and `camle`.
+
+Setting the style of the properties can be achived in two ways. The first one is to define a global constant with the name `JSONX_PROP_STYLE` which is a string that has one of the values of the array [`JsonX::PROP_NAME_STYLES`](https://webfiori.com/docs/jsonx/JsonX#PROP_NAME_STYLES). If this constant is defined, it will be used by every instance of the class `JsonX`. 
+
+Another way to set the style is to use the method [`JsonX::setPropsStyle()`](https://webfiori.com/docs/jsonx/JsonX#setPropsStyle). This method can be used to set specific style for one instance.
+
+### Snake Style Example
+
+``` php
+$jsonxObj = new JsonX([
+    'first-prop' => 1,
+    'SecondProp' => 'Hello',
+    'Third_prop' => true
+]);
+$jsonxObj->setPropsStyle('snake');
+```
+
+The generated output will be similar to the following JSON:
+
+``` json
+{
+    "first_prop": 1,
+    "second_prop": "Hello",
+    "third_prop": true
+}
+```
+
+### Kebab Style Example
+
+``` php
+$jsonxObj = new JsonX([
+    'first-prop' => 1,
+    'SecondProp' => 'Hello',
+    'Third_prop' => true
+]);
+$jsonxObj->setPropsStyle('kebab');
+```
+
+The generated output will be similar to the following JSON:
+
+``` json
+{
+    "first-prop": 1,
+    "second-prop": "Hello",
+    "third-prop": true
+}
+```
+
+### Camel Style Example
+
+``` php
+$jsonxObj = new JsonX([
+    'first-prop' => 1,
+    'SecondProp' => 'Hello',
+    'Third_prop' => true
+]);
+$jsonxObj->setPropsStyle('camel');
+```
+
+The generated output will be similar to the following JSON:
+
+``` json
+{
+    "firstProp": 1,
+    "SecondProp": "Hello",
+    "ThirdProp": true
+}
+```
+
+## Reading JSON File
+
+One of the great features of the library is the ability to read any file that contains valid JSON and load it into an object of type `JsonX`. To achive this, the static method [`JsonX::fromFile()`](https://webfiori.com/docs/jsonx/JsonX#fromFile) can be used. This method will return an object of type  `JsonX` if the file content was parsed without issues. The following code sample shows how to use that method.
+
+``` php 
+$jsonxObj = JsonX::fromFile('jsonData.json');
+if ($jsonxObj instanceof JsonX) {
+    // Do things with the data
+} else {
+    // Failed to read JSON data.
+}
+```
 
