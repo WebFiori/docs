@@ -1,14 +1,14 @@
 # Learning Center
 
-Here you will find topics which can help you getting started with WebFiori framework.
+Here you will find topics which can help you getting started with WebFiori framework. For new learners, it is recommended to start from the top to bottom.
 
 <meta name="description" content="A set of topics which helps in getting started with WebFiori Framework.">
 
 * [Installation](learn/installation)
 * [Folder Structure](learn/folder-structure)
 * [Basic Usage](learn/basic-usage)
-* [The Class `Response`](learn/class-response)
 * [Routing](learn/routing)
+* [The Class `Response`](learn/class-response)
 * [Themes](learn/themes)
 * [Uploading Files](learn/uploading-files)
 * [Sending Emails](learn/sending-emails)
