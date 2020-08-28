@@ -20,6 +20,8 @@ Normally, sending output to HTTP client in php is performed using [`echo`](https
 
 Server output at the end must be a string. Collecting server output can be achived using the method [`Response::append()`](https://webfiori.com/docs/webfiori/entity/Response#append). From its name, we can infer that it is used to append a string to collected server output.
 
+> **Note:** In most cases, the developer will not have to collect the output him self. If the class [`Page`](https://webfiori.com/docs/webfiori/entity/Page) is used for rendering HTML, no need to use the method `Response::append()`. This also applies to web services if the class [`WebServicesSet`](https://webfiori.com/docs/restEasy/WebServicesSet) or [`ExtendedWebServices`](https://webfiori.com/docs/webfiori/entity/WebServicesSet) is used.
+
 ``` php
 namespace webfiori\entity\router;
 
@@ -42,8 +44,6 @@ class ClosureRoutes {
     }
 }
 ```
-
-> **Note:** In most cases, the developer will not have to collect the output him self. If the class [`Page`](https://webfiori.com/docs/webfiori/entity/page) is used for rendering HTML, no need to use the method `Response::append()`. This also applies to web services if the class [`WebServicesSet`](https://webfiori.com/docs/restEasy/WebServicesSet) or [`ExtendedWebServices`](https://webfiori.com/docs/webfiori/entity/WebServicesSet).
 
 ## Sending The Output
 
