@@ -1,6 +1,6 @@
-# The Library JsonX
+# The Library WebFiori Json 
 
-<meta name="description" content="The library JsonX can be used to create well formatted JSON strings. This page explains how it can be used.">
+<meta name="description" content="The library WebFiori Json can be used to create well formatted JSON strings. This page explains how it can be used.">
 
 In this page:
 
@@ -16,7 +16,7 @@ In this page:
 * [Working With Objects](#working-with-objects)
   * [Object Does not Implement `JsonI`](#object-does-not-implement-jsoni)
   * [Object Implement `JsonI`](#object-implement-jsoni)
-* [Converting JSON String to JsonX](#converting-json-string-to-jsonx)
+* [Converting JSON String to Json Object](#converting-json-string-to-json-object)
 * [Properties Style](#properties-style)
   * [Snake Style Example](#snake-style-example)
   * [Kebab Style Example](#kebab-style-example)
@@ -25,22 +25,22 @@ In this page:
 
 ## Introduction
 
-When desining web services, the developer must deside on the format at which the server will send back to the client after processing the request. One of the most widely used format is called [JSON](https://www.json.org/json-en.html). PHP does provide functions for encoding and decoding JSON using the methods [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php). And [`json_decode()`](https://www.php.net/manual/en/function.json-decode.php). Since the framework promots the use of OOP approach, it uses a library called [`JsonX`](https://github.com/usernane/jsonx) to create well formatted JSON output.
+When desining web services, the developer must deside on the format at which the server will send back to the client after processing the request. One of the most widely used format is called [JSON](https://www.json.org/json-en.html). PHP does provide functions for encoding and decoding JSON using the methods [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php). And [`json_decode()`](https://www.php.net/manual/en/function.json-decode.php). Since the framework promots the use of OOP approach, it uses a library called [`WebFiori Json`](https://github.com/usernane/jsonx) to create well formatted JSON output.
 
 > **Note:** This library can be included using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/jsonx":"*"`. 
 
 ## Library Structure
 
-The lirary has only one class and one interface. The class [`JsonX`](https://webfiori.com/docs/jsonx/JsonX) is the core of the library. This class is the one which is used to create the final JSON output. In addition to that, it can be used to parse JSON strings and convert them to `JsonX` objects. 
+The lirary has only one class and one interface. The class [`Json`](https://webfiori.com/docs/webfiori/json/Json) is the core of the library. This class is the one which is used to create the final JSON output. In addition to that, it can be used to parse JSON strings and convert them to `Json` objects. 
 
-The interface [`JsonI`](https://webfiori.com/docs/jsonx/JsonI) can be used to customize JSON representation of objects which implement it when encoded. The interface has only one method which is [`JsonI::toJSON()`](https://webfiori.com/docs/jsonx/JsonI#toJSON).
+The interface [`JsonI`](https://webfiori.com/docs/webfiori/json/JsonI) can be used to customize JSON representation of objects which implement it when encoded. The interface has only one method which is [`JsonI::toJSON()`](https://webfiori.com/docs/webfiori/json/JsonI#toJSON).
 
 ## Usage Examples
 
 The following code sample shows the most basic use case. What we do here is simply adding a set of key/value pairs to be represented as JSON.
 
 ``` php
-$jsonxObj = new JsonX([
+$jsonObj = new Json([
     'first-name' => 'Ibrahim',
     'last-name' => 'BinAlshikh',
     'age' => 26,
@@ -65,16 +65,16 @@ In addition to initializing your data using the consructor, it is possible to ad
 
 ### Adding Extra Properties
 
-The method [`JsonX::add()`](https://webfiori.com/docs/jsonx/JsonX#add) can be used to add numbers, strings or objects to your JSON.
+The method [`Json::add()`](https://webfiori.com/docs/webfiori/json/Json#add) can be used to add numbers, strings or objects to your JSON.
 
 ``` php 
-$jsonxObj = new JsonX();
-$jsonxObj->add('first-name', 'Ibrahim');
-$jsonxObj->add('number', 45);
-$jsonxObj->add('another-number', 1.667);
-$jsonxObj->add('boolean', true);
-$jsonxObj->add('array', ['hello',77,88]);
-$jsonxObj->add('another-array', ['Bad',null, false]);   
+$jsonObj = new Json();
+$jsonObj->add('first-name', 'Ibrahim');
+$jsonObj->add('number', 45);
+$jsonObj->add('another-number', 1.667);
+$jsonObj->add('boolean', true);
+$jsonObj->add('array', ['hello',77,88]);
+$jsonObj->add('another-array', ['Bad',null, false]);   
 ```
 
 ``` json 
@@ -96,25 +96,25 @@ $jsonxObj->add('another-array', ['Bad',null, false]);
 }
 ```
 
-In addition to the method [`JsonX::add()`](https://webfiori.com/docs/jsonx/JsonX#add), there are other methods which are specific for adding specific types:
+In addition to the method [`Json::add()`](https://webfiori.com/docs/webfiori/json/Json#add), there are other methods which are specific for adding specific types:
 
-* [`JsonX::addArray()`](https://webfiori.com/docs/jsonx/JsonX#addArray). Used to add arrays.
-* [`JsonX::addBoolean()`](https://webfiori.com/docs/jsonx/JsonX#addBoolean). Used to add boolean value (`true` or `false`).
-* [`JsonX::addNumber()`](https://webfiori.com/docs/jsonx/JsonX#addNumber). Used to add numbers (integers or floats).
-* [`JsonX::addObject()`](https://webfiori.com/docs/jsonx/JsonX#addObject). Used to add PHP objects.
+* [`Json::addArray()`](https://webfiori.com/docs/webfiori/json/Json#addArray). Used to add arrays.
+* [`Json::addBoolean()`](https://webfiori.com/docs/webfiori/json/Json#addBoolean). Used to add boolean value (`true` or `false`).
+* [`Json::addNumber()`](https://webfiori.com/docs/webfiori/json/Json#addNumber). Used to add numbers (integers or floats).
+* [`Json::addObject()`](https://webfiori.com/docs/webfiori/json/Json#addObject). Used to add PHP objects.
 
 ## Working With Arrays
 
-Arrays in PHP language can be associative, indexed or a mix of the two. When adding arrays to an instance of `JsonX`, the type of the array must be put into consideration. When adding the array using the method [`JsonX::add()`](https://webfiori.com/docs/jsonx/JsonX#add), It will be added as array. But there is one thing that must be noted. If the array is a mix between indexed and associative, the indices which are associative will be converted to objects.
+Arrays in PHP language can be associative, indexed or a mix of the two. When adding arrays to an instance of `Json`, the type of the array must be put into consideration. When adding the array using the method [`Json::add()`](https://webfiori.com/docs/webfiori/json/Json#add), It will be added as array. But there is one thing that must be noted. If the array is a mix between indexed and associative, the indices which are associative will be converted to objects.
 
 ``` php
-$jsonxObj = new JsonX();
+$jsonObj = new Json();
 $arr = [
     "one", 
     "two", 
     "assoc" => "ok"
 ];
-$jsonxObj->add("array", $arr);
+$jsonObj->add("array", $arr);
 ```
 
 The JSON that will be generated by the given code will be similar to the following:
@@ -134,7 +134,7 @@ The JSON that will be generated by the given code will be similar to the followi
 
 ### Adding Arrays as Objects
 
-It is possible to add arrays as objects to `JsonX` instance. This can be achived using the option `array-as-object` if the method [`JsonX::add()`](https://webfiori.com/docs/jsonx/JsonX#add) is used to add the array or by supplying `true` for the last argument if the method [`JsonX::addArray()`](https://webfiori.com/docs/jsonx/JsonX#addArray) is used.
+It is possible to add arrays as objects to `Json` instance. This can be achived using the option `array-as-object` if the method [`Json::add()`](https://webfiori.com/docs/webfiori/json/Json#add) is used to add the array or by supplying `true` for the last argument if the method [`Json::addArray()`](https://webfiori.com/docs/webfiori/json/Json#addArray) is used.
 
 Note that if the index is associative, its key will be used as property name. If the array is indexed, the names of the properties will be numbers.
 
@@ -143,9 +143,9 @@ Note that if the index is associative, its key will be used as property name. If
 #### Example 1: Indexed Array as Object
 
 ``` php
-$jsonxObj = new JsonX();
+$jsonObj = new Json();
 $arr = ["one", "two", 3, 3.5, "hello"];
-$jsonxObj->addArray("array", $arr, true);
+$jsonObj->addArray("array", $arr, true);
 ```
 
 ``` json
@@ -162,13 +162,13 @@ $jsonxObj->addArray("array", $arr, true);
 #### Example 2: Associative Array as Object
 
 ``` php
-$jsonxObj = new JsonX();
+$jsonObj = new Json();
 $arr = [
     "one"=>1, 
     "two"=>2, 
     "assoc" => "ok"
 ];
-$jsonxObj->add("array", $arr, [
+$jsonObj->add("array", $arr, [
     'array-as-object' => true
 ]);
 ```
@@ -186,7 +186,7 @@ $jsonxObj->add("array", $arr, [
 #### Example 3: Indexed and Associative Array as Object
 
 ``` php
-$jsonxObj = new JsonX();
+$jsonObj = new Json();
 $arr = [
     "hello" => "World",
     "first-name" => "Ibrahim",
@@ -197,7 +197,7 @@ $arr = [
     'is-good' => true,
     500
 ];
-$jsonxObj->addArray("array", $arr, true);
+$jsonObj->addArray("array", $arr, true);
 ```
 
 ``` json
@@ -217,11 +217,11 @@ $jsonxObj->addArray("array", $arr, true);
 
 ## Working With Objects
 
-It is possible to add any object to an instance of `JsonX` but there is a catch here. If the object does not implement the interface [`JsonI`](https://webfiori.com/docs/jsonx/JsonI), then the properties that will be added will depend on the public `get` methods of the object. 
+It is possible to add any object to an instance of `Json` but there is a catch here. If the object does not implement the interface [`JsonI`](https://webfiori.com/docs/webfiori/json/JsonI), then the properties that will be added will depend on the public `get` methods of the object. 
 
 ### Object Does not Implement `JsonI`
 
-Assuming that we would like to add an instance of the following class to an instance of `JsonX`:
+Assuming that we would like to add an instance of the following class to an instance of `Json`:
 
 ``` php
 class Employee {
@@ -251,8 +251,8 @@ class Employee {
 Also, assuming that we add the object as follows:
 
 ``` php
-$jsonxObj = new JsonX();
-$jsonxObj->addObject("obj", new Employee('Ibrahim', 'BinAlshikh', 7200));
+$jsonObj = new Json();
+$jsonObj->addObject("obj", new Employee('Ibrahim', 'BinAlshikh', 7200));
 ```
 The JSON output that will be created will be similar to the following:
 
@@ -266,20 +266,20 @@ The JSON output that will be created will be similar to the following:
 }
 ```
 
-What happend here is the following, the method [`JsonX::addObject()`](https://webfiori.com/docs/jsonx/JsonX#addObject) will try to access the public methods of the instance. After that, it will search for the methods that has the word `get` in there name. Based on that, it will detect the name of the property. If the name of the method is `getFirstName`, the name of the proprty will be `FirstName`.
+What happend here is the following, the method [`Json::addObject()`](https://webfiori.com/docs/webfiori/json/Json#addObject) will try to access the public methods of the instance. After that, it will search for the methods that has the word `get` in there name. Based on that, it will detect the name of the property. If the name of the method is `getFirstName`, the name of the proprty will be `FirstName`.
 
 > **Note:** The final name of the property will depend on the style of the properties names. For example, if properties style is set to `snake`, then the name of the proprty `LastName` would be `last_name`.
 
 ### Object Implement `JsonI`
 
-The interface [`JsonI`](https://webfiori.com/docs/jsonx/JsonI) is used to customize the generated JSON output of an object. The interface has one method at which the developer must implement which is [`JsonI::toJSON()`](https://webfiori.com/docs/jsonx/JsonI#toJSON). The developer must implement the method in a way it returns an instance of the class [`JsonX`](https://webfiori.com/docs/jsonx/JsonX).
+The interface [`JsonI`](https://webfiori.com/docs/webfiori/json/JsonI) is used to customize the generated JSON output of an object. The interface has one method at which the developer must implement which is [`JsonI::toJSON()`](https://webfiori.com/docs/json/JsonI#toJSON). The developer must implement the method in a way it returns an instance of the class [`Json`](https://webfiori.com/docs/webfiori/json/Json).
 
 Assuming that we have the same `Employee` class from previous example, we can use the interface `JsonI` to customize JSON output as follows:
 
 ``` php
 
-use jsonx\JsonI;
-use jsonx\JsonX;
+use webfiori\json\JsonI;
+use webfiori\json\Json;
 
 class MyClass implements JsonI {
     private $fName;
@@ -304,7 +304,7 @@ class MyClass implements JsonI {
     }
 
     public function toJSON() {
-        return new JsonX([
+        return new Json([
             'first-name' => $this->getFirstName(),
             'last-name' => $this->getLastName(),
             'salary' => $this->salary()
@@ -325,22 +325,22 @@ JSON output of the given code would be similar to the following:
 }
 ```
 
-## Converting JSON String to JsonX
+## Converting JSON String to Json Object
 
-The library supports converting JSON-like strings to `JsonX` instance. The static method [`JsonX::decode()`](https://webfiori.com/docs/jsonx/JsonX#decode) is used to perform that task. This can be useful if the developer would like to add extra properties to JSON input which was sent by a web browser or HTTP client. The following code sample shows how to use the method.
+The library supports converting JSON-like strings to `Json` instance. The static method [`Json::decode()`](https://webfiori.com/docs/webfiori/json/Json#decode) is used to perform that task. This can be useful if the developer would like to add extra properties to JSON input which was sent by a web browser or HTTP client. The following code sample shows how to use the method.
 
 ``` php
-$jsonxObj =JsonX::decode('{"hello":"world","sub-obj":{},"an-array":["First Item"]}');
+$jsonObj =Json::decode('{"hello":"world","sub-obj":{},"an-array":["First Item"]}');
                 
-$jsonxObj->get('sub-obj')->addMultiple([
+$jsonObj->get('sub-obj')->addMultiple([
     'first-name' => 'Ibrahim',
     'last-name' => 'BinAlshikh',
     'salary' => 7200
 ]);
 
-$arr = $jsonxObj->get('an-array');
+$arr = $jsonObj->get('an-array');
 $arr[] = "Second Item";
-$jsonxObj->add('an-array', $arr);
+$jsonObj->add('an-array', $arr);
 ```
 
 What we have done is to add properties to the `sub-obj` and add one extra item to the array `an-array`. The JSON output will be similar to the following.
@@ -362,21 +362,21 @@ What we have done is to add properties to the `sub-obj` and add one extra item t
 
 ## Properties Style
 
-It is possible to set a custom style for the properties to use. By default, the style is set to `none`. In this case, propery style will be exactly the same as when it was added. In addition to the `none` style, the class `JsonX` supports 3 styles, `snake`, `kebab` and `camle`.
+It is possible to set a custom style for the properties to use. By default, the style is set to `none`. In this case, propery style will be exactly the same as when it was added. In addition to the `none` style, the class `Json` supports 3 styles, `snake`, `kebab` and `camle`.
 
-Setting the style of the properties can be achived in two ways. The first one is to define a global constant with the name `JSONX_PROP_STYLE` which is a string that has one of the values of the array [`JsonX::PROP_NAME_STYLES`](https://webfiori.com/docs/jsonx/JsonX#PROP_NAME_STYLES). If this constant is defined, it will be used by every instance of the class `JsonX`. 
+Setting the style of the properties can be achived in two ways. The first one is to define a global constant with the name `JSON_PROP_STYLE` which is a string that has one of the values of the array [`Json::PROP_NAME_STYLES`](https://webfiori.com/docs/webfiori/json/Json#PROP_NAME_STYLES). If this constant is defined, it will be used by every instance of the class `Json`. 
 
-Another way to set the style is to use the method [`JsonX::setPropsStyle()`](https://webfiori.com/docs/jsonx/JsonX#setPropsStyle). This method can be used to set specific style for one instance.
+Another way to set the style is to use the method [`Json::setPropsStyle()`](https://webfiori.com/docs/webfiori/json/Json#setPropsStyle). This method can be used to set specific style for one instance.
 
 ### Snake Style Example
 
 ``` php
-$jsonxObj = new JsonX([
+$jsonObj = new Json([
     'first-prop' => 1,
     'SecondProp' => 'Hello',
     'Third_prop' => true
 ]);
-$jsonxObj->setPropsStyle('snake');
+$jsonObj->setPropsStyle('snake');
 ```
 
 The generated output will be similar to the following JSON:
@@ -392,12 +392,12 @@ The generated output will be similar to the following JSON:
 ### Kebab Style Example
 
 ``` php
-$jsonxObj = new JsonX([
+$jsonObj = new Json([
     'first-prop' => 1,
     'SecondProp' => 'Hello',
     'Third_prop' => true
 ]);
-$jsonxObj->setPropsStyle('kebab');
+$jsonObj->setPropsStyle('kebab');
 ```
 
 The generated output will be similar to the following JSON:
@@ -413,12 +413,12 @@ The generated output will be similar to the following JSON:
 ### Camel Style Example
 
 ``` php
-$jsonxObj = new JsonX([
+$jsonObj = new Json([
     'first-prop' => 1,
     'SecondProp' => 'Hello',
     'Third_prop' => true
 ]);
-$jsonxObj->setPropsStyle('camel');
+$jsonObj->setPropsStyle('camel');
 ```
 
 The generated output will be similar to the following JSON:
@@ -433,11 +433,11 @@ The generated output will be similar to the following JSON:
 
 ## Reading JSON File
 
-One of the great features of the library is the ability to read any file that contains valid JSON and load it into an object of type `JsonX`. To achive this, the static method [`JsonX::fromFile()`](https://webfiori.com/docs/jsonx/JsonX#fromFile) can be used. This method will return an object of type  `JsonX` if the file content was parsed without issues. The following code sample shows how to use that method.
+One of the great features of the library is the ability to read any file that contains valid JSON and load it into an object of type `Json`. To achive this, the static method [`Json::fromFile()`](https://webfiori.com/docs/webfiori/json/Json#fromFile) can be used. This method will return an object of type  `Json` if the file content was parsed without issues. The following code sample shows how to use that method.
 
 ``` php 
-$jsonxObj = JsonX::fromFile('jsonData.json');
-if ($jsonxObj instanceof JsonX) {
+$jsonObj = Json::fromFile('jsonData.json');
+if ($jsonObj instanceof Json) {
     // Do things with the data
 } else {
     // Failed to read JSON data.
