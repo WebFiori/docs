@@ -14,5 +14,5 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Sending Emails](learn/sending-emails)
 * [Command Line Interface](learn/command-line-interface)
 * [Sessions Management](learn/sessions-management)
-* [The Library JsonX](learn/jsonx)
+* [The Library WebFiori JSON](learn/webfiori-json)
 * [Coding Standards](learn/coding-standards)
