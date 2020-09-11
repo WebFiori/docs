@@ -9,6 +9,7 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Basic Usage](learn/basic-usage)
 * [Routing](learn/routing)
 * [The Class `Response`](learn/class-response)
+* [UI Package](learn/ui-package)
 * [Themes](learn/themes)
 * [Uploading Files](learn/uploading-files)
 * [Sending Emails](learn/sending-emails)
