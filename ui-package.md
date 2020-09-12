@@ -18,3 +18,4 @@ One of the essential parts of any web application is to have an easy way to crea
 The library consist of many classes which represents different types of HTML elements. All classes are children of the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode). This class basically can be used to represent any HTML or XML tag. The developer can extend this class and create his own custom HTML elements.
 
 ### The class `HTMLDoc`
+This class represents HTML document. It can be used to build the DOM of the web page and modify it directly inside PHP.
