@@ -16,14 +16,19 @@ In this page:
   * [Slots](#slots)
 
 ## Introduction
+
 One of the essential parts of any web application is to have an easy way to create the front end at which the users of the application will use. The front end of any web application will mostly consist of HTML, CSS and JavaScript. WebFiori frameworks gives the developers a package that contains a set of classes at which it can be used to build the DOM of a web page using PHP language without having to write HTML code. 
 
 ## Main Classes
 
+All the classes which are related to the library can be found in the namespace [`webfiori\ui`](https://webfiori.com/docs/webfiori/ui).
+
 ### The Class `HTMLNode`
+
 The library consist of many classes which represents different types of HTML elements. All classes are children of the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode). This class basically can be used to represent any HTML or XML tag. The developer can extend this class and create his own custom HTML elements.
 
 ### The class `HTMLDoc`
+
 This class represents HTML document. It can be used to build the DOM of the web page and modify it directly inside PHP. 
 
 > Note: An instance of the class `HTMLDoc` is wrapped inside the class [`Page`](https://webfiori.com/docs/webfiori/entity/Page). It is always recomended to use the class `Page` to represent any web page.
@@ -75,6 +80,38 @@ $doc->getBody()->text('Login to System')
         ->input('submit', ['value' => 'Login']);
 ```
 
+The given PHP would be rendered to the following HTML code.
+
+``` html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Default
+        </title>
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    </head>
+    <body itemscope = "" itemtype = "http://schema.org/WebPage">
+        Login to System
+        <hr>
+        <form method = "post" action = "https://example.com/login">
+        </form>
+        <label>
+            Username:
+        </label>
+        <br>
+        <input type = "text" placeholder = "You can use your email address." style = "width:250px;">
+        <br>
+        <label>
+            Password:
+        </label>
+        <br>
+        <input type = "password" placeholder = "Type in your password here." style = "width:250px;">
+        <br>
+        <input type = "submit" value = "Login">
+    </body>
+</html>
+```
 
 ## Working With HTML Template Files
 
@@ -124,3 +161,65 @@ The rendered HTML of the given example will be similar to the following:
 ```
 
 ### Slots
+
+Slots in simple terms are places in your code that can be filled with values. The values are usually dynamically generated or taken from a storage such as a database or files. Slots in HTML template files are represented using mustache syntax. Any string in your HTML code which is placed between `{{}}` is considered as slot. Slots can be placed in any place in your HTML code.
+
+Assuming that we have the following HTML document which has slots:
+
+``` html
+<html>
+    <head>
+        <base href="{{base}}">
+        <title>{{page-title}} | {{site-name}}</title>
+    </head>
+    <body>
+        <p>
+            Welcome {{visitor}} to my website!
+        </p>
+        <p>
+            This page has slots!
+        </p>
+        <p>
+            You visited this website at {{visit-time}}
+        </p>
+    </body>
+</html>
+```
+In order to fill slots with values, we have to use the second argument of the method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). The second argument is an associative array that can have slots values.
+
+The following code shows how to load the document into  [`HTMLDoc`](https://webfiori.com/docs/webfiori/ui/HTMLDoc) instance and fill the solts with values. 
+
+``` php
+$doc = HTMLNode::loadComponent('template.html', [
+    'page-title' => 'Welcome to My Website',
+    'site-name' => 'Awesome Website',
+    'visitor' => 'Ibrahim',
+    'visit-time' => date('Y-m-d H:i:s'),
+    'base' => 'https://portal.example.com'
+]);
+```
+
+The rendered document with filled slots would be similar to the following HTML code.
+
+``` html
+<!DOCTYPE html>
+<html>
+    <head>
+        <base href = "https://portal.example.com">
+        <title>
+            Welcome to My Website | Awesome Website
+        </title>
+    </head>
+    <body>
+        <p>
+            Welcome Ibrahim to my website!
+        </p>
+        <p>
+            This page has slots!
+        </p>
+        <p>
+            You visited this website at 2020-09-14 10:26:04
+        </p>
+    </body>
+</html>
+```
