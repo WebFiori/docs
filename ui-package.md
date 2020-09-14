@@ -19,6 +19,7 @@ In this page:
 * [Working With HTML Template Files](#working-with-html-template-files)
   * [Loading Template File](#loading-template-file)
   * [Slots](#slots)
+* [Components](#components)
 
 ## Introduction
 
@@ -334,3 +335,21 @@ The rendered document with filled slots would be similar to the following HTML c
     </body>
 </html>
 ```
+
+## Components
+
+The library has a set of pre-made components at which the developer can use to build web pages. The components include most commonly used HTML elements. In addition to the given ones, the developer can extend the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) To create his own custom components.
+
+Available components are:
+
+* [`Anchor`](https://webfiori.com/docs/webfiori/ui/Anchor)
+* [`CodeSnippet`](https://webfiori.com/docs/webfiori/ui/CodeSnippet)
+* [`Input`](https://webfiori.com/docs/webfiori/ui/Input)
+* [`Label`](https://webfiori.com/docs/webfiori/ui/Label)
+* [`ListItem`](https://webfiori.com/docs/webfiori/ui/ListItem)
+* [`OrderedList`](https://webfiori.com/docs/webfiori/ui/OrderedList)
+* [`Paragraph`](https://webfiori.com/docs/webfiori/ui/Paragraph)
+* [`TableCell`](https://webfiori.com/docs/webfiori/ui/TableCell)
+* [`TableRow`](https://webfiori.com/docs/webfiori/ui/TableRow)
+* [`UnrderedList`](https://webfiori.com/docs/webfiori/ui/UnrderedList)
+
