@@ -11,6 +11,10 @@ In this page:
 * [Using The Library](#using-the-library)
   * [Basic Usage](#basic-usage)
   * [Building More Complex DOM](#building-more-complex-dom)
+* [Attributes](#attributes)
+  * [No Value Attributes](#no-value-attributes)
+  * [Setting Multiple Attributes](#setting-multiple-attributes)
+  * [Specific Attributes Methods](#specific-attributes-methods)
 * [Working With HTML Template Files](#working-with-html-template-files)
   * [Loading Template File](#loading-template-file)
   * [Slots](#slots)
@@ -112,12 +116,74 @@ The given PHP would be rendered to the following HTML code.
     </body>
 </html>
 ```
+## Attributes
+
+Each DOM node can have a set of attributes such as `style` or `class`. The class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) has a generic method which can be used to set any attribute value which is the method [`HTMLNode::setAttribute()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttribute). The method accepts two parameters, the first one is the value of the attribute and the second one is its value.
+
+``` php 
+$node = new HTMLNode();
+$node->setAttribute('class','red-button');
+```
+
+### No Value Attributes
+
+It is possible to have attributes without values (such as the attribute `disabled` or `itemscope`).
+
+``` php
+$node = new HTMLNode();
+$node->setAttribute('class','red-button')
+     ->setAttribute('itemscope')
+     ->setAttribute('disabled');
+```
+
+This would render to the following HTML.
+
+``` html
+<div class = "red-button" itemscope disabled>
+</div>
+```
+
+### Setting Multiple Attributes
+
+If the developer would like to set the values for more than one attribute at one shot, he can use the method [`HTMLNode::setAttributes()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttributes). The method accespts an array that contains the values of the attributes.
+
+``` php
+$node = new HTMLNode();
+$node->setAttributes([
+    'class' => 'red-button',
+    'itemscope',
+    'disabled',
+    'onclick' => 'performAction()'
+])->text("I'm a Red Button.");
+```
+
+HTML output:
+
+``` html
+<div class = "red-button" itemscope disabled onclick = "performAction()">
+    I'm a Red Button.
+</div>
+```
+
+### Specific Attributes Methods
+
+In addition to the method [`HTMLNode::setAttribute()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttribute), there are methods which are specific for setting different attributes of the node. This section lists the available methods.
+
+* [`HTMLNode::setClassName()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setClassName): Sets the attribute `class`.
+* [`HTMLNode::setID()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setID): Sets the attribute `id`.
+* [`HTMLNode::setName()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setName): Sets the attribute `name`.
+* [`HTMLNode::setStyle()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setStyle): Sets the attribute `style`.
+* [`HTMLNode::setTabIndex()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setTabIndex): Sets the attribute `tabindex`.
+* [`HTMLNode::setTitle()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setTitle): Sets the attribute `title`.
+* [`HTMLNode::setWritingDir()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setWritingDir): Sets the attribute `dir`.
+
 
 ## Working With HTML Template Files
 
 One of the features of the library that it provides a very basic templating engine which only uses slots. It is possible to write HTML document in a separate HTML files and then combine files inside PHP to build the whole document. This can be helpful in making your code reusable.
 
 ### Loading Template File
+
 Loading HTML files can be achived using the static method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). Assuming that we have the following HTML code and we would like to load it into `HTMLNode` instance.
 
 ``` html
