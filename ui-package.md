@@ -24,6 +24,8 @@ In this page:
 
 One of the essential parts of any web application is to have an easy way to create the front end at which the users of the application will use. The front end of any web application will mostly consist of HTML, CSS and JavaScript. WebFiori frameworks gives the developers a package that contains a set of classes at which it can be used to build the DOM of a web page using PHP language without having to write HTML code. 
 
+> **Note:** This library can be included using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/ui":"*"`.
+
 ## Main Classes
 
 All the classes which are related to the library can be found in the namespace [`webfiori\ui`](https://webfiori.com/docs/webfiori/ui).
@@ -36,7 +38,7 @@ The library consist of many classes which represents different types of HTML ele
 
 This class represents HTML document. It can be used to build the DOM of the web page and modify it directly inside PHP. 
 
-> Note: An instance of the class `HTMLDoc` is wrapped inside the class [`Page`](https://webfiori.com/docs/webfiori/entity/Page). It is always recomended to use the class `Page` to represent any web page.
+> **Note:** An instance of the class `HTMLDoc` is wrapped inside the class [`Page`](https://webfiori.com/docs/webfiori/entity/Page). It is always recomended to use the class `Page` to represent any web page.
 
 ## Using The Library
 
