@@ -11,6 +11,7 @@ In this page:
 * [Using The Library](#using-the-library)
   * [Basic Usage](#basic-usage)
   * [Building More Complex DOM](#building-more-complex-dom)
+  * [Adding Children](#adding-children)
 * [Attributes](#attributes)
   * [No Value Attributes](#no-value-attributes)
   * [Setting Multiple Attributes](#setting-multiple-attributes)
@@ -116,6 +117,48 @@ The given PHP would be rendered to the following HTML code.
     </body>
 </html>
 ```
+
+### Adding Children
+
+It is possible to add children to [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) instance using the method [`HTMLNode::addChild()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#addChild). Same method is also availble in the class [`HTMLDoc::addChild()`](https://webfiori.com/docs/webfiori/ui/HTMLDoc#addChild). The method accepts a string that represents the name of the node that will be added or an instance of the class `HTMLNode`
+
+``` php
+$doc = new HTMLDoc();
+
+$superChild = new HTMLNode('section', ['id' => 'main-sec']);
+$doc->addChild($superChild);
+
+$superChild->addChild('h1', ['class' => 'section-heading'], false)
+           ->text('Section Title');
+
+$superChild->addChild(new HTMLNode('p'), [], false)
+           ->text('This is a paragraph.');
+```
+
+The output of the code would be something similar to the following:
+
+``` html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Default
+        </title>
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    </head>
+    <body itemscope itemtype = "http://schema.org/WebPage">
+        <section id = "main-sec">
+            <h1 class = "section-heading">
+                Section Title
+            </h1>
+            <p>
+                This is a paragraph.
+            </p>
+        </section>
+    </body>
+</html>
+```
+
 ## Attributes
 
 Each DOM node can have a set of attributes such as `style` or `class`. The class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) has a generic method which can be used to set any attribute value which is the method [`HTMLNode::setAttribute()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttribute). The method accepts two parameters, the first one is the value of the attribute and the second one is its value.
