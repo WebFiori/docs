@@ -8,6 +8,17 @@ In this page:
 
 ## Introduction
 
-Web services play important role when it comes to sending and receiving data in the web. They can be used to perform CRUD operations on a database server without having to look at implementation details from the front end side. WebFiori framework provides the very basic level of utilities at which it can be used to implement web services that supports data filtering and validation. The library [RESTEasy](https://github.com/usernane/restEasy) is one of the core libraries of the framework that can be used to create RESTful APIs in simple manner.
+Web services play important role when it comes to sending and receiving data in the web. They can be used to perform CRUD operations on a database server without having to look at implementation details from the front end side. 
 
-> **Note:** This library can be included using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/rest-easy":"*"`.
+WebFiori framework provides the very basic level of utilities at which it can be used to implement web services that supports data filtering and validation. The library [RESTEasy](https://github.com/usernane/restEasy) is one of the core libraries of the framework that can be used to create RESTful APIs in simple manner.
+
+> **Note:** This library can be used as a stand alone library using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/rest-easy":"*"`.
+
+
+## Main Classes
+
+In this section, we introduce only the classes at which the developer will have to use to create web services.
+
+### The Class `RequestParameter`
+### The Class `WebService`
+### The Class `WebServicesSet`
