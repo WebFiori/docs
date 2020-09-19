@@ -7,10 +7,10 @@ In this page:
 * [Introduction](#introduction)
 * [Main Classes](#main-classes)
   * [The Class `RequestParameter`](#the-class-requestparameter)
-  * [The Class `WebService`](#the-class-webservice)
+  * [The Class `AbstractWebService`](#the-class-abstractwebservice)
   * [The Class `WebServicesManager`](#the-class-webservicesmanager)
 * [Creating a Simple Web Service](#creating-a-simple-web-service)
-  * [Extending The Class `WebService`](#extending-the-class-webservice)
+  * [Extending The Class `AbstractWebService`](#extending-the-class-abstractwebservice)
 
 ## Introduction
 
@@ -29,9 +29,9 @@ In this section, we introduce only the classes at which the developer will have 
 
 The class [`RequestParameter`](https://webfiori.com/docs/webfiori/restEasy/RequestParameter) simply represents a `GET`, `POST` body parameter. Also, this class represents the name of object property if request content type is `application/json`.
 
-### The Class `WebService`
+### The Class `AbstractWebService`
 
-The class [`WebService`](https://webfiori.com/docs/webfiori/restEasy/WebService) represents the actual web service. The class has two abstract methods that must be implemented. The first one is the method [`WebService::isAuthorized()`](https://webfiori.com/docs/webfiori/restEasy/WebService#isAuthorized) and the second method is [`WebService::processRequest()`](https://webfiori.com/docs/webfiori/restEasy/WebService#processRequest). The developer must extend this class to implement the code that will get executed when the service is called.
+The class [`AbstractWebService`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService) represents the actual web service. The class has two abstract methods that must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService#isAuthorized) and the second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService#processRequest). The developer must extend this class to implement the code that will get executed when the service is called.
 
 ### The Class `WebServicesManager`
 
@@ -39,6 +39,6 @@ The class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/Web
 
 ## Creating a Simple Web Service
 
-In order to have a functional web service, we have to do two steps. First one is to create new class that extends the class [`WebService`](https://webfiori.com/docs/webfiori/restEasy/WebService) and implement its abstract methods. The second step is to have the newly created service added to an instance of the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager). If the service is created inside WebFiori framework, then we need a final step which is to create a route to the manager.
+In order to have a functional web service, we have to do two steps. First one is to create new class that extends the class [`AbstractWebService`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService) and implement its abstract methods. The second step is to have the newly created service added to an instance of the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager). If the service is created inside WebFiori framework, then we need a final step which is to create a route to the manager.
 
-### Extending The Class `WebService`
+### Extending The Class `AbstractWebService`
