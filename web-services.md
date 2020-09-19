@@ -10,6 +10,7 @@ In this page:
   * [The Class `WebService`](#the-class-webservice)
   * [The Class `WebServicesManager`](#the-class-webservicesmanager)
 * [Creating a Simple Web Service](#creating-a-simple-web-service)
+  * [Extending The Class `WebService`](#extending-the-class-webservice)
 
 ## Introduction
 
@@ -37,3 +38,7 @@ The class [`WebService`](https://webfiori.com/docs/webfiori/restEasy/WebService)
 The class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) is used to manage a set of related web services. For example, the developer might have 4 services for performing CRUD operations on a resource. The 4 services must be added to an instance of this class. When creating a route, the route should point to a class which is a child of this class.
 
 ## Creating a Simple Web Service
+
+In order to have a functional web service, we have to do two steps. First one is to create new class that extends the class [`WebService`](https://webfiori.com/docs/webfiori/restEasy/WebService) and implement its abstract methods. The second step is to have the newly created service added to an instance of the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager). If the service is created inside WebFiori framework, then we need a final step which is to create a route to the manager.
+
+### Extending The Class `WebService`
