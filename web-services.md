@@ -42,3 +42,13 @@ The class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/Web
 In order to have a functional web service, we have to do two steps. First one is to create new class that extends the class [`AbstractWebService`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService) and implement its abstract methods. The second step is to have the newly created service added to an instance of the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager). If the service is created inside WebFiori framework, then we need a final step which is to create a route to the manager.
 
 ### Extending The Class `AbstractWebService`
+
+The class [`AbstractWebService`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService) has two abstract methods at which they must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService#isAuthorized). This method is used to check if the one who is calling the service is allowed to call it or not. The second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService#processRequest). This method is simply used to process client's request and send back a response.
+
+Assuming that we want to implement a service that sends back a random number, the code for implementing the service would be something similar to the following code.
+
+``` php
+
+```
+
+
