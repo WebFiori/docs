@@ -165,3 +165,20 @@ class RandomGenerator extends WebServicesManager {
 ```
 
 ### Processing The Request
+
+Processing the request is performed by the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager), to be specific, the method [`WebServicesManager::process()`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager#process). For the service that we have  created, we need to create an instance of the class `RandomGenerator`. After that, we have to call the method [`WebServicesManager::process()`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager#process)
+
+``` php
+use webfiori\restEasy\WebServicesManager;
+use GetRandomService;
+
+class RandomGenerator extends WebServicesManager {
+    public function __construct() {
+        parent::__construct();
+        $this->addService(new GetRandomService());
+    }
+}
+
+$manager = new RandomGenerator();
+$manager->process();
+```
