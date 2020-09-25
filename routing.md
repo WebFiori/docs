@@ -165,13 +165,15 @@ A closure route is a route to a user defined code that will be executed when the
 The value of the variable can be accessed using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/entity/router/Router#getVarValue). All what we have to do is to pass variable name and the method will return its value.The following code sample shows how its done.
 
 ``` php 
+use webfiori\entity\Response;
+
 class ClosureRoutes {
     public static function create(){
         Router::closure([
             'path'=>'/say-hello-to/{A_Name}', 
             'route-to'=>function(){
                 $name = Router::getVarValue('A_Name');
-                echo 'Hello Mr.'.$name;
+                Response::apped('Hello Mr.'.$name);
             }
         ]);
     }
@@ -213,13 +215,15 @@ A URI Variable is a string which is a part of URI's path which can have many val
 We have already seen variables when we explained the diffrent types of routes ([Closure Route](#closure-route)). In order to add a variable to a route, we have to enclose its name between two curly braces `{}`. To access the value of the variable, the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/entity/router/Router#getVarValue) is used. The following sample code shows how to use URI variables in creating generic routes.
 
 ``` php
+use webfiori\entity\Response;
+
 class ClosureRoutes {
     public static function create(){
         Router::closure([
             'path'=>'/news/{post-title}', 
             'route-to'=>function(){
                 $name = Router::getVarValue('post-title');
-                echo 'You tried to open the post which has the title \''.$name.'\'';
+                Response::append('You tried to open the post which has the title "'.$name.'"');
             }
         ]);
     }
