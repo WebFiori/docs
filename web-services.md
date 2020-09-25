@@ -16,6 +16,8 @@ In this page:
   * [Implementing The Abstract Methods of the Class `AbstractWebService`](#implementing-the-abstract-methods-of-the-class-abstractwebservice)
   * [Adding The Service to The Class `WebServicesManager`](#adding-the-service-to-the-class-webservicesmanager)
   * [Processing The Request](#processing-the-request)
+  * [Calling The Service](#calling-the-service)
+  * [Calling The Service using WebFiori Framework](#calling-the-service-using-webfiori-framework)
 
 ## Introduction
 
@@ -182,3 +184,30 @@ class RandomGenerator extends WebServicesManager {
 $manager = new RandomGenerator();
 $manager->process();
 ```
+
+### Calling The Service
+
+Assuming that the base URL of the website is `https://example.com` and the class `RandomGenerator` is at the root, then we can go to the link `https://example.com/RandomGenerator.php`. If we navigate to the given URL in any web browser, the output will be similar to the following:
+
+``` json
+{
+    "message":"Service name is not set.", 
+    "type":"error", 
+    "http-code":404
+}
+```
+
+This message means that service name is not included in the request and the manager does not know which service to call. To fix this issue, we have to include a `GET` parameter with the name `service`. The value of the parameter must be the name of the called service. In case we would like to call the service `GetRandomService`, we use the value `get-random-number` for the parameter. So, the URL for calling the service would be `https://example.com/RandomGenerator.php?service=get-random-number`. If we called the service like that, the output would be similar to the following:
+
+``` json
+{
+    "message":1480407584, 
+    "http-code":200
+}
+```
+
+The `message` contains the randomly generated number. We can also set a value to the parameter `min` or `max` using same way we used to call the service. For example, if we send a request to `https://example.com/RandomGenerator.php?service=get-random-number`, we would get a random number between 1 and 5.
+
+### Calling The Service using WebFiori Framework
+
+The library is fully integrated with WebFiori Framework. In order to call a service, the developer have to create a route to a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager). For more information about how to create routes to web services, [check here](learn/routing#api-route)
