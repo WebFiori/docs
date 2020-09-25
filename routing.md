@@ -119,27 +119,27 @@ class ViewRoutes {
   
 ### API Route
 
-An API route is a route that usually will point to a PHP class that exist in the folder `app/apis`. Usually the class will extend the class [`WebServices`](https://webfiori.com/docs/restEasy/WebServices) or the class [`ExtendedWebServices`](https://webfiori.com/docs/webfiori/entity/ExtendedWebServices). Also, one API class usually will contain multiple APIs. To execute one of the APIs in the class, we have to include an extra `GET` or `POST` parameter which has the name `service-name`.
+An API route is a route that usually will point to a PHP class that exist in the folder `app/apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/entity/ExtendedWebServicesManager). To execute one of the services at which the class manages, we have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`.
 
-Suppose that we have 3 API classes as follows:
-* `apis/UserAPIs.php`
-* `apis/ArticleAPIs.php`
-* `apis/ContentAPIs.php`
+Suppose that we have 3 services classes as follows:
+* `apis/UserServices.php`
+* `apis/ArticleServicess.php`
+* `apis/ContentServicess.php`
 
-Assuming that the base URL of the website is `https://example.com/`, We want the URLs of the APIs to be like that:
-* `https://example.com/web-apis/user/add-user` should point to the view `apis/UserAPIs.php`
-* `https://example.com/web-apis/user/update-user` should point to the view `apis/UserAPIs.php`
-* `https://example.com/web-apis/user/delete-user` should point to the view `apis/UserAPIs.php`
-* `https://example.com/web-apis/article/publish-article` should point to the view `apis/writer/ArticleAPIs.php`
-* `https://example.com/web-apis/article/revert-publish` should point to the view `apis/writer/ArticleAPIs.php`
-* `https://example.com/web-apis/article-content/add-content` should point to the view `/apis/writer/ContentAPIs.php`
-* `https://example.com/web-apis/article-content/remove-content` should point to the view `/apis/writer/ContentAPIs.php`
+Assuming that the base URL of the website is `https://example.com/`, We want the URLs of the APIs (or services) to be like that:
+* `https://example.com/web-apis/user/add-user` should point to `apis/UserServices.php`
+* `https://example.com/web-apis/user/update-user` should point to `apis/UserServices.php`
+* `https://example.com/web-apis/user/delete-user` should point to `apis/UserServices.php`
+* `https://example.com/web-apis/article/publish-article` should point `apis/writer/ArticleServicess.php`
+* `https://example.com/web-apis/article/revert-publish` should point `apis/writer/ArticleServicess.php`
+* `https://example.com/web-apis/article-content/add-content` should point to `/apis/writer/ContentServicess.php`
+* `https://example.com/web-apis/article-content/remove-content` should point to the view `/apis/writer/ContentServicess.php`
 
-One thing to note about creating APIs is that API action (service name) must be passed alongside request body as a GET or POST parameter (e.g. `action=add-user` or `service-name=add-user`). as you can see from the above URLs, the action is appended to the end of the URL. To let the router know that this is an API action, we can use Generic Route.
+One thing to note about creating APIs is that API name (or service name) must be passed alongside request body as a GET or POST parameter (e.g. `service=add-user` or `service-name=add-user`). as you can see from the above URLs, the name of the service is appended to the end of the URL. To let the router know that this is a route to a web service, we can use Generic Route.
 
-A generic route is a route that has some of its path parts unkown. They can be used to serve dynamic content pased on generic path value. A generic path value is a value that is enclosed between `{}` while creating the route. For example, the first 3 APIs can have one URL in the form `https://example.com/web-apis/user/{service-name}` or `https://example.com/web-apis/user/{action}`.
+A generic route is a route that has some of its path parts unkown. They can be used to serve dynamic content pased on generic path value. A generic path value is a value that is enclosed between `{}` while creating the route. For example, the first 3 APIs can have one URL in the form `https://example.com/web-apis/user/{service-name}` or `https://example.com/web-apis/user/{service}`.
 
-The following sample code shows how to create such a URL structre using the class APIRoutes. You can see how API action is passed. Note that the value of the generic must be `action` or `service-name` or the API call will fail.
+The following sample code shows how to create such a URL structre using the class APIRoutes. You can see how API name is passed. Note that the value of the generic must be `action`, `service-name` or `service` or the API call will fail.
 ``` php 
 class APIRoutes {
     public static function create(){
