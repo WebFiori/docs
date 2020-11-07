@@ -25,7 +25,7 @@ One of the things that website owners care about is to have a friendly URLs that
 
 ## The Definition of Routing
 
-One of the essential parts of the framework is routing. Routing in simple trems is sending user request to its correct destination. The class [`Router`](https://webfiori.com/docs/webfiori/entity/router/Router) is one of the core classes which are resposibile for performing this task. It can be used to create routes and send requests to correct resource.
+One of the essential parts of the framework is routing. Routing in simple trems is sending user request to its correct destination. The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core classes which are resposibile for performing this task. It can be used to create routes and send requests to correct resource.
 
 After finishing the following set of topics, you will be able to understand how routing sub-system works and create your own custom URIs structure.
 
@@ -52,10 +52,10 @@ Also, the framework has its own custom `web.config` file that has a rule which i
 
 Once the request reaches the class [`WebFiori`](https://webfiori.com/docs/webfiori/WebFiori), The initialization process of the framework will start. After the initialization is completed without any errors, the final stage is to route the request to its final destination.
 
-The routing process is completed by the class [`Router`](https://webfiori.com/docs/webfiori/entity/router/Router). The whole magic of routing is completed by sending the requested URL as a parameter to the method [`Router::route()`](https://webfiori.com/docs/webfiori/entity/router/Router#route). If a resource was found at which the given URL is pointing to, the request will be sent to it. If no route is found, a 404 error is generated.
+The routing process is completed by the class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router). The whole magic of routing is completed by sending the requested URL as a parameter to the method [`Router::route()`](https://webfiori.com/docs/webfiori/framework/router/Router#route). If a resource was found at which the given URL is pointing to, the request will be sent to it. If no route is found, a 404 error is generated.
 
 ## The Class `Router`
-The class [`Router`](https://webfiori.com/docs/webfiori/entity/router/Router) is one of the core framework classes. The main aim of this class is to direct client request to the correct resource. In addition to that, this class is used to create routes to different resources.
+The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core framework classes. The main aim of this class is to direct client request to the correct resource. In addition to that, this class is used to create routes to different resources.
 
 A resource can be simply a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good looking way.
 
@@ -66,10 +66,10 @@ Most of the time, this class will be used to create routes but it can be used to
 * Custom Route.
 
 For each type of route, there is a specific static method that can be used to create it. The 4 methods that corresponds to each type are:
-* [Router::view()](https://webfiori.com/docs/webfiori/entity/router/Router#view)
-* [Router::api()](https://webfiori.com/docs/webfiori/entity/router/Router#api)
-* [Router::closure()](https://webfiori.com/docs/webfiori/entity/router/Router#closure)
-* [Router::addRoute()](https://webfiori.com/docs/webfiori/entity/router/Router#addRoute)
+* [Router::view()](https://webfiori.com/docs/webfiori/framework/router/Router#view)
+* [Router::api()](https://webfiori.com/docs/webfiori/framework/router/Router#api)
+* [Router::closure()](https://webfiori.com/docs/webfiori/framework/router/Router#closure)
+* [Router::addRoute()](https://webfiori.com/docs/webfiori/framework/router/Router#addRoute)
 
 ## Types of Routes
 
@@ -77,9 +77,9 @@ We have said that there are 4 different types of routes. In general, the idea of
 
 ### View Route
 
-This type of route is the most common type of routes. It is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `app/pages` will contain all the views. The method [Router::view()](https://webfiori.com/docs/webfiori/entity/router/Router#view) is used to create such route.
+This type of route is the most common type of routes. It is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `app/pages` will contain all the views. The method [Router::view()](https://webfiori.com/docs/webfiori/framework/router/Router#view) is used to create such route.
 
-In order to make it easy for developers, they can use the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/entity/router/ViewRoutes) to create routes to all views. The developer can modify the body of the method [`ViewRoutes::create()`](https://webfiori.com/docs/webfiori/entity/router/ViewRoutes#create) to add new routes as needed.
+In order to make it easy for developers, they can use the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes) to create routes to all views. The developer can modify the body of the method [`ViewRoutes::create()`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes#create) to add new routes as needed.
 
 Lets assume that we have 3 views inside the folder `app/pages` as follows:
 * /pages/HomeView.html
@@ -92,7 +92,7 @@ Also, Lets assume that the base URL of the website is `https://example.com/`. We
 * `https://example.com/user-login` should point to the view `LoginView.php`
 * `https://example.com/dashboard` should point to the view `DashboardView.html`
 
-The following sample code shows how to create such a URL structre using the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/entity/router/ViewRoutes).
+The following sample code shows how to create such a URL structre using the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes).
 ``` php
 class ViewRoutes {
     public static function create(){
@@ -119,7 +119,7 @@ class ViewRoutes {
   
 ### API Route
 
-An API route is a route that usually will point to a PHP class that exist in the folder `app/apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/entity/ExtendedWebServicesManager). To execute one of the services at which the class manages, we have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`.
+An API route is a route that usually will point to a PHP class that exist in the folder `app/apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, we have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`.
 
 Suppose that we have 3 services classes as follows:
 * `apis/UserServices.php`
@@ -162,10 +162,10 @@ class APIRoutes {
 
 A closure route is a route to a user defined code that will be executed when the resource is requested. In other terms, it is a function that will be called when a request is made. It is simply an Anonymous Function.Suppose that we would like to create a route to a function that will output `Hello Mr.{A_Name}` When its called. The URL that will be requested will have the form `https://example.com/say-hello-to/{A_Name}`. As you can see, we have added the name as a generic path variable in the URL.
 
-The value of the variable can be accessed using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/entity/router/Router#getVarValue). All what we have to do is to pass variable name and the method will return its value.The following code sample shows how its done.
+The value of the variable can be accessed using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue). All what we have to do is to pass variable name and the method will return its value.The following code sample shows how its done.
 
 ``` php 
-use webfiori\entity\Response;
+use webfiori\framework\Response;
 
 class ClosureRoutes {
     public static function create(){
@@ -212,10 +212,10 @@ A URI Variable is a string which is a part of URI's path which can have many val
 
 ### Using URI Variable
 
-We have already seen variables when we explained the diffrent types of routes ([Closure Route](#closure-route)). In order to add a variable to a route, we have to enclose its name between two curly braces `{}`. To access the value of the variable, the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/entity/router/Router#getVarValue) is used. The following sample code shows how to use URI variables in creating generic routes.
+We have already seen variables when we explained the diffrent types of routes ([Closure Route](#closure-route)). In order to add a variable to a route, we have to enclose its name between two curly braces `{}`. To access the value of the variable, the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) is used. The following sample code shows how to use URI variables in creating generic routes.
 
 ``` php
-use webfiori\entity\Response;
+use webfiori\framework\Response;
 
 class ClosureRoutes {
     public static function create(){
@@ -237,7 +237,7 @@ Each method which is used to add new route supports options which can be used to
 ### Sitemap
 The option `in-sitemap` is a boolean which is used to tell if the URI will be in the sitemap which is generated automatically or not. Default value of this option is `false`
 
-> Note: To create a sitemap using added routes, the method [`Router::incSiteMapRoute()`](https://webfiori.com/webfiori/entity/router/Router#incSiteMapRoute). The sitemap will be accessable throght `http://example/sitemap.xml`.
+> Note: To create a sitemap using added routes, the method [`Router::incSiteMapRoute()`](https://webfiori.com/webfiori/framework/router/Router#incSiteMapRoute). The sitemap will be accessable throght `http://example/sitemap.xml`.
 
 ### Case Sensitivity
 
