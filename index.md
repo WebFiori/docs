@@ -1,6 +1,6 @@
 # Learning Center
 
-Here you will find topics which can help you getting started with WebFiori framework. For new learners, it is recommended to start from the top to bottom. Note that the topics are applicable to only version 1.1.0 of the framework which is still in development.
+Here you will find topics which can help you getting started with WebFiori framework. For new learners, it is recommended to start from the top to bottom. Note that the topics are applicable to only version 2.0.0 of the framework which is still in development.
 
 <meta name="description" content="A set of topics which helps in getting started with WebFiori Framework.">
 
