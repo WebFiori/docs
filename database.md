@@ -6,7 +6,13 @@ In this page:
 * [Introduction](#introduction)
 * [The Idea](#the-idea)
 * [Initializing your Database](#initializing-your-database)
-* []()
+  * [Adding Connection Information](#adding-connection-information)
+    * [Adding Connection Manually](#adding-connection-manually)
+    * [Adding Connection Using Command Line Interface](#adding-connection-using-command-line-interface)
+  * [Creating Database Tables](#creating-database-tables)
+    * [Creating Database Table Class Manually](#creating-database-table-class-manually)
+    * [Creating Database Table Class Using CLI](#creating-database-table-class-using-cli)
+  * [Creating Database Class](#creating-database-class)
 
 ## Introduction
 
@@ -46,13 +52,16 @@ private function __construct() {
 The connection information is added inside the array `$dbConnections`. This array can have any number of connections. The index in the array represents connection name (`connection-00` in this example) and the value is an object of type [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Note that connection name will be used later to connect to the database.
 
 #### Adding Connection Using Command Line Interface
-This way of adding database connections is recommended since connection information will be first validated before stored. To add new connection, simply run the command `add` as follows:
+This way of adding database connections is recommended since connection information will be first validated before stored. To add new connection, simply run the command `add` as follows: `php webfiori add`. When the command is executed, a menu that has options will appear. The following image shows the whole process of adding the connection using CLI.
 
-```
-php webfiori add
-```
-
-After that, a menu with options will appear.
+<img src="assets/images/add-connection-cli.png" alt="Adding connection using CLI.">
 
 ### Creating Database Tables
+
+Database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable). Each table in the database must be represented as a sub class of this class. There are two ways at which the developer can create a class that represent a database table. One is manual way and the other one is to use command line interface.
+
+#### Creating Database Table Class Manually
+
+#### Creating Database Table Class Using CLI
+
 ### Creating Database Class
