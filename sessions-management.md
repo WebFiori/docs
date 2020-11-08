@@ -16,11 +16,11 @@ In this page:
 
 ## Introduction
 
-Every web application must have a way to manage users sessions. The management may differe from one web development framework to another. A session in simple terms is a way to keep track of user intractions through your web application. They can be used to keep state between different requests for the same user. WebFiori framework provides one class at which the developer can use to manage application sessions. The name of the class is [`SessionsManager`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager). Sessions in WebFiori framework can be used with and without HTTP as long as the client keep session ID in his side.
+Every web application must have a way to manage users sessions. The management may differe from one web development framework to another. A session in simple terms is a way to keep track of user intractions through your web application. They can be used to keep state between different requests for the same user. WebFiori framework provides one class at which the developer can use to manage application sessions. The name of the class is [`SessionsManager`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager). Sessions in WebFiori framework can be used with and without HTTP as long as the client keep session ID in his side.
 
 ## Starting New Session
 
-Starting new session is very simple. The developer can use the method [`SessionsManager::start()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#start). This method accepts two parameters. The first one is session name and the second one is an associative array of options. Calling this method will create new session which is persistent. The duration of the session will be 2 hours.
+Starting new session is very simple. The developer can use the method [`SessionsManager::start()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#start). This method accepts two parameters. The first one is session name and the second one is an associative array of options. Calling this method will create new session which is persistent. The duration of the session will be 2 hours.
 
 ``` php
 SessionsManager::start('hello-session');
@@ -82,7 +82,7 @@ Response::append(SessionsManager::getActiveSession()->toJSON());
 
 ## Destroying a Session
 
-To destroy an active session, simply call the method  [`SessionsManager::destroy()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#destroy).
+To destroy an active session, simply call the method  [`SessionsManager::destroy()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#destroy).
 
 ``` php
 SessionsManager::start('hello-session');
@@ -93,7 +93,7 @@ This method can be used in case the user has performed an action like logout.
 
 ## Adding Data to a Session
 
-It is possible to store data in the session for use across different requests. For example, it is possible to create a shopping cart and add items to it. To add values to an active session or to update an existing value, the method [`SessionsManager::set()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#set) can be used.
+It is possible to store data in the session for use across different requests. For example, it is possible to create a shopping cart and add items to it. To add values to an active session or to update an existing value, the method [`SessionsManager::set()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#set) can be used.
 ``` php
 SessionsManager::start('hello-session');
 SessionsManager::set('products', [
@@ -103,7 +103,7 @@ SessionsManager::set('products', [
 
 ## Retrieving Stored Data
 
-There are two ways at which data can be retrived from an active session. One way is to get the data without removing it. This can be achived using the method [`SessionsManager::get()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#get). And the other way is to pull the data using the method [`SessionsManager::pull()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#pull). The pull method will remove the value from the session once retrived.
+There are two ways at which data can be retrived from an active session. One way is to get the data without removing it. This can be achived using the method [`SessionsManager::get()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#get). And the other way is to pull the data using the method [`SessionsManager::pull()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#pull). The pull method will remove the value from the session once retrived.
 
 ``` php
 SessionsManager::start('hello-session');
@@ -121,7 +121,7 @@ $v4 = SessionsManager::pull('var-2');
 
 ## Generating New ID
 
-In some cases, the ID of the session must be changed to prevent malicious users from exploiting a [session fixation](https://en.wikipedia.org/wiki/Session_fixation) attack on the system. The developer can generate new session ID for the active using the method [`SessionsManager::newId()`](https://webfiori.com/docs/webfiori/entity/session/SessionsManager#newId)
+In some cases, the ID of the session must be changed to prevent malicious users from exploiting a [session fixation](https://en.wikipedia.org/wiki/Session_fixation) attack on the system. The developer can generate new session ID for the active using the method [`SessionsManager::newId()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#newId)
 
 ``` php
 SessionsManager::start('hello-session');
