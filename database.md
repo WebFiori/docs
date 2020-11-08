@@ -54,7 +54,7 @@ The connection information is added inside the array `$dbConnections`. This arra
 #### Adding Connection Using Command Line Interface
 This way of adding database connections is recommended since connection information will be first validated before stored. To add new connection, simply run the command `add` as follows: `php webfiori add`. When the command is executed, a menu that has options will appear. The following image shows the whole process of adding the connection using CLI.
 
-<img src="assets/images/add-connection-cli.png" alt="Adding connection using CLI.">
+<img src="assets/images/add-connection-cli.PNG" alt="Adding connection using CLI.">
 
 ### Creating Database Tables
 
