@@ -21,5 +21,38 @@ Each table in your MySQL database is represented by the class [`MySQLTable`](htt
 ## Initializing your Database
 
 ### Adding Connection Information
+
+Database connections are represented by the class [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Connection information is stored in the class [`Config`](https://webfiori.com/docs/webfiori/conf/Config). It is possible to store multiple connecion inside the class. There are two ways to add connection information. The first one is to add it manually to the class [`Config`](https://webfiori.com/docs/webfiori/conf/Config). The second way is to use command line interface.
+
+#### Adding Connection Manually
+
+Adding connection information manually is simple. All what we have to do is to edit the code in the constructor of the class [`Config`](https://webfiori.com/docs/webfiori/conf/Config). Assuming that we have MySQL database with the name `testing_db` and username `root` and password `123456`, then the connection can be added as follows:
+
+``` php
+/**
+  * Initialize configuration.
+  */
+private function __construct() {
+    $this->releaseDate = '2020-07-05';
+    $this->version = '1.1.0';
+    $this->versionType = 'Beta 3';
+    $this->configVision = '1.3.5';
+    $this->dbConnections = [
+        'connection-00' => new ConnectionInfo('mysql', 'root', '12345', 'testing_db', 'loalhost', 3306)
+    ];
+}
+```
+
+The connection information is added inside the array `$dbConnections`. This array can have any number of connections. The index in the array represents connection name (`connection-00` in this example) and the value is an object of type [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Note that connection name will be used later to connect to the database.
+
+#### Adding Connection Using Command Line Interface
+This way of adding database connections is recommended since connection information will be first validated before stored. To add new connection, simply run the command `add` as follows:
+
+```
+php webfiori add
+```
+
+After that, a menu with options will appear.
+
 ### Creating Database Tables
 ### Creating Database Class
