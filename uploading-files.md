@@ -12,11 +12,11 @@ In this page:
 
 When trying to upload files in PHP, you have to access the global array [`$_FILES`](https://www.php.net/manual/en/reserved.variables.files.php) which can lead to a mess in some use cases. Also, it is difficult to use the global constant in case of multiple file uploads. More than that, there are security concerns when using the array directly for uploading user files.
 
-The framework has a utility class that can be used to handle file uploads using mimimum amount of effort and code. The name of the class is [`Uploader`](https://webfiori.com/docs/webfiori/entity/Uploader) and its part of the namespace `webfiori\entity`.
+The framework has a utility class that can be used to handle file uploads using mimimum amount of effort and code. The name of the class is [`Uploader`](https://webfiori.com/docs/webfiori/framework/Uploader) and its part of the namespace `webfiori\framework`.
 
 ## The Class `Uploader`
 
-The class [`Uploader`](https://webfiori.com/docs/webfiori/entity/Uploader) is a utility class which is used to handle file uploads in PHP in a very simple way. It has all necessary tools to handle one file upload or multiple files upload. The class will help in achieving the following:
+The class [`Uploader`](https://webfiori.com/docs/webfiori/framework/Uploader) is a utility class which is used to handle file uploads in PHP in a very simple way. It has all necessary tools to handle one file upload or multiple files upload. The class will help in achieving the following:
 
 * Restrict uploaded files types.
 * Get MIME type of most file types using file extension only.
@@ -32,10 +32,10 @@ The class [`Uploader`](https://webfiori.com/docs/webfiori/entity/Uploader) is a 
 Usually, the most common use case is to upload a file to the server. This use case usually has the following steps:
 * In the back-end:
   * Create an API for uploading files.
-  * In the API, create new instance of the class [`Uploader`](https://webfiori.com/docs/webfiori/entity/Uploader#__construct).
+  * In the API, create new instance of the class [`Uploader`](https://webfiori.com/docs/webfiori/framework/Uploader#__construct).
   * Specify upload directory and allowed file types.
   * Specify the name of the input element that represents file upload input.
-  * Call the method [`Uploader::upload()`](https://webfiori.com/docs/webfiori/entity/Uploader#upload) to initiate upload process.
+  * Call the method [`Uploader::upload()`](https://webfiori.com/docs/webfiori/framework/Uploader#upload) to initiate upload process.
   * Return back a JSON response that shows upload status of the file or files.
 * In the front-end:
   * Create a new form.
@@ -71,9 +71,9 @@ echo $uploader;
 Assuming that a route to our upload API is created and the route is `apis/upload-files`, The front end code would be like the following:
 
 ``` php
-use webfiori\entity\Page;
-use use phpStructs\html\HTMLNode;
-use phpStructs\html\Input;
+use webfiori\framework\Page;
+use webfiori\ui\HTMLNode;
+use webfiori\ui\Input;
 
 class UploadView {
     __construct(){
@@ -114,4 +114,4 @@ $file->setName('files-input[]')
 
 ## Getting Uploaded File(s) Information
 
-The method [`Uploader::upload()`](https://webfiori.com/docs/webfiori/entity/Uploader#upload) will return an associative array that contains upload status of uploaded files. In addition to getting files information as an associative array, it is possible to get uploaded files information as objects. The method [`Uploader::uploadAsFileObj()`](https://webfiori.com/docs/webfiori/entity/Uploader#uploadAsFileObj) will upload the files and return an array that contains objects of type [`UploadedFile`](https://webfiori.com/docs/webfiori/entity/UploadedFile). Also, it is possible to get uploaded files information even after the upload process is finished using the method [`Uploader::getFiles()`](https://webfiori.com/docs/webfiori/entity/Uploader#getFiles).
+The method [`Uploader::upload()`](https://webfiori.com/docs/webfiori/framework/Uploader#upload) will return an associative array that contains upload status of uploaded files. In addition to getting files information as an associative array, it is possible to get uploaded files information as objects. The method [`Uploader::uploadAsFileObj()`](https://webfiori.com/docs/webfiori/framework/Uploader#uploadAsFileObj) will upload the files and return an array that contains objects of type [`UploadedFile`](https://webfiori.com/docs/webfiori/framework/UploadedFile). Also, it is possible to get uploaded files information even after the upload process is finished using the method [`Uploader::getFiles()`](https://webfiori.com/docs/webfiori/framework/Uploader#getFiles).
