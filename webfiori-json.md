@@ -25,7 +25,7 @@ In this page:
 
 ## Introduction
 
-When desining web services, the developer must deside on the format at which the server will send back to the client after processing the request. One of the most widely used format is called [JSON](https://www.json.org/json-en.html). PHP does provide functions for encoding and decoding JSON using the methods [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php). And [`json_decode()`](https://www.php.net/manual/en/function.json-decode.php). Since the framework promots the use of OOP approach, it uses a library called [`WebFiori Json`](https://github.com/usernane/jsonx) to create well formatted JSON output.
+When desining web services, the developer must deside on the format at which the server will send back to the client after processing the request. One of the most widely used format is called [JSON](https://www.json.org/json-en.html). PHP does provide functions for encoding and decoding JSON using the methods [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php). And [`json_decode()`](https://www.php.net/manual/en/function.json-decode.php). Since the framework promots the use of OOP approach, it uses a library called [`WebFiori Json`](https://github.com/WebFiori/json) to create well formatted JSON output.
 
 > **Note:** This library can be included using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/jsonx":"*"`. 
 
