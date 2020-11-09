@@ -66,6 +66,7 @@ To create a table class manually, we have to create new class that extend the cl
 The constructor of the class accepts one parameter which is the name of the table as it appears in the database.
 
 ``` php 
+namespace app\database;
 
 use webfiori\database\mysql\MySQLTable;
 
@@ -80,7 +81,7 @@ class ContactsTable extends MySQLTable {
 After setting the name of the table, we can start by adding columns to the table. There is more than one way to add columns to the table but we will be looking at the easist way. The method [`MySQLTable::addColumns()`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable#addColumns) can be used to add multiple columns at once. The method accepts an associative array. The indices of the array are columns names and the value of each index is a sub associative array that holds column properties. 
 
 ``` php
-<?php
+namespace app\database;
 
 use webfiori\database\mysql\MySQLTable;
 
@@ -119,6 +120,26 @@ class ContactsTable extends MySQLTable {
 
 ```
 
+This table will be used to store basic information about contacts. We will look at how to actually create the table in the database later on.
+
 #### Creating Database Table Class Using CLI
 
+It is recomended to use command line interface in creating table classes. By using CLI, you only have to give database table properties as inputs and the class will be created automatically for you. To create a new database table class, simply run the command `php webfiori create` and select the desired option from the menu.
+
 ### Creating Database Class
+
+After creating tables as classes, we have to add them to an instance of the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) which represents the actual database instance. WebFiori framework extends this class by adding extra functionality. The class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) will provide same functionality at which the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) provides. For this reason, we will be extending the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB). Let's create new class inside the folder `app/database` and give it the name `TestingDatabase`.
+
+The constructor of the class accepts one parameter which is the name of the connection that will be used by database instance.
+``` php
+namespace app\database;
+
+use webfiori\framework\DB;
+
+class TestingDatabase extends DB {
+    public function __construct() {
+        parent::__construct('connection-00');
+        
+    }
+}
+```
