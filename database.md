@@ -61,6 +61,63 @@ This way of adding database connections is recommended since connection informat
 Database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable). Each table in the database must be represented as a sub class of this class. There are two ways at which the developer can create a class that represent a database table. One is manual way and the other one is to use command line interface.
 
 #### Creating Database Table Class Manually
+To create a table class manually, we have to create new class that extend the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable) and add columns to it as needed. Let's assume that we would like to place our database tables in the folder `app/database`. We will start by creating new PHP class. Let's assume that we would like to create a table for keeping contacts information. 
+
+The constructor of the class accepts one parameter which is the name of the table as it appears in the database.
+
+``` php 
+
+use webfiori\database\mysql\MySQLTable;
+
+class ContactsTable extends MySQLTable {
+    public function __construct() {
+        parent::__construct('contacts');
+    }
+}
+
+```
+
+After setting the name of the table, we can start by adding columns to the table. There is more than one way to add columns to the table but we will be looking at the easist way. The method [`MySQLTable::addColumns()`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable#addColumns) can be used to add multiple columns at once. The method accepts an associative array. The indices of the array are columns names and the value of each index is a sub associative array that holds column properties. 
+
+``` php
+<?php
+
+use webfiori\database\mysql\MySQLTable;
+
+class ContactsTable extends MySQLTable {
+    public function __construct() {
+        parent::__construct('contacts');
+        
+        $this->addColumns([
+            'name' => [
+                'type' => 'varchar',
+                'size' => 50,
+                'primary' => true
+            ],
+            'age' => [
+                'type' => 'int',
+                'size' => 3,
+            ],
+            'mobile' => [
+                'type' => 'varchar',
+                'size' => 10,
+                'is-null' => true
+            ],
+            'phone' => [
+                'type' => 'varchar',
+                'size' => 10,
+                'is-null' => true
+            ],
+            'email' => [
+                'type' => 'varchar',
+                'size' => 255,
+                'is-null' => true
+            ]
+        ]);
+    }
+}
+
+```
 
 #### Creating Database Table Class Using CLI
 
