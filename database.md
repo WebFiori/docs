@@ -9,6 +9,14 @@ In this page:
   * [Adding Connection Information](#adding-connection-information)
   * [Creating Database Tables](#creating-database-tables)
   * [Creating Database Class](#creating-database-class)
+* [Database Queries](#database-queries)
+  * [Insert Record](#insert-record)
+  * [Update Record](#update-record)
+  * [Delete Record](#delete-record)
+  * [Select](#select)
+  * [Joins](#joins)
+  * [Unions](#unions)
+  * []()
 * [Working With Result Set](#working-with-result-set)
   * [Retrieving Records](#retrieving-records)
   * [Mapping Records to Objects](#mapping-records-to-objects)
@@ -161,7 +169,71 @@ class TestingDatabase extends DB {
 ```
 
 Now that we have the table added, we can create an instance of the class `ContactsTable` and start building queries as needed.
+
+## Database Queries
+The library provides a query builder which can be used to build almost any type of query. All query builders extend the class [AbstractQuery](https://webfiori.com/docs/webfiori/database/AbstractQuery) which acts as a base query builder. It has many methods to support the process of building queries. Note that the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) acts as an interface for this class. To get the query bulder instance, use the method [`Database::getQueryGenerator()`](https://webfiori.com/docs/webfiori/database/Database#getQueryGenerator).
+
+### Insert Record
+
+### Update Record
+
+### Delete Record
+
+### Select
+The method [AbstractQuery::select()](https://webfiori.com/docs/webfiori/database/AbstractQuery#select) is used to build a `select` query.
+
+``` php
+
+$db = new TestingDatabase();
+$db->table('contacts')->select();
+
+// select * from `contacts`
+```
+> **Note:** After building the query, the method [`Database::execute()`](https://webfiori.com/docs/webfiori/database/Database#execute) or the method [`AbstractQuery::execute()`](https://webfiori.com/docs/webfiori/database/AbstractQuery#execute) must be called to run the query on the database.
+
+The method [`Database::table()`](https://webfiori.com/docs/webfiori/database/Database#table) is used to specify the table at which the query will be based on. It is possible to select some columns by supplying an array that holds columns that will be selected.
+
+``` php
+
+$db = new TestingDatabase();
+$db->table('contacts')->select(['name', 'age']);
+
+// select `name`, `age` from `contacts`
+```
+
+Also, it is possible to give an alias for the column using the following syntax.
+
+
+``` php
+
+$db = new TestingDatabase();
+$db->table('contacts')->select([
+    'name' => 'full_name', 
+    'age' => 'contact_age'
+    ]);
+
+// select `name` as `full_name`, `age` as `contact_age` from `contacts`
+```
+
+We can also add a `where` condition to the query. There are 3 methods which can be used to add a where condition:
+* [AbstractQuery::where()](https://webfiori.com/docs/webfiori/database/AbstractQuery#where)
+* [AbstractQuery::orWhere()](https://webfiori.com/docs/webfiori/database/AbstractQuery#orWhere)
+* [AbstractQuery::andWhere()](https://webfiori.com/docs/webfiori/database/AbstractQuery#andWhere)
+
+``` php
+
+$db = new TestingDatabase();
+$db->table('contacts')->select()->where('age', '>', 15)
+                                ->andWhere('name', '=', 'Ibrahim');
+
+// select * from `contacts` where `age` > 15 and `name` = 'Ibrahim'
+```
+### Joins
+
+### Unions
+
 ## Working With Result Set
+After building the query, it must be executed on the database. To execute a query, the method [`AbstractQuery::execute()`](https://webfiori.com/docs/webfiori/database/AbstractQuery#execute) can be used. Some queries will not return a result but in case of select query, there will be. This section explains how to work with database query results.
 
 ### Retrieving Records
 
