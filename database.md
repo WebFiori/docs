@@ -23,6 +23,8 @@ In this page:
 * [Command Line Utilities](#command-line-utilities)
   * [Adding Connection](#adding-connection)
   * [Creating Database Table](#creating-database-table)
+  * [Initializing Database Table](#initializing-database-table)
+  * [Modifying Database Table](#modifying-database-table)
 
 ## Introduction
 
@@ -171,13 +173,72 @@ class TestingDatabase extends DB {
 Now that we have the table added, we can create an instance of the class `ContactsTable` and start building queries as needed.
 
 ## Database Queries
+
 The library provides a query builder which can be used to build almost any type of query. All query builders extend the class [AbstractQuery](https://webfiori.com/docs/webfiori/database/AbstractQuery) which acts as a base query builder. It has many methods to support the process of building queries. Note that the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) acts as an interface for this class. To get the query bulder instance, use the method [`Database::getQueryGenerator()`](https://webfiori.com/docs/webfiori/database/Database#getQueryGenerator).
 
 ### Insert Record
 
+The method [MySQLQuery::insert()](https://webfiori.com/docs/webfiori/database/mysql/MySQLQuery#insert) is used to build an insert query for MySQL database. The following code sample shows how to use that method to create an insert query.
+
+``` php
+
+$db = new TestingDatabase();
+$db->table('contacts')->insert([
+    'name' => 'Ibrahim BinAlshikh',
+    'age' => 27,
+    'mobile' => '+966554321000',
+    'phone' => '+966136543456',
+    'email' => 'xyz@example.com'
+]);
+
+// insert into `contacts` (`name`, `age`, `mobile`, `phone`, `email`) values ('Ibrahim BinAlshikh', 27, '+966554321000', '+966136543456', 'xyz@example.com');
+```
+
+It is possible to insert multiple records using one insert call as follows:
+
+``` php 
+$db->table('contacts')->insert([
+    'cols' => ['name', 'age', 'mobile', 'phone', 'email'],
+    'values' => [
+        ['Contact 1', 33, '055434323', '0137665765', '123@example.com'],
+        ['Contact 2', 22, '056246436', '0138732156', '1234@example.com'],
+        ['Contact 3', 48, '051297647', '0136523489', '12345@example.com']
+    ]
+]);
+
+// insert into `contacts`
+// (`name`, `age`, `mobile`, `phone`, `email`)
+// values
+// ('Contact 1', 33, '055434323', '0137665765', '123@example.com'),
+// ('Contact 2', 22, '056246436', '0138732156', '1234@example.com'),
+// ('Contact 3', 48, '051297647', '0136523489', '12345@example.com');
+```
+
 ### Update Record
 
+The method [MySQLQuery::update()](https://webfiori.com/docs/webfiori/database/mysql/MySQLQuery#update) is used to build a delete record query for MySQL database. The following code sample shows how to use that method to create an update record query with a condition.
+
+``` php
+$db = new MainDatabase();
+$db->table('contacts')->update([
+    'age' => 44,
+    'email' => 'new-email@exmple.com'
+])->where('name', '=', 'Contact 1');
+
+// update `contacts` set `age` = 44, set `email` = 'new-email@exmple.com' where `contacts`.`name` = 'Contact 1'
+```
+
 ### Delete Record
+
+The method [MySQLQuery::delete()](https://webfiori.com/docs/webfiori/database/mysql/MySQLQuery#delete) is used to build a delete record query for MySQL database. The following code sample shows how to use that method to create a drop record query with a condition.
+
+``` php
+$db = new MainDatabase();
+
+$db->table('contacts')->delete()->where('name', '=', 'Contact 1');
+
+// delete from `contacts` where `contacts`.`name` = 'Contact 1'
+```
 
 ### Select
 The method [AbstractQuery::select()](https://webfiori.com/docs/webfiori/database/AbstractQuery#select) is used to build a `select` query.
@@ -291,6 +352,22 @@ WebFiori framework provides extra commands using CLI which are related to databa
 
 This way of adding database connections is recommended since connection information will be first validated before stored. To add new connection, simply run the command `add` as follows: `php webfiori add`. When the command is executed, a menu that has options will appear. The following image shows the whole process of adding the connection using CLI.
 
+<img src="assets/images/add-connection-command.gif" alt="Add connection command.">
+
 ### Creating Database Table
 
 It is recomended to use command line interface in creating table classes. By using CLI, you only have to give database table properties as inputs and the class will be created automatically for you. To create a new database table class, simply run the command `php webfiori create` and select the desired option from the menu.
+
+<img src="assets/images/add-table-command.gif" alt="Add database table command.">
+
+### Initializing Database Table
+
+The command `php webfiori create` can be also used to initialize the table in database by selecting another option. 
+
+<img src="assets/images/initialize-table-command.gif" alt="Initialize database table command.">
+
+### Modifying Database Table
+
+The command `php webfiori update-table` is used to modify the structure of the table. This command accepts one argument that has the name `--table`. The value of the argument must be the name of the table class including its namespace. 
+
+<img src="assets/images/add-table-col-command.gif" alt="Initialize database table command.">
