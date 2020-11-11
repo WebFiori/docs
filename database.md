@@ -9,6 +9,9 @@ In this page:
   * [Adding Connection Information](#adding-connection-information)
   * [Creating Database Tables](#creating-database-tables)
   * [Creating Database Class](#creating-database-class)
+* [Working With Result Set](#working-with-result-set)
+  * [Retrieving Records](#retrieving-records)
+  * [Mapping Records to Objects](#mapping-records-to-objects)
 * [Command Line Utilities](#command-line-utilities)
   * [Adding Connection](#adding-connection)
   * [Creating Database Table](#creating-database-table)
@@ -158,8 +161,9 @@ class TestingDatabase extends DB {
 ```
 
 Now that we have the table added, we can create an instance of the class `ContactsTable` and start building queries as needed.
+## Working With Result Set
 
-## Retrieving Results
+### Retrieving Records
 
 After executing a select query in the database, we would like to get the result of the query. To get query result, the method [`Database::getLastResultSet()`](https://webfiori.com/docs/webfiori/database/Database#getLastResultSet). This metho will return an object of type [`ResultSet`](https://webfiori.com/docs/webfiori/database/ResultSet). 
 
@@ -173,6 +177,39 @@ foreach($result as $record) {
    //Do something with the record
 }
 ```
+
+The variable `$record` in the given example will be an associative array. The indices of the array are columns names.
+
+### Mapping Records to Objects
+It is possible to map the records to objects. To achive this, the developer can use the method [`ResultSet:: setMappingFunction()`](https://webfiori.com/docs/webfiori/database/ResultSet#setMappingFunction). This method is used to set a function which can use to manipulate the result set after fetching. The method must return an array that contains the records after mapping.
+
+``` php
+$db = TestingDatabase();
+$db->table('contacts')->select()->execute();
+$result = $db->getLastResultSet();
+
+$result->setMappingFunction(function ($dataset){
+    $retVal = [];
+    foreach($dataset as $record) {
+        $contactObj = new Contact();
+        $contactObj->setName($record['name']);
+        $contactObj->setAge($record['age']);
+        $contactObj->setMobile($record['mobile']);
+        $contactObj->setPhone($record['phone']);
+        $contactObj->setEmail($record['email']);
+        
+        $retVal[] = $contactObj;
+    }
+    return $retVal;
+});
+
+
+foreach($result as $record) {
+   //Now the $record is an object of type Contact
+}
+
+```
+
 
 ## Command Line Utilities
 
