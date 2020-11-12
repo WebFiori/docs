@@ -353,3 +353,8 @@ Available components are:
 * [`TableRow`](https://webfiori.com/docs/webfiori/ui/TableRow)
 * [`UnrderedList`](https://webfiori.com/docs/webfiori/ui/UnrderedList)
 
+**Next: [Themes](learn/themes)**
+
+**Previous: [The Class `Response`](learn/class-response)**
+
+
