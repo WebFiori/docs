@@ -1,5 +1,7 @@
 # Routing
 
+<meta name="description" contect="Routing in simple terms is the process of taking client request and sending it to correct location.">
+
 In this page:
 * [Introduction](#introduction)
 * [The Definition of Routing](#the-definition-of-routing)
@@ -55,6 +57,7 @@ Once the request reaches the class [`WebFiori`](https://webfiori.com/docs/webfio
 The routing process is completed by the class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router). The whole magic of routing is completed by sending the requested URL as a parameter to the method [`Router::route()`](https://webfiori.com/docs/webfiori/framework/router/Router#route). If a resource was found at which the given URL is pointing to, the request will be sent to it. If no route is found, a 404 error is generated.
 
 ## The Class `Router`
+
 The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core framework classes. The main aim of this class is to direct client request to the correct resource. In addition to that, this class is used to create routes to different resources.
 
 A resource can be simply a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good looking way.
@@ -235,6 +238,7 @@ class ClosureRoutes {
 Each method which is used to add new route supports options which can be used to customize the route. In this section, we will have a look at the available options.
 
 ### Sitemap
+
 The option `in-sitemap` is a boolean which is used to tell if the URI will be in the sitemap which is generated automatically or not. Default value of this option is `false`
 
 > Note: To create a sitemap using added routes, the method [`Router::incSiteMapRoute()`](https://webfiori.com/webfiori/framework/router/Router#incSiteMapRoute). The sitemap will be accessable throght `http://example/sitemap.xml`.
@@ -248,4 +252,10 @@ One of the available options is `case-sensitive`. This option is used to make th
 The option `languages` is used to tell which languages the URI supports. The option accepts an array that contains language codes (such as `AR`). This one is used only when [generating sitemap](#generating-sitemap) of the website to tell search engines about the languages at which the page is available on.
 
 ### Variables Values
+
 The option `vars-values` is used in generating the sitemap of the website. The option accepts sub-associative arrays. The key of the array represents the name of variable name and the value is a sub array that contains possible variable values.
+
+**Next: [The Class `Response`](learn/class-response)**
+
+**Previous: [Basic Usage](learn/basic-usage)**
+
