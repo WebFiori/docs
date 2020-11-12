@@ -168,7 +168,9 @@ Before we continue, let's explain what we did. The method [`CLICommand::getInput
 The method [`CLICommand::println()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#println) is used to show output. It will send it directly to `STDOUT`.
 
 ### Registering the command
+
 If the command is created inside the folder `app/commands`, it will be registered automatically. But if the command is created somewhere else, it must be registered manually. To register any custom-created command, the class [`InitCliCommands`](https://webfiori.com/docs/webfiori/ini/InitCliCommands) can be used to complete this task. The class has one static method at which the developer can modify its body. The following code shows how to register new command.
+
 ``` php
 namespace webfiori\ini;
 
@@ -276,6 +278,7 @@ Warning: Email is not provided.
 ## Reading User Input
 
 We have seen how to get user input from the terminal using the method [`CLICommand::getInput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#getInput) when we implemented a [basic command](#implementing-cli-commands). The framework provides the developers with some of the commonly used helper inputs like asking a question. We will take a look at the available options.
+
 ### Prompt
 
 Prompt is used to read any type of user input. The method [`CLICommand::getInput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#getInput) is used to perform that task. The method accepts 3 parameters. The first one is the text that will be shown to the user. The second one is a default value which will be used when the user hit "Enter" without typing anything. The last one is a closure which can be used to validate user input.
@@ -409,3 +412,8 @@ $this->info('Useful extra info.');
 ```
 
 <img src="assets/images/cli04.png" alt="Terminal Output" style="height:auto;max-width:100%;border:1px solid;">
+
+
+**Next: [Sessions Management](learn/sessions-management)**
+
+**Previous: [Sending Emails](learn/sending-emails)**
