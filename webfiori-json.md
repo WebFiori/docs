@@ -444,3 +444,7 @@ if ($jsonObj instanceof Json) {
 }
 ```
 
+
+**Next: [Database Management](learn/database)**
+
+**Previous: [Sessions Management](learn/sessions-management)**
