@@ -111,7 +111,7 @@ class ViewRoutes {
 }
 ```
 
-To access the value of the variable inside the class `SayHi`, we have to use the method [`Router::getVarVal()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarVal) as follows:
+To access the value of the variable inside the class `SayHi`, we have to use the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) as follows:
 
 ``` php
 use webfiori\framework\router\Router;
