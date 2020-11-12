@@ -139,3 +139,7 @@ $message->attach($attachment);
 
 $message->send()
 ```
+
+**Next: [Command Line Interface](learn/command-line-interface)**
+
+**Previous: [Uploading Files](learn/uploading-files)**
