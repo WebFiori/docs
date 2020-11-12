@@ -128,3 +128,8 @@ return __NAMESPACE__;
 ```
 
 Now when navigating to `https://example.com/say-hi/Ibrahim BinAlshikh`, the message `Hi Ibrahim BinAlshikh. Welcome to my website!` will appear. The string `Ibrahim BinAlshikh` can be replaced by anything and it will say "hi" to it.
+
+
+**Next: [Basic Usage](learn/routing)**
+
+**Previous: [Folder Structure](learn/folder-structure)**
