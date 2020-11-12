@@ -32,6 +32,7 @@ class MyWebPage {
         Page::render();
     }
 }
+//Must return namespace if theme belongs to one.
 return __NAMESPACE__;
 ```
 Note that if the method [`Page::theme()`](https://webfiori.com/docs/webfiori/framework/page#theme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in the class [`SiteConfig`](https://webfiori.com/docs/webfiori/conf/SiteConfig).
@@ -197,3 +198,8 @@ class ExamplePage {
 return __NAMESPACE__;
 ```
 If you are in local development environment, simply navigate to http://localhost/example and the page will open with the theme loaded.
+
+**Next: [Uploading Files](learn/uploading-files)**
+
+**Previous: [UI Package](learn/ui-package)**
+
