@@ -131,3 +131,6 @@ SessionsManager::newId();
 Response::append('New Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
 ```
 
+**Next: [The Library WebFiori JSON](learn/webfiori-json)**
+
+**Previous: [Command Line Interface](learn/command-line-interface)**
