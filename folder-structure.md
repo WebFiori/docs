@@ -71,4 +71,5 @@ The public folder is the root directory of the web application. The developer sh
 The folder `themes` is a place that contains components that gives a unified look and feel for the website. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`.
 
 **Previous: [Installation](learn/installation)**
+
 **Next: [Basic Usage](learn/basic-usage)**
