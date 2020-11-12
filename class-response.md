@@ -1,7 +1,7 @@
 
 # The Class Response
 
-<meta name="" description="">
+<meta name="description" description="The class response is used to send back server output to the client.">
 
 In this page:
 
