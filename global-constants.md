@@ -5,7 +5,7 @@
 
 ## Introduction
 
-The framework comes with a class which is only used to initialize global constants. They can be accessed anywhere within the scope of the framework. The class [GlobalConstants](https://webfiori.com/webfiori/ini/GlobalConstants) is used to initialize the values of the constants. The developer can modify the values of the constants in the class as needed to configure some of the settings of the framework. Also, the developer can modify the content of the class and create his own constants.
+The framework comes with a class which is only used to initialize global constants. They can be accessed anywhere within the scope of the framework. The class [GlobalConstants](https://webfiori.com/docs/webfiori/ini/GlobalConstants) is used to initialize the values of the constants. The developer can modify the values of the constants in the class as needed to configure some of the settings of the framework. Also, the developer can modify the content of the class and create his own constants.
 
 ## Constants
 
