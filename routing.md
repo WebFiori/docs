@@ -35,12 +35,12 @@ After finishing the following set of topics, you will be able to understand how 
 
 Every web server must have some kind of a configuration file. In Apache server, the configuration files have the name [`.htaccess`](https://httpd.apache.org/docs/current/howto/htaccess.html) and in IIS has the name `web.config`. Usually, the configuration files will get executed before the actual code.
 
-WebFiori Framework uses a custom `.htaccess` file that has a rule to re-write the requested URL and redirect every request to the root framework class which is the class [`WebFiori`](https://webfiori.com/docs/webfiori/WebFiori). The file can be found inside the directory `public`. If the content of the `.htaccess` file is viewed, the re-write rule will look like the following:
+WebFiori Framework uses a custom `.htaccess` file that has a rule to re-write the requested URL and redirect every request to the root the file `index.php`. The file can be found inside the directory `public`. If the content of the `.htaccess` file is viewed, the re-write rule will look like the following:
 ```
-ReWriteRule ^(.*)$ WebFiori.php [L,QSA]
+ReWriteRule ^(.*)$ index.php [L,QSA]
 ```
 
-Also, the framework has its own custom `web.config` file that has a rule which is used to send requests to the class [`WebFiori`](https://webfiori.com/docs/webfiori/WebFiori). If the content of the file `web.config` is viewed, the redirect rule will look like the following:
+Also, the framework has its own custom `web.config` file that has a rule which is used to send requests to the file `index.php`. If the content of the file `web.config` is viewed, the redirect rule will look like the following:
 ``` xml
 <rule name="Bloom The Seed" stopProcessing="true">
     <match url="^(.*)$" ignoreCase="false" />
@@ -48,11 +48,11 @@ Also, the framework has its own custom `web.config` file that has a rule which i
         <!--Send all trafic to framework seed and make your work bloom.-->
         <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
     </conditions>
-    <action type="Rewrite" url="WebFiori.php" appendQueryString="true" />
+    <action type="Rewrite" url="index.php" appendQueryString="true" />
 </rule>
 ```
 
-Once the request reaches the class [`WebFiori`](https://webfiori.com/docs/webfiori/WebFiori), The initialization process of the framework will start. After the initialization is completed without any errors, the final stage is to route the request to its final destination.
+Once the request reaches the file `index.php`, The initialization process of the framework will start. After the initialization is completed without any errors, the final stage is to route the request to its final destination.
 
 The routing process is completed by the class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router). The whole magic of routing is completed by sending the requested URL as a parameter to the method [`Router::route()`](https://webfiori.com/docs/webfiori/framework/router/Router#route). If a resource was found at which the given URL is pointing to, the request will be sent to it. If no route is found, a 404 error is generated.
 
