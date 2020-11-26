@@ -18,5 +18,6 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [The Library WebFiori JSON](learn/webfiori-json)
 * [Database Management](learn/database)
 * [Web Services](learn/web-services)
+* [Middleware](learn/middleware)
 * [Global Constants](learn/global-constants)
 * [Coding Standards](learn/coding-standards)
