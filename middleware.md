@@ -17,7 +17,7 @@ WebFiori framework provides simple straight way for implementing middleware.
 
 The following image shows how middleware works in general. The green request represents a request which has passed all middleware. The red one represents a request which reached the `Middleware 1` and failed some criteria and rejected by the middleware.
 
-<img src="assets/img/middleware00.PNG" alt="Middleware in WebFiori Framework.">
+<img src="assets/images/middleware00.png" alt="Middleware in WebFiori Framework.">
 
 ## The Class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware)
 Middleware represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The class has abstract methods at which the developer must implement to have a functional middleware. The methods are:
