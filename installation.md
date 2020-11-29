@@ -87,6 +87,6 @@ If the framework is downloaded using composer, then you must upload the `src` an
 
 If the framework is downloaded from the website, then simply upload the whole content of your project folder to the server.
 
-**Next: [Basic Usage](learn/folder-structure)**
+**Next: [Folder Structure](learn/folder-structure)**
 
 
