@@ -7,14 +7,17 @@ In this page:
   * [The `app/commands` Folder](#the-appcommands-folder)
   * [The `app/jobs` Folder](#the-appjobs-folder)
   * [The `app/langs` Folder ](#the-applangs-folder)
+  * [The `app/pages` Folder](#the-pageslangs-folder)
   * [The `app/routes` Folder](#the-approutes-folder)
+  * [The `app/ini` Folder](#the-appini-folder)
+  * [The `app/middleware` Folder](#the-appmiddleware-folder)
 * [The `conf` Folder](#the-conf-folder)
 * [The `framework` Folder](#the-framework-folder)
-* [The `ini` Folder](#the-ini-folder)
 * [The `public` Folder](#the-public-folder)
 * [The `themes` Folder](#the-themes-folder)
 
 ## The `app` Folder
+
 The folder `app` will contain all your application files. Anything that created by you must exist inside this folder. The folder can be kept under source control because of this reason. This folder can have extra sub-folders for maintaining your code. The folders are:
 * `app/apis`: Used to hold web services and services managers.
 * `app/commands`: Used to hold custom CLI commands.
@@ -51,6 +54,14 @@ This folder must contains the classes which represents the pages of your website
 
 This folder contains classes which can be used to create different types of routes to any resources which exist in the system. The folder already has 4 classes. Each class has one static method at which the developer can modify its body to add new routes.
 
+## The `app/ini` Folder
+
+This folder contains initialization classes. The developer can use the classes to initialize system privileges, custom jobs, custom CLI commands, custom autoload directories, middleware and global constants. The folder can be kept under source control as the developer might modify the code in the initialization classes.
+
+## The `app/middleware` Folder
+
+This folder can have the classes which provides implementation for the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The classes in this folder represents every middleware the developer will create.
+
 ## The `conf` Folder
 
 The folder `conf` contains 3 configuration classes which might hold sensitive information about your web application. They can have database credentials or SMTP connection information. Also, they hold main information about your website such as Its name, general description and main language.
@@ -58,10 +69,6 @@ The folder `conf` contains 3 configuration classes which might hold sensitive in
 ## The `framework` Folder
 
 This folder contains core entities of the framework. The developer should not modify this folder or add any code which is related to his web application. The folder should be kept outside source control.
-
-## The `ini` Folder
-
-This folder contains initialization classes. The developer can use the classes to initialize system privileges, custom jobs, custom CLI commands, custom autoload directories and global constants. The folder can be kept under source control as the developer might modify the code in the initialization classes.
 
 ## The `public` Folder
 
