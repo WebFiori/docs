@@ -5,6 +5,11 @@
 In this page:
 * [What is WebFiori Framework](#what-is-webFiori-framework)
 * [Features](#features)
+  * [Simple Routing Engine](#simple-routing-engine)
+  * [Sessions Management](#sessions-management)
+  * []()
+  * []()
+  * []()
 
 ## What is WebFiori Framework
 
@@ -71,6 +76,21 @@ SessionsManager::start('first-session');
 In addition to that, the developer can implement his own way for storing sessions by implementing custom storage engine using the interface `SessionStorage`.
 
 ### Theming
+
+The framework gives the developer the option to use themes. The main use of themes is to give a unified look and feel in all web pages of the web application. Inside every class that represent a web page, the only thing that the developer must do to change the whole UI is to use its name.
+
+```php
+use webfiori\framework\Page;
+
+class MyPage {
+   __construct() {
+       Page::theme('WebFiori V108');
+       Page::render();
+   }
+}
+return __NAMESPACE__;
+```
+
 ### Basic Templating Engine
 ### Middleware
 ### Background Tasks
