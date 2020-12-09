@@ -7,9 +7,14 @@ In this page:
 * [Features](#features)
   * [Simple Routing Engine](#simple-routing-engine)
   * [Sessions Management](#sessions-management)
-  * []()
-  * []()
-  * []()
+  * [Theming](#theming)
+  * [Basic Templating Engine](#basic-templating-engine)
+  * [Middleware](#middleware)
+  * [Background Tasks](#background-tasks)
+  * [Sending HTML Emails](#sending-html-emails)
+  * [Command Line Interface](#command-line-interface)
+  * [Database Schema and Query Building](#database-schema-and-query-building)
+  * [Web Services](#web-services)
 
 ## What is WebFiori Framework
 
@@ -151,3 +156,5 @@ Currntly, the framework has support for schema and query building for MySQL data
 Web services are usually used to connect the front-end with the back-end. In most cases, web services will be connected with a web page but they can be also connected to any front-end. The framework uses the library [WebFiori HTTP](https://webfiori.com/docs/webfiori/http) to have web services support. The developer can implement services by extending the class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService).
 
 For more information on web services, [check here](/learn/web-services).
+
+**Next: [Installation](learn/installation)**
