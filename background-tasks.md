@@ -373,3 +373,8 @@ class GenerateAttendaceReportJob extends AbstractJob {
 
 }
 ```
+
+
+**Next: [Global Constants](learn/global-constants)**
+
+**Previous: [Middleware](learn/middleware)**
