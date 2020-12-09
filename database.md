@@ -369,3 +369,7 @@ The command `php webfiori create` can be also used to initialize the table in da
 The command `php webfiori update-table` is used to modify the structure of the table. This command accepts one argument that has the name `--table`. The value of the argument must be the name of the table class including its namespace. 
 
 <img src="assets/images/add-table-col-command.gif" alt="Initialize database table command.">
+
+**Next: [The Library WebFiori JSON](learn/webfiori-jsons)**
+
+**Previous: [Web Services](learn/web-services)**
