@@ -32,7 +32,7 @@ If we remove web pages, then the backend logic can be connected to any frontend 
 
 While developing the framework, we thought of code quality as first priority. For this reason, we tried to make the quality of the code as good as possible. For instance, the developer can understand what happens in the code without having to read documentation almost everywhere. Also, we have [coding standards](learn/coding-standards) that we followed while developing the framework.
 
-In addition to code quality, we tried to document all features by writing a meaningfull PHPDocs in all source code files of the framework. The docs are compiled and then published at https://webfiori.com/docs. 
+In addition to code quality, we tried to document all features by writing a meaningfull PHPDocs in all source code files of the framework. The docs are compiled and then published at https://webfiori.com/docs/webfiori. 
 
 ## Features
 The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
