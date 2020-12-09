@@ -4,6 +4,7 @@
 
 In this page:
 * [What is WebFiori Framework](#what-is-webFiori-framework)
+* [Quality Comes First, Documentation Second](#quality-comes-first-documentation-second)
 * [Features](#features)
   * [Simple Routing Engine](#simple-routing-engine)
   * [Sessions Management](#sessions-management)
@@ -23,16 +24,22 @@ WebFiori framework is a fully object oriented web development framework which wa
 In our opinion, web developer will need the followig at minimum level to have a working web application:
 * A database (backend).
 * Web APIs (or services) (backend).
-* A way to create web pages and nodify the look and feel easly (frontend).
+* A way to create web pages and modify the look and feel easly (frontend).
 
-If we remove web pages, then the backend logic can be connected to any frontend such as a mobile application. 
+If we remove web pages, then the backend logic can be connected to any frontend such as a mobile application. WebFiori framework fullfil the 3 by providing a generic database layer, a library for creating web services which is fully integrated with the framework and theming. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible with WebFiori framework.
+
+## Quality Comes First, Documentation Second
+
+While developing the framework, we thought of code quality as first priority. For this reason, we tried to make the quality of the code as good as possible. For instance, the developer can understand what happens in the code without having to read documentation almost everywhere. Also, we have [coding standards](learn/coding-standards) that we followed while developing the framework.
+
+In addition to code quality, we tried to document all features by writing a meaningfull PHPDocs in all source code files of the framework. The docs are compiled and then published at https://webfiori.com/docs. 
 
 ## Features
 The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
 
 ### Simple Routing Engine
 
-The main aim of [routing](learn/routing) is to take client request and sending it to correct resource. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute.
+The main aim of routing is to take client request and sending it to correct resource. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute.
 
 ``` php
 // https://example.com/products/board-games/Chess
@@ -61,9 +68,11 @@ Router::closure([
 // https://example.com/
 ```
 
+For more information about routing, [check here](learn/routing).
+
 ### Sessions Management
 
-Sessions are used to keep client state when moving between different web pages. The frameworks provides the developer with a session manager which does not depend on the implementation of session manager of PHP. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
+Sessions are used to keep client state when moving between different web pages. The frameworks provides the developer with a sessions manager which does not depend on the implementation of PHP's session manager. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
 
 ``` php
 // Start new session
@@ -78,11 +87,11 @@ SessionsManager::start('another-session', [
 SessionsManager::start('first-session');
 ```
 
-In addition to that, the developer can implement his own way for storing sessions by implementing custom storage engine using the interface `SessionStorage`.
+In addition to that, the developer can implement his own way for storing sessions by implementing custom storage engine using the interface `SessionStorage`. You can find more information about sessions managemene [here](learn/sessions-management)
 
 ### Theming
 
-The framework gives the developer the option to use themes. The main use of themes is to give a unified look and feel in all web pages of the web application. Inside every class that represent a web page, the only thing that the developer must do to change the whole UI is to use its name.
+The framework gives the developer the option to use themes. The main use of themes is to give a unified look and feel in all web pages of the web application. Inside every class that represent a web page, the only thing that the developer must do to change the whole UI is to use its name. In addition to changing the whole user interface, themes can act as plugins that provide additional functionality to the web application.
 
 ```php
 use webfiori\framework\Page;
@@ -96,11 +105,11 @@ class MyPage {
 return __NAMESPACE__;
 ```
 
-For more information, [check here](learn/themes).
+For more information on how to use and create themes, [check here](learn/themes).
 
 ### Basic Templating Engine
 
-There are many template engines outside there with many fancy features. WebFiori framework provides a very basic template engine which only supports slots. The developer can write his template using HTML and then fill the slots with values inside PHP.
+There are many template engines out there with many fancy features. WebFiori framework provides a very basic template engine which only supports slots. The developer can write his template using HTML and then fill the slots with values inside PHP.
 
 ``` html
 <!--This is the template-->
@@ -116,21 +125,23 @@ $template = HTMLNode::loadComponent('path/to/my/template.html', [
 Page::insert($template);
 ```
 
+For more information on how to build web pages UI, [check here](learn/ui-package).
+
 ### Middleware
 
-[Middleware](learn/middleware) is a way that developers use to filter requests before reaching the actual web application. They can be used to start sessions, validate request headers or reject a request. Middleware in WebFiori represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The developer have to extend this class to have his own middleware implemented. A class that represents middleware must be placed in the folder `app/middleware` to be auto registered.
+Middleware is a way that developers use to filter requests before reaching the actual web application. They can be used to start sessions, validate request headers or reject a request. Middleware in WebFiori represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The developer have to extend this class to have his own middleware implemented. A class that represents middleware must be placed in the folder `app/middleware` to be auto registered.
 
-For more information, [check here](learn/middleware).
+For more information on middleware, [check here](learn/middleware).
 
 ### Background Tasks
 
-Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to cleanup temporary uploaded files or generate a report and send it by email. The developer can write such process using PHP code. This can be achived using Cron Sub-system. To implement custom background job, the developer can extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background job must be placed in the folder `app/jobs` to be auto registered.
+Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to cleanup temporary uploaded files or generate a report and send it by email. The developer can write such process using PHP code and have it to execute at specific time. This can be achived using Cron Sub-system. To implement custom background job, the developer can extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background job must be placed in the folder `app/jobs` to be auto registered.
 
-For more information, [check here](learn/background-tasks).
+For more information about creating background jobs, [check here](learn/background-tasks).
 
 ### Sending HTML Emails
 
-Mostly, every web application out there will have to send email notifications for logins or registration. The framework has simplified the process of creating emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage)
+Mostly, every web application out there will have to send email notifications for logins or registration. The framework has simplified the process of creating emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage).
 
 ``` php
 $message = new EmailMessage('no-reply');
@@ -141,11 +152,11 @@ $message->send();
 ```
 
 
-For more information, [check here](learn/sending-emails).
+For more information about how to use mailing system, [check here](learn/sending-emails).
 
 ### Command Line Interface
 
-The framework provides the developer with commands that he can use to speed up development process. In addition to that, the developer can write his own commands and run them using the framework. For more information, [check here](learn/command-line-interface)
+The framework provides the developer with commands that he can use to speed up development process. In addition to that, the developer can write his own commands and run them using the framework. For more information about the CLI of the framework, [check here](learn/command-line-interface)
 
 ### Database Schema and Query Building
 
