@@ -91,11 +91,63 @@ class MyPage {
 return __NAMESPACE__;
 ```
 
+For more information, [check here](learn/themes).
+
 ### Basic Templating Engine
+
+There are many template engines outside there with many fancy features. WebFiori framework provides a very basic template engine which only supports slots. The developer can write his template using HTML and then fill the slots with values inside PHP.
+
+``` html
+<!--This is the template-->
+<div class="container">
+ <p>Hello Mr. {{name}}</p>
+</div>
+```
+
+``` php
+$template = HTMLNode::loadComponent('path/to/my/template.html', [
+    'name' => 'Ibrahim Ali'
+]);
+Page::insert($template);
+```
+
 ### Middleware
+
+[Middleware](learn/middleware) is a way that developers use to filter requests before reaching the actual web application. They can be used to start sessions, validate request headers or reject a request. Middleware in WebFiori represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The developer have to extend this class to have his own middleware implemented. A class that represents middleware must be placed in the folder `app/middleware` to be auto registered.
+
+For more information, [check here](learn/middleware).
+
 ### Background Tasks
+
+Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to cleanup temporary uploaded files or generate a report and send it by email. The developer can write such process using PHP code. This can be achived using Cron Sub-system. To implement custom background job, the developer can extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background job must be placed in the folder `app/jobs` to be auto registered.
+
+For more information, [check here](learn/background-tasks).
+
 ### Sending HTML Emails
+
+Mostly, every web application out there will have to send email notifications for logins or registration. The framework has simplified the process of creating emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage)
+
+``` php
+$message = new EmailMessage('no-reply');
+$message->subject('This is a Test Email');
+$message->addReceiver('Blog User','user@example.com');
+$message->write('This is a welcome message.');
+$message->send();
+```
+
+
+For more information, [check here](learn/sending-emails).
+
 ### Command Line Interface
+
+The framework provides the developer with commands that he can use to speed up development process. In addition to that, the developer can write his own commands and run them using the framework. For more information, [check here](learn/command-line-interface)
+
 ### Database Schema and Query Building
+
+Currntly, the framework has support for schema and query building for MySQL database only but more are coming in the future. The developer does not have to use this feature if he would like to use another database library. For more information about this feature, [check here](learn/database].
+
 ### Web Services
 
+Web services are usually used to connect the front-end with the back-end. In most cases, web services will be connected with a web page but they can be also connected to any front-end. The framework uses the library [WebFiori HTTP](https://webfiori.com/docs/webfiori/http) to have web services support. The developer can implement services by extending the class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService).
+
+For more information on web services, [check here](/learn/web-services).
