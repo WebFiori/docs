@@ -25,3 +25,10 @@ The following table lists all constants and for what each one is used.
 |`CLI_HTTP_HOST`|Host name to use in case the system is executed through CLI. When the application is running throgh CLI, there is no actual host name. For this reason, the host is set to `127.0.0.1` by default. If this constant is defined, the host will be changed to the value of the constant. Default value of the constant is 'example.com'.|'example.com' (`string`)|
 |`DS`|Directory separator. This one is is used as a shorthand instead of using PHP constant `DIRECTORY_SEPARATOR`. The two will have the same value.|(`string`)|
 |`USE_HTTP`|Sets the framework to use `http://` or `https://` for base URIs. The default behaviour of the framework is to use `https://`. But in some cases, there is a need for using `http://`. If this constant is set to true, the framework will use `http://` for base URI of the system. Default value is false.|false (`boolean`)|
+
+
+
+
+**Next: [Coding Standards](learn/coding-standards)**
+
+**Previous: [Background Tasks](learn/background-tasks)**
