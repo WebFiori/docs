@@ -56,18 +56,6 @@ Router::view([
 
 In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure.
 
-
-``` php
-// https://example.com/run-code
-Router::closure([
-   'path' => 'run-code',
-   'route-to' => function () {
-      // TODO: Write php code
-   }
-]);
-// https://example.com/
-```
-
 For more information about routing, [check here](learn/routing).
 
 ### Sessions Management
