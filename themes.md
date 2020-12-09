@@ -98,7 +98,7 @@ Let's assume that the name of the class that represents the theme is `CustomThem
 
 ``` php
 <?php
-use webfiori\entity\Theme;
+use webfiori\framework\Theme;
 
 class CustomTheme extends Theme {
     public function __construct() {
@@ -112,7 +112,7 @@ class CustomTheme extends Theme {
 ```
 > Note: If the names of your resources folders are `css`, `js` and `images`, you don't have to set them as they will be the default values.
 
-After that, we will start the actual theme implementation. In this step, we have to implement 4 abstract methods which exist in the class [`Theme`](https://webfiori.com/docs/webfiori/entity/Theme). The 4 abstract methods are:
+After that, we will start the actual theme implementation. In this step, we have to implement 4 abstract methods which exist in the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme). The 4 abstract methods are:
 * [`Theme::getHeadNode()`](https://webfiori.com/webfiori/framework/Theme#getHeadNode)
 * [`Theme::getHeadrNode()`](https://webfiori.com/webfiori/framework/Theme#getHeadrNode)
 * [`Theme::getAsideNode()`](https://webfiori.com/webfiori/framework/Theme#getAsideNode)
