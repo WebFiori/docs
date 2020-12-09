@@ -4,6 +4,7 @@ Here you will find topics which can help you getting started with WebFiori frame
 
 <meta name="description" content="A set of topics which helps in getting started with WebFiori Framework.">
 
+* [Introduction](learn/introduction)
 * [Installation](learn/installation)
 * [Folder Structure](learn/folder-structure)
 * [Basic Usage](learn/basic-usage)
@@ -19,5 +20,6 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Database Management](learn/database)
 * [Web Services](learn/web-services)
 * [Middleware](learn/middleware)
+* [Background Tasks](learn/background-tasks)
 * [Global Constants](learn/global-constants)
 * [Coding Standards](learn/coding-standards)
