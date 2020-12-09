@@ -14,8 +14,16 @@ In this page:
   * [Scheduling Job as a Closure](#scheduling-job-as-a-closure)
   * [Using the Class `AbstractJob`](#using-the-class-abstractjob)
 * [Jobs Execution](#jobs-execution)
-* []()
-* []()
+  * [Using `crontab` Entry to Trigger Execution](#using-crontab-entry-to-trigger-execution)
+  * [Using Command Line Interface to Trigger Execution](#using-command-line-interface-to-trigger-execution)
+  * [Forcing a Job to Execute](#forcing-a-job-to-execute)
+    * [Force a Job to Execute Using Cron Web Interface](#force-a-job-to-execute-using-cron-web-interface)
+    * [Force a Job to Execute Using Command Line Interface](#force-a-job-to-execute-using-command-line-interface)
+* [Using Arguments With Forced Jobs](#using-aguments-with-forced-jobs)
+  * [Sending Arguments Throgh CRON Web Interface](#sending-arguments-throgh-cron-web-interface)
+  * [Sending Arguments Throgh Terminal](#sending-arguments-throgh-terminal)
+* [Sending CRON Notifications](#sending-cron-notifications)
+  * [The Class `CronEmail`](#the-class-cronemail)
 
 ## Introduction
 
@@ -82,19 +90,19 @@ class InitCron {
     public static function init() {
 
         Cron::createJob('*/10 * * * *', 'Every Minute', function () {
-            echo \"Will execute every 10 minutes\";
+            echo "Will execute every 10 minutes";
         });
         
-        Cron::dailyJob(\"13:00\", \"Test Job\", function () {
-            echo \"Will execute every day at 1:00 PM\";
+        Cron::dailyJob("13:00", "Test Job", function () {
+            echo "Will execute every day at 1:00 PM";
         });
         
         Cron::weeklyJob('sun-15:30', 'Another Job', function () {
-            echo \"Will execute every sunday at 3:30 PM\";
+            echo "Will execute every sunday at 3:30 PM";
         });
         
         Cron::monthlyJob(1, '00:00', 'First Day Of Month', function () {
-            echo \"Will execute at first day of every month at 12:00 AM\";
+            echo "Will execute at first day of every month at 12:00 AM";
         });
     }
 }
@@ -173,3 +181,195 @@ class InitCron {
 ```
 
 ## Jobs Execution
+
+When a job is scheduled, it will not get executed by it self even if it is time to run it. A job can be only get executed if there was a trigger that caused it to execute. The trigger can be a forced trigger or automatic trigger.
+
+### Using `crontab` Entry to Trigger Execution
+
+The recomended way is to add a CRON entry on your server which looks like this one: `* * * * * php webfiori cron p="pass" --check`. This will execute the command `cron` of the framework with the option `--check` every minute. The option `pass` must be included if a password is set to protect jobs from unauthorized execution. It will simply check all scheduled jobs and to check if it is time to execute them. Note that the path to PHP interpreter and the framework my differ. Because of this, the format of the entry may differ.
+
+If the server is runnig on windows, it is possible to use "Task Scheduler" to achieve the same result.
+
+### Using Command Line Interface to Trigger Execution
+
+Another way to trigger jobs execution is to use command line interface (or terminal) to run the command `cron`. If the server supports SSH access, it is possible to run the following command to trigger execution:
+
+``` 
+php webfiori cron p="pass" --check
+```
+
+Executing jobs through terminal can be usefull if the developer would like to inspect the output of jobs or would like to check what causes a job to fail.
+
+### Forcing a Job to Execute
+
+One of the features of the framework is the ability to force a scheduled job to execute even if it is not the time to run it. A job can be forced to run using one of two methods:
+
+* Cron web interface.
+* Command line interface.
+
+#### Force a Job to Execute Using Cron Web Interface
+
+If the constant `CRON_THROUGH_HTTP` is defined and is set to `true`, it will be possible to access cron web interface and use it to force a job to execute. The control panel can be accessed using any web browser by navigating to the URL `https://yoursite.com/cron`. If a password is set to protect the jobs, it will open a login page to enter protection password.
+
+<img src="assets/images/cron01.png" alt="Cron web interface.">
+
+#### Force a Job to Execute Using Command Line Interface
+
+Forcing a job to execute thorugh terminal is useful in case of debugging. The terminal can be used to show the full output of executing a job. To force execution of a specific job, simply we have to run the following command:
+
+```
+php webfiori cron p="pass" --force
+```
+
+Once this command is executed, the terminal will ask the user to select one of the scheduled jobs to force. The following image shows the full terminal output when using this way to force a job.
+
+<img src="assets/images/cron02.png" alt="Cron command line interface">
+
+## Using Arguments With Forced Jobs
+
+One of the things that a developer might want from a job to do is when it is forced to execute is to behave in a diffrent way based on some inputs given by the one who will execute it. One of the features that the framework provides is the ability to add custom execution arguments to a job. The arguments can be sent to the job when it is firced to execute throgh the control panel of the jobs or throgh command line interface.
+
+### Adding Arguments
+
+Job arguments are associated with an instance of the class `AbstractJob`. In order to add arguments to a job, simply use the method [`AbstractJob::addExecutionArg()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#addExecutionArg). Also, it is possible to add multiple arguments at once using the method [`AbstractJob::addExecutionArgs()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#addExecutionArgs). Ususlly, arguments are added to the job when initialized (in the constructor). But it is possible to add them after the job has been scheduled.
+
+The following code sample shows how to add arguments to job.
+``` php
+namespace webfiori\framework\cron;
+
+use webfiori\framework\cron\AbstractJob;
+use webfiori\frameworl\cron\Cron;
+
+class GenerateAttendanceReportJob extends AbstractJob {
+    public function __construct() {
+        parent::__construct('');
+        
+        //Generate attendance report once the new month start.
+        $this->everyMonthOn(1, '00:00');
+        
+        // Add two arguments
+        $this->addExecutionArgs([
+            'start-date',
+            'end-date',
+        ]);
+    }
+    public function afterExec() {
+        //TODO:
+    }
+
+    public function execute() {
+        //Access argument value.
+        $startDate = $this->getArgValue('start-date');
+        if ($startDate === null) {
+            Cron::log('Start date is missing. Using default value.');
+            //TODO: Set a default start date which should be the start of prev month
+            $startDate = '2020-06-01';
+        }
+        
+        $endDate = $this->getArgValue('end-date');
+        if ($endDate === null) {
+            Cron::log('End date is missing. Using default value.');
+            //TODO: Set a default start date which should be the start of prev month
+            $endDate = '2020-06-30';
+        }
+        Cron::log('Start date = "'.\$startDate.'"');
+        Cron::log('End date = "'.\$endDate.'"');
+        //TODO: Generate the report.
+    }
+
+    public function onFail() {
+        //TODO: Notify using email that an error stopped the job.
+    }
+
+    public function onSuccess() {
+        //TODO: Store generated reports and send them using email.
+    }
+
+}
+```
+
+### Sending Arguments Throgh CRON Web Interface
+
+If the ability to execute cron jobs through HTTP is enabled, it will be possible to access cron control panel to force execution of a job. The access to the control panel can be enabled by defining the constant <code>CRON_THROUGH_HTTP</code> and setting its value to <code>true</code>. Assuming that the server has the URL "https://example.com", the cron control panel can be accessed throgh "https://example.com/cron".
+
+To supply arguments to a job when forceing it to execute, simply navigate to the page that shows job information by clicking on its name in the page that lists all scheduled jobs. In the lower side of the page, there will be a table at which the user can see the names of the argumens. The next image shows the whole page that shows the details of the job.
+
+<img src="assets/images/cron03.png" alt="Cron Job arguments">
+
+### Sending Arguments Throgh Terminal
+
+Another way to force jobs to execute is to use command line interface. The command `cron` is used to force the execution of a job. To force a job, simply supply the argument `--force` 
+
+The following terminal output image shows how to force the job that was created using the code at the start of this page. Notice that if the job has extra arguments, it asks to supply them.
+
+<img src="assets/images/cron04.png" alt="Cron job arguments">
+
+## Sending CRON Notifications
+
+One of the things that the framework supports is the ability to send email notifications about jobs execution status. The notifications are useful and can be used to follow up with jobs execution and can be used to diagnose the cause of failure of a job when it fails.
+
+> **Note**: Note that to use mailing service of the framework, SMTP account must be setup. To learn more about sending emails and how to do the setup, [click here](learn/sending-emails).
+
+### The Class `CronEmail`
+
+In order to send email notifications, the class [`CronEmail`](https://webfiori.com/docs/webfiori/framework/cron/CronEmail) must be used. This class can be used to send an email regarding the status of background job execution (failed or success). This class must be only used in one of the abstract methods of a background job since using it while no job is active will have no effect. It is recommended to create an instance of this class in the body of the method [`AbstractJob::afterExec()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#afterExec).
+
+The following code sample shows how to use the class to send notifications to one email address. It assumes that there exist SMTP account which has the name `notifications` and it will be used to send the notifications.
+
+``` php
+namespace webfiori\framework\cron;
+
+use webfiori\framework\cron\AbstractJob;
+use webfiori\framework\cron\Cron;
+use webfiori\framework\cron\CronEmail;
+
+class GenerateAttendaceReportJob extends AbstractJob {
+    public function __construct() {
+        parent::__construct('Generate Attendance Report');
+        
+        //Generate attendance report once the new month start.
+        $this->everyMonthOn(1, '00:00');
+        
+        // Add two arguments
+        $this->addExecutionArgs([
+            'start-date',
+            'end-date',
+        ]);
+    }
+    public function afterExec() {
+        //Send email that shows the status of job execution
+        new CronEmail('notifications', [
+            'ibrahim@example.com' => 'Ibrahim' 
+        ]);
+    }
+
+    public function execute() {
+        //Access argument value.
+        $startDate = \$this->getArgValue('start-date');
+        if (\$startDate === null) {
+            Cron::log('Start date is missing. Using default value.');
+            //TODO: Set a default start date which should be the start of prev month
+            $startDate = '2020-06-01';
+        }
+        
+        $endDate = \$this->getArgValue('end-date');
+        if ($endDate === null) {
+            Cron::log('End date is missing. Using default value.');
+            //TODO: Set a default start date which should be the start of prev month
+            $endDate = '2020-06-30';
+        }
+        Cron::log('Start date = \"'.\$startDate.'\"');
+        Cron::log('End date = \"'.\$endDate.'\"');
+        //TODO: Generate the report.
+    }
+
+    public function onFail() {
+        //TODO: Notify using email that an error stopped the job.
+    }
+
+    public function onSuccess() {
+        //TODO: Store generated reports and send them using email.
+    }
+
+}
+```
