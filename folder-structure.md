@@ -44,7 +44,7 @@ This folder can hold background jobs. Background jobs contains a code which is s
 
 ### The `app/langs` Folder 
 
-This folder contains files which adds support for i18n. The developer can create his own language classes or add labels to existing one. A language class must extend the class <a href="https://webfiori.com/docs/webfiori/framework/langs/Language">`Language`</a>.
+This folder contains files which adds support for i18n. The developer can create his own language classes or add labels to existing one. A language class must extend the class <a href="https://webfiori.com/docs/webfiori/framework/i18n/Language">`Language`</a>.
 
 ### The `app/pages` Folder
 
