@@ -39,7 +39,7 @@ The framework comes with many features that can help in the process of building 
 
 ### Simple Routing Engine
 
-The main aim of routing is to take client request and sending it to correct resource. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute.
+The main aim of routing is to take client request and sending it to correct resource. Most traditional framework will have routes which points to controller methods. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or function. 
 
 ``` php
 // https://example.com/products/board-games/Chess
@@ -60,7 +60,7 @@ For more information about routing, [check here](learn/routing).
 
 ### Sessions Management
 
-Sessions are used to keep client state when moving between different web pages. The frameworks provides the developer with a sessions manager which does not depend on the implementation of PHP's session manager. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
+Sessions are used to keep client state when moving between different web pages in the web application. The frameworks provides the developer with a sessions manager which does not depend on the implementation of PHP's session manager. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
 
 ``` php
 // Start new session
