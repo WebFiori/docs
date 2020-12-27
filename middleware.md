@@ -8,6 +8,7 @@ In this page:
 * [Assigning Middleware to Routes](#assigning-middleware-to-routes)
 * [Middleware Groups](#middleware-groups)
 * [Priority](#priority)
+* [Command Line Utility](#command-line-utility)
 
 ## Introduction
 
@@ -192,6 +193,11 @@ return __NAMESPACE__;
 ```
 
 If two middleware having same priority, the name of the middle is used as indicator of which one will get executed. For example, a middleware with name `compress-file` will be reached before a one with name `start-sesstion` in case of entering the application. After processing the request, the middleware `start-sesstion` will be reached first.
+
+## Command Line Utility
+
+The framework comes with a command which can be used to create middleware skeleton. The command can be issued in the terminal by typing `php webfiori create` and selecting `Middleware` from the menu. In a matter of seconds, the developer will have his middleware ready. 
+
 
 
 **Next: [Background Tasks](learn/background-tasks)**
