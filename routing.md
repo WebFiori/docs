@@ -12,6 +12,7 @@ In this page:
   * [API Route](#api-route)
   * [Closure Route](#closure-route)
   * [Custom Route](#custom-route)
+  * [Class Route](#class-route)
 * [Generic Routes](#generic-routes)
   * [URI Variable](#uri-variable)
   * [Using URI Variable](#using-uri-variable)
@@ -203,6 +204,26 @@ class ClosureRoutes {
     }
 }
 ```
+
+### Class Route
+
+It is possible to have a route to a PHP class. When such route is created, the router will try to create an instance of the class at which the route is pointing to.
+
+``` php
+use my\super\HomePage;
+
+class ClosureRoutes {
+    public static function create(){
+        Router::addRoute([
+            'path'=>'/rout-to-class', 
+            'route-to'=> HomePage::class
+        ]);
+    }
+}
+```
+
+Creating routes to classes is not the recomended way of creating routes as this might cause problems with detecting the source of a bug in the application.
+
 ## Generic Routes
 
 Suppose that we have a we have a website that publishes news. Each post will have its own link. The posts has a URI structute that looks like `https://example.com/news/some_post`. One way to route the user to the correct post is to create a unique route for each post. If there are 1000 posts, then we have to create 1000 routes which is overwhelming.
@@ -254,6 +275,10 @@ The option `languages` is used to tell which languages the URI supports. The opt
 ### Variables Values
 
 The option `vars-values` is used in generating the sitemap of the website. The option accepts sub-associative arrays. The key of the array represents the name of variable name and the value is a sub array that contains possible variable values.
+
+### Middleware
+
+The option `middleware` is used to specify which middleware the request will go through when a request is made to the given resource. This option accespts middleware name or an array that holds middleware names. Also, this option can have the name of middleware group or an array of middleware groups. For more information about middleware, [here](learn/middleware).
 
 **Next: [The Class `Response`](learn/class-response)**
 
