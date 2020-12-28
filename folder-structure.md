@@ -24,8 +24,10 @@ The folder `app` will contain all your application files. Anything that created 
 * `app/jobs`: Used to hold cron jobs.
 * `app/langs`: Used to hold translation files (for i18n support)
 * `app/pages`: Used to hold views and web pages.
+* `app/ini`: Used to hold classes which used to initialize parts of the system.
 * `app/routes`: A folder that contains classes for creating routes.
 * `app/database`: Holds classes which are related to database.
+* `app/middleware`: Holds classes which represents a middleware.
 * `app/entity` Holds classes which represents system entities.
 
 Also, you may create your own folders and add files as you like. More details about the folders can be found below.
