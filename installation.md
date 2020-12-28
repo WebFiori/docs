@@ -19,7 +19,7 @@ The following set of requirements must be met in order for the framework to work
 * PHP >= 5.6
 * mbstring PHP Extension
 * mysqli PHP Extension
-
+* json PHP Extension
 ## Setup Local Development Environment In Windows
 
 Setting up a local development environment is simple. The setps for doing so are:
