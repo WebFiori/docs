@@ -173,6 +173,6 @@ class ViewRoutes {
 
 What we did here is to import our class and add a route to it. This syntax is much better when creating routes but it has one issue. It may not help in identifying the exact location of a bug in your class if it has one.
 
-**Next: [Basic Usage](learn/routing)**
+**Next: [Routing](learn/routing)**
 
 **Previous: [Folder Structure](learn/folder-structure)**
