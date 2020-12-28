@@ -198,7 +198,7 @@ If two middleware having same priority, the name of the middle is used as indica
 
 The framework comes with a command which can be used to create middleware skeleton. The command can be issued in the terminal by typing `php webfiori create` and selecting `Middleware` from the menu. In a matter of seconds, the developer will have his middleware ready. 
 
-
+<img alt="Create middleware using CLI." src="assets/images/middleware-cli.gif">
 
 **Next: [Background Tasks](learn/background-tasks)**
 
