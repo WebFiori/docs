@@ -12,13 +12,13 @@ In this page:
 
 ## Introduction
 
-A web application or a website which provide useful content isn't good enough if it does not provide good and easy to use user interface. User interface is one of the important factors that can be used to mesure how good a website is. For that reason, WebFiori Framework provide the needed tools to create a custom UIs for your website or web application and use them as needed.
+A web application or a website which provide useful content isn't good enough if it does not provide good and easy to use user interface. User interface is one of the important factors that can be used to mesure how good a website is. For that reason, WebFiori Framework provide the needed tools which can be used to create a custom unified user interface for your website or web application.
 
 Themes in WebFiori Framework are used to create different custom user interfaces for your website or web application. In addition, they work like a plug-ins and can provide additional functionality. Themes can be found inside the folder `themes` of the framework.
 
 ## Using Themes
 
-In order to apply a theme to your web page, all what you need to know about the theme is its name. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`Page::theme()`](https://webfiori.com/docs/webfiori/framework/Page#theme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
+In order to apply a theme to your web page, all what you need to know about the theme is its name or the class that represent the theme. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`Page::theme()`](https://webfiori.com/docs/webfiori/framework/Page#theme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
 
 ``` php
 use webfiori\framework\Page;
@@ -32,10 +32,28 @@ class MyWebPage {
         Page::render();
     }
 }
-//Must return namespace if theme belongs to one.
 return __NAMESPACE__;
 ```
 Note that if the method [`Page::theme()`](https://webfiori.com/docs/webfiori/framework/page#theme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in the class [`SiteConfig`](https://webfiori.com/docs/webfiori/conf/SiteConfig).
+
+In addition to loading a theme using its name, it is possible to use the class of the theme in order to apply it to a web page.
+
+
+``` php
+use webfiori\framework\Page;
+use app\theme\MyTheme;
+
+class MyWebPage {
+    public function __construct() {
+        Page::theme(MyTheme::class);
+        
+        // Add page content here
+        
+        Page::render();
+    }
+}
+return __NAMESPACE__;
+```
 
 ## Creating Custom Theme
 
@@ -110,6 +128,7 @@ class CustomTheme extends Theme {
     }
 }
 ```
+
 > Note: If the names of your resources folders are `css`, `js` and `images`, you don't have to set them as they will be the default values.
 
 After that, we will start the actual theme implementation. In this step, we have to implement 4 abstract methods which exist in the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme). The 4 abstract methods are:
@@ -197,7 +216,6 @@ class ExamplePage {
 }
 return __NAMESPACE__;
 ```
-If you are in local development environment, simply navigate to http://localhost/example and the page will open with the theme loaded.
 
 **Next: [Uploading Files](learn/uploading-files)**
 
