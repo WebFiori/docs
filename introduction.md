@@ -37,9 +37,20 @@ In addition to code quality, we tried to document all features by writing a mean
 ## Features
 The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
 
+* [Simple Routing Engine](#simple-routing-engine)
+* [Sessions Management](#sessions-management)
+* [Theming](#theming)
+* [Basic Templating Engine](#basic-templating-engine)
+* [Middleware](#middleware)
+* [Background Tasks](#background-tasks)
+* [Sending HTML Emails](#sending-html-emails)
+* [Command Line Interface](#command-line-interface)
+* [Database Schema and Query Building](#database-schema-and-query-building)
+* [Web Services](#web-services)
+
 ### Simple Routing Engine
 
-The main aim of routing is to take client request and sending it to correct resource. Most traditional framework will have routes which points to controller methods. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or function. 
+The main aim of routing is to take client request and sending it to correct resource. Most traditional framework will have routes which points to controller methods. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or function. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
 
 ``` php
 // https://example.com/products/board-games/Chess
@@ -52,9 +63,11 @@ Router::view([
    'path' => '/',
    'route-to' => 'Home.html'
 ]);
+Router::addRoute([
+   'path' => '/class-route',
+   'route-to' => MyPHPClass::class
+]);
 ```
-
-In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure.
 
 For more information about routing, [check here](learn/routing).
 
@@ -75,7 +88,7 @@ SessionsManager::start('another-session', [
 SessionsManager::start('first-session');
 ```
 
-In addition to that, the developer can implement his own way for storing sessions by implementing custom storage engine using the interface `SessionStorage`. You can find more information about sessions managemene [here](learn/sessions-management)
+In addition to that, the developer can implement his own way for storing sessions by implementing custom storage engine using the interface [`SessionStorage`](https://webfiori.com/docs/webfiori/framework/session/SessionStorage). You can find more information about sessions managemene [here](learn/sessions-management).
 
 ### Theming
 
@@ -90,7 +103,6 @@ class MyPage {
        Page::render();
    }
 }
-return __NAMESPACE__;
 ```
 
 For more information on how to use and create themes, [check here](learn/themes).
@@ -148,7 +160,7 @@ The framework provides the developer with commands that he can use to speed up d
 
 ### Database Schema and Query Building
 
-Currntly, the framework has support for schema and query building for MySQL database only but more are coming in the future. The developer does not have to use this feature if he would like to use another database library. For more information about this feature, [check here](learn/database].
+Currntly, the framework has support for schema and query building for MySQL database only but more are coming in the future. The developer does not have to use this feature if he would like to use another database library. For more information about this feature, [check here](learn/database).
 
 ### Web Services
 
