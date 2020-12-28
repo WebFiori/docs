@@ -56,7 +56,11 @@ Assuming that the base URL of the website is `https//example.com`, if we navigat
 
 ## Serving Dynamic Pages
 
-Dynamic pages are files that can have executable PHP code. It is recommeded to always place PHP code inside classes. Assuming that we have a page that has the name `SayHi.php` inside the folder `app/pages`. Also, assume that the page has the following code:
+Dynamic pages are files that can have executable PHP code. Also, it is possible to represent dynamic page using a class and create a route to that class.
+
+### Routing to PHP Files
+
+Assuming that we have a page that has the name `SayHi.php` inside the folder `app/pages`. Also, assume that the page has the following code:
 
 ``` php 
 use webfiori\framework\Response;
@@ -67,7 +71,8 @@ class SayHi {
     }
 }
 
-// This statement must be included at the end of the class file for pages.
+// This statement must be included at the end of the class 
+// file for pages if the route will be created using file name
 return __NAMESPACE__;
 ```
 
@@ -123,12 +128,50 @@ class SayHi {
         Response::append('Hi '.$personName.'. Welcome to my website!');
     }
 }
-// This statement must be included at the end of the class file for pages.
+
 return __NAMESPACE__;
 ```
 
 Now when navigating to `https://example.com/say-hi/Ibrahim BinAlshikh`, the message `Hi Ibrahim BinAlshikh. Welcome to my website!` will appear. The string `Ibrahim BinAlshikh` can be replaced by anything and it will say "hi" to it.
 
+### Routing to PHP Classes
+
+Assuming that we have the following PHP class which represent a dynamic web page:
+
+``` php
+use webfiori\framework\router\Router;
+use webfiori\framework\Response;
+
+class SayHi {
+    public function __construct() {
+        $personName = Router::getVarValue('person-name');
+        Response::append('Hi '.$personName.'. Welcome to my website!');
+    }
+}
+```
+
+It is possible to have a route which points to the class directly as follows:
+
+``` php
+namespace webfiori\framework\router;
+
+use SayHi;
+
+class ViewRoutes {
+    /**
+     * Create all views routes. Include your own here.
+     * @since 1.0
+     */
+    public static function create() {
+        Router::addRoute([
+            'path' => '/say-hi/{person-name}', 
+            'route-to' => SayHi::class
+        ]);
+    }
+}
+```
+
+What we did here is to import our class and add a route to it. This syntax is much better when creating routes but it has one issue. It may not help in identifying the exact location of a bug in your class if it has one.
 
 **Next: [Basic Usage](learn/routing)**
 
