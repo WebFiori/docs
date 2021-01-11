@@ -374,7 +374,6 @@ class GenerateAttendaceReportJob extends AbstractJob {
 }
 ```
 
-
-**Next: [Global Constants](learn/global-constants)**
+**Next: [Internationalization](learn/i18n)**
 
 **Previous: [Middleware](learn/middleware)**
