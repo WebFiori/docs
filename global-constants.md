@@ -13,6 +13,8 @@ The following table lists all constants and for what each one is used.
 
 |Constant Name|Description  |Default Value|
 |:-----------|:-----------|:-----------|
+|`ROOT_DIR`|Root directory of the theme. The value of this constant is usually the name of the directory at which framework and app files exist in.|(`string`)|
+|`USE_HTTP`|Sets the framework to use `http://` or `https://` for base URIs. The default behaviour of the framework is to use `https://`. But in some cases, there is a need for using `http://`. If this constant is set to true, the framework will use `http://` for base URI of the system. Default value is false.|false (`boolean`)|
 |`SCRIPT_MEMORY_LIMIT`|Memory limit per script. This constant represents the maximum amount of memory each script will consume before showing a fatal error. The developer can change this value as needed.|'2GB' (`string`)|
 |`LOAD_COMPOSER_PACKAGES`|This constant is used to tell the core if the application uses composer packages or not. If set to true, then composer packages will be loaded.|true (`boolean`)|
 |`CRON_THROUGH_HTTP`|A constant which is used to enable or disable HTTP access to cron. If the constant value is set to true, the framework will add routes to the components which is used to allow access to cron control panel. The control panel is used to execute jobs and check execution status.|false `boolean`|
@@ -31,4 +33,4 @@ The following table lists all constants and for what each one is used.
 
 **Next: [Coding Standards](learn/coding-standards)**
 
-**Previous: [Background Tasks](learn/background-tasks)**
+**Previous: [Internationalization](learn/i18n)**
