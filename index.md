@@ -21,5 +21,6 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Web Services](learn/web-services)
 * [Middleware](learn/middleware)
 * [Background Tasks](learn/background-tasks)
+* [Internationalization](learn/i18n)
 * [Global Constants](learn/global-constants)
 * [Coding Standards](learn/coding-standards)
