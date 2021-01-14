@@ -222,8 +222,6 @@ class ClosureRoutes {
 }
 ```
 
-Creating routes to classes is not the recomended way of creating routes as this might cause problems with detecting the source of a bug in the application.
-
 ## Generic Routes
 
 Suppose that we have a we have a website that publishes news. Each post will have its own link. The posts has a URI structute that looks like `https://example.com/news/some_post`. One way to route the user to the correct post is to create a unique route for each post. If there are 1000 posts, then we have to create 1000 routes which is overwhelming.
