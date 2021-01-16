@@ -21,7 +21,7 @@ In this page:
 
 WebFiori framework is a fully object oriented web development framework which was built in top of PHP language. Most PHP frameworks comes with many features and dependencies that the developer actually will never use. For this reason, the framework was developed to have the minimum features that a web developer might need to have a functional web application. Initially, the framework was developed as a generic template that can be used to only build static websites. But since then, it evolved into much more than a generic template.
 
-In our opinion, web developer will need the followig at minimum level to have a working web application:
+In our opinion, web developer will need the following at minimum level to have a working web application:
 * A database (backend).
 * Web APIs (or services) (backend).
 * A way to create web pages and modify the look and feel easly (frontend).
