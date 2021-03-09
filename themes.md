@@ -18,23 +18,20 @@ Themes in WebFiori Framework are used to create different custom user interfaces
 
 ## Using Themes
 
-In order to apply a theme to your web page, all what you need to know about the theme is its name or the class that represent the theme. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`Page::theme()`](https://webfiori.com/docs/webfiori/framework/Page#theme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
+In order to apply a theme to your web page, all what you need to know about the theme is its name or the class that represent the theme. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
 
 ``` php
 use webfiori\framework\Page;
 
-class MyWebPage {
+class MyWebPage extends WebPage {
     public function __construct() {
-        Page::theme('WebFiori Theme');
+        $this->setTheme('WebFiori Theme');
         
         // Add page content here
-        
-        Page::render();
     }
 }
-return __NAMESPACE__;
 ```
-Note that if the method [`Page::theme()`](https://webfiori.com/docs/webfiori/framework/page#theme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in the class [`SiteConfig`](https://webfiori.com/docs/webfiori/conf/SiteConfig).
+Note that if the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig).
 
 In addition to loading a theme using its name, it is possible to use the class of the theme in order to apply it to a web page.
 
@@ -43,16 +40,14 @@ In addition to loading a theme using its name, it is possible to use the class o
 use webfiori\framework\Page;
 use app\theme\MyTheme;
 
-class MyWebPage {
+class MyWebPage extends WebPage {
     public function __construct() {
-        Page::theme(MyTheme::class);
+        $this->setTheme(MyTheme::class);
         
         // Add page content here
         
-        Page::render();
     }
 }
-return __NAMESPACE__;
 ```
 
 ## Creating Custom Theme
@@ -191,30 +186,23 @@ Once this step is finished, our basic theme is ready. What we can do now is to t
 
 namespace webfiori\examples\views;
 
-use webfiori\framework\Page;
+use webfiori\framework\ui\WebPage;
 
-class ExamplePage {
+class ExamplePage extends WebPage {
     public function __construct() {
-        Page::theme('Custom Theme');
-
+        $this->setTheme('Custom Theme');
         
-        //Load language. Used to make the page i18n compatable.
-        $translation = Page::translation();
+        $this->setTitle($this->get('pages/sample-page/title'));
+        $this->setDescription($this->get('pages/sample-page/description'));
         
-        Page::title($translation->get('pages/sample-page/title'));
-        Page::description($translation->get('pages/sample-page/description'));
-        
-        $mainContentArea = Page::document()->getChildByID('main-content-area');
+        $mainContentArea = $this->getDocument()->getChildByID('main-content-area');
         
         //Load HTML component and insert it in the body of the page.
         $templateDir = ROOT_DIR.DS.'app'.DS.'pages'.DS.'example-template.html';
-        $mainContentArea->component($templateDir, $translation->get('pages/sample-page'));
+        $mainContentArea->component($templateDir, $this->get('pages/sample-page'));
         
-        //Render the page and display the result
-        Page::render();
     }
 }
-return __NAMESPACE__;
 ```
 
 **Next: [Uploading Files](learn/uploading-files)**
