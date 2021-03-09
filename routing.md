@@ -93,28 +93,30 @@ Lets assume that we have 3 views inside the folder `app/pages` as follows:
 Also, Lets assume that the base URL of the website is `https://example.com/`. We want the user to see the pages as follows:
 * `https://example.com/` should point to the view `HomeView.html`
 * `https://example.com/home` should point to the view `HomeView.html`
-* `https://example.com/user-login` should point to the view `LoginView.php`
+* `https://example.com/user-login` should point to the class `LoginView.php`
 * `https://example.com/dashboard` should point to the view `DashboardView.html`
 
 The following sample code shows how to create such a URL structre using the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes).
 ``` php
+use LoginView;
+
 class ViewRoutes {
     public static function create(){
         Router::view([
-            'path'=>'/', 
-            'route-to'=>'/HomeView.html'
+            'path' => '/', 
+            'route-to' => '/HomeView.html'
         ]);
         Router::view([
-            'path'=>'/home', 
-            'route-to'=>'/HomeView.html'
+            'path' => '/home', 
+            'route-to' => '/HomeView.html'
         });
         Router::view([
-            'path'=>'/user-login', 
-            'route-to'=>'/ThemeTestPage.php'
+            'path' => '/user-login', 
+            'route-to' => LoginView::class
         ]);
         Router::view([
-            'path'=>'/dashboard', 
-            'route-to'=>'/system-views/DashboardView.php'
+            'path' => '/dashboard', 
+            'route-to' => '/system-views/DashboardView.html'
         ]);
     }
 }
@@ -127,17 +129,17 @@ An API route is a route that usually will point to a PHP class that exist in the
 
 Suppose that we have 3 services classes as follows:
 * `apis/UserServices.php`
-* `apis/ArticleServicess.php`
-* `apis/ContentServicess.php`
+* `apis/ArticleServices.php`
+* `apis/ContentServices.php`
 
 Assuming that the base URL of the website is `https://example.com/`, We want the URLs of the APIs (or services) to be like that:
 * `https://example.com/web-apis/user/add-user` should point to `apis/UserServices.php`
 * `https://example.com/web-apis/user/update-user` should point to `apis/UserServices.php`
 * `https://example.com/web-apis/user/delete-user` should point to `apis/UserServices.php`
-* `https://example.com/web-apis/article/publish-article` should point `apis/writer/ArticleServicess.php`
-* `https://example.com/web-apis/article/revert-publish` should point `apis/writer/ArticleServicess.php`
-* `https://example.com/web-apis/article-content/add-content` should point to `/apis/writer/ContentServicess.php`
-* `https://example.com/web-apis/article-content/remove-content` should point to the view `/apis/writer/ContentServicess.php`
+* `https://example.com/web-apis/article/publish-article` should point `apis/writer/ArticleServices.php`
+* `https://example.com/web-apis/article/revert-publish` should point `apis/writer/ArticleServices.php`
+* `https://example.com/web-apis/article-content/add-content` should point to `/apis/writer/ContentServices.php`
+* `https://example.com/web-apis/article-content/remove-content` should point to the view `/apis/writer/ContentServices.php`
 
 One thing to note about creating APIs is that API name (or service name) must be passed alongside request body as a GET or POST parameter (e.g. `service=add-user` or `service-name=add-user`). as you can see from the above URLs, the name of the service is appended to the end of the URL. To let the router know that this is a route to a web service, we can use Generic Route.
 
@@ -145,19 +147,21 @@ A generic route is a route that has some of its path parts unkown. They can be u
 
 The following sample code shows how to create such a URL structre using the class APIRoutes. You can see how API name is passed. Note that the value of the generic must be `action`, `service-name` or `service` or the API call will fail.
 ``` php 
+use ContentServices;
+
 class APIRoutes {
     public static function create(){
         Router::api([
-            'path'=>'/web-apis/user/{action}', 
+            'path' => '/web-apis/user/{action}', 
             'route-to'=>'/UserAPIs.php'
         ]);
         Router::api([
-            'path'=>'/web-apis/article/{service-name}', 
+            'path' => '/web-apis/article/{service-name}', 
             'route-to'=>'/writer/ArticleAPIs.php'
         ]);
         Router::api([
-            'path'=>'/web-apis/article-content/{service-name}', 
-            'route-to'=>'/writer/ContentAPIs.php'
+            'path' => '/web-apis/article-content/{service-name}', 
+            'route-to' => ContentServices::class
         ]);
     }
 }
@@ -215,8 +219,8 @@ use my\super\HomePage;
 class ClosureRoutes {
     public static function create(){
         Router::addRoute([
-            'path'=>'/rout-to-class', 
-            'route-to'=> HomePage::class
+            'path' => '/rout-to-class', 
+            'route-to' => HomePage::class
         ]);
     }
 }
