@@ -20,10 +20,10 @@ One of the important features of any web application is the ability to send emai
 
 In order to send emails using the framework you need to learn at least about 3 classes. These classes are:
 * [`SMTPAccount`](https://webfiori.com/docs/webfiori/framework/mail/SMTPAccount)
-* [`MailConfig`](https://webfiori.com/docs/webfiori/config/MailConfig)
+* [`AppConfig`](https://webfiori.com/docs/app/AppConfig)
 * [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage)
 
-In addition to the given 3, there exist one extra class which is [`ConfigController`](https://webfiori.com/docs/webfiori/framework/ConfigController). This one acts as a utility class.
+In addition to the given 3, there exist one extra class which is [`ConfigController`](https://webfiori.com/docs/webfiori/framework/ConfigController). This one acts as a utility class for storing and validating SMTP connections.
 
 ### The Class `SMTPAccount`
 
@@ -31,7 +31,7 @@ The class [`SMTPAccount`](https://webfiori.com/docs/webfiori/framework/mail/SMTP
 
 ### The Class `MailConfig`
 
-The class [`MailConfig`](https://webfiori.com/docs/webfiori/config/MailConfig) is a configuration class which is used to store SMTP connections which are used by the system to send emails. The class can be used to store unlimited number of SMTP accounts. Every account is kept as an object of type [`SMTPAccount`](https://webfiori.com/docs/webfiori/framework/mail/SMTPAccount).
+The class [`AppConfig`](https://webfiori.com/docs/app/AppConfig) is a configuration class which is used to store some configuration settings of the framework. One of the configurations are SMTP connections which are used by the system to send emails. The class can be used to store unlimited number of SMTP accounts. Every account is kept as an object of type [`SMTPAccount`](https://webfiori.com/docs/webfiori/framework/mail/SMTPAccount).
 
 ### The Class `EmailMessage`
 
@@ -39,7 +39,7 @@ The class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/Ema
 
 ### The Class `ConfigController`
 
-The class [`ConfigController`](https://webfiori.com/docs/webfiori/framework/ConfigController) is a utility class which acts as an interface between the email message and the logic which is used to send the message. In addition, this class is used to modify the class The class [`MailConfig`](https://webfiori.com/docs/webfiori/config/MailConfig) programatically by adding and removing connections.
+The class [`ConfigController`](https://webfiori.com/docs/webfiori/framework/ConfigController) is a utility class which acts as an interface between the email message and the logic which is used to send the message. In addition, this class is used to modify the class The class [`AppConfig`](https://webfiori.com/docs/app/AppConfig) programatically by adding and removing connections.
 
 ## Sending an Email
 
@@ -56,7 +56,7 @@ The first step is usually performed once. After storing connection information, 
 
 ### Storing SMTP Connection
 
-As we have said before, the class [`MailConfig`](https://webfiori.com/docs/webfiori/config/MailConfig) is used to store SMTP connections. There are two ways to add new SMTP connections to the class. It is possible to open the file which has the class code and add the connection manually, or we can add the connection using command line interface. The second way is recommended as it will validate connection information before storing them. For the time being, we will use the manual way.
+As we have said before, the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig) is used to store SMTP connections. There are two ways to add new SMTP connections to the class. It is possible to open the file which has the class code and add the connection manually, or we can add the connection using command line interface. The second way is recommended as it will validate connection information before storing them. For the time being, we will use the manual way.
 
 Using the manual way, we add connection information by modifying the code in the constructor of the class "MailConfig". Lets assume that we have SMTP account that has the following info:
 * Server Address: "mail.example.com".
@@ -69,7 +69,7 @@ Using the manual way, we add connection information by modifying the code in the
 Using the given info, Connection information can be added maually as follows:
 
 ``` php
-//Inside the class MailConfig's constructor...
+//Inside the class AppConfig in the body of the method initSmtpConnections...
 $account00 = new SMTPAccount();
 $account00->setServerAddress('mail.example.com')
 $account00->setPort(465);
@@ -81,9 +81,12 @@ $account00->setPassword('123654');
 $account00->setName('System Notifier');
 $account00->setAddress('no-reply@example.com');
 
+//This name will be used later as identefier for which account to use.
+$account00->setAccountName('no-replay-smtp');
+
 //Finally, add the account.
 //We must give our account a name in order to use it later.
-$this->addSMTPAccount('no-reply-smtp',$account00);
+$this->addAccount($account00);
 ```
 
 ### Creating and Sending The Message
