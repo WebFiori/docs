@@ -253,7 +253,7 @@ Also, assuming that we add the object as follows:
 ``` php
 $jsonObj = new Json();
 
-
+$jsonObj->addObject("obj", new Employee("Ibrahim", "BinAlshikh", 7200));
 
 ```
 
