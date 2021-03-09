@@ -30,6 +30,8 @@ The folder `app` will contain all your application files. Anything that created 
 * `app/middleware`: Holds classes which represents a middleware.
 * `app/entity` Holds classes which represents system entities.
 
+In addition to the given folders, the directory will have a file called `AppConfig.php`. This file contains a code for a class that holds some configuration information for your application. If the file does not exist or was deleted, the framework will re-create it.
+
 Also, you may create your own folders and add files as you like. More details about the folders can be found below.
 
 ### The `app/apis` Folder
