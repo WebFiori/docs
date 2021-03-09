@@ -45,21 +45,16 @@ The following set of steps will show you how to create your database structure a
 
 ### Adding Connection Information
 
-Database connections are represented by the class [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Connection information is stored inside the class [`Config`](https://webfiori.com/docs/webfiori/conf/Config). It is possible to store multiple connecion inside it. There are two ways to add connection information. The first one is to add it manually to the class [`Config`](https://webfiori.com/docs/webfiori/conf/Config). The second way is to use command line interface.
+Database connections are represented by the class [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Connection information is stored inside the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig). It is possible to store multiple connecion inside it. There are two ways to add connection information. The first one is to add it manually to the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig). The second way is to use command line interface.
 
-Adding connection information manually is simple. All what we have to do is to edit the code in the constructor of the class [`Config`](https://webfiori.com/docs/webfiori/conf/Config). Assuming that we have MySQL database with the name `testing_db` and username `root` and password `123456`, then the connection can be added as follows:
+Adding connection information manually is simple. All what we have to do is to edit the code in the constructor of the class [`AppConfig`](https://webfiori.com/docs/webfiori/conf/AppConfig). Assuming that we have MySQL database with the name `testing_db` and username `root` and password `123456`, then the connection can be added as follows:
 
 ``` php
-/**
-  * Initialize configuration.
-  */
-private function __construct() {
-    $this->releaseDate = '2020-07-05';
-    $this->version = '1.1.0';
-    $this->versionType = 'Beta 3';
-    $this->configVision = '1.3.5';
+private function initDbConnections() {() {
     $this->dbConnections = [
-        'connection-00' => new ConnectionInfo('mysql', 'root', '12345', 'testing_db', 'loalhost', 3306)
+        'connection-00' => new ConnectionInfo('mysql', 'root', '12345', 'testing_db', 'loalhost', 3306, [
+            'connection-name' => 'connection-00'
+        ])
     ];
 }
 ```
@@ -370,6 +365,6 @@ The command `php webfiori update-table` is used to modify the structure of the t
 
 <img src="assets/images/add-table-col-command.gif" alt="Initialize database table command.">
 
-**Next: [The Library WebFiori JSON](learn/webfiori-jsons)**
+**Next: [The Library WebFiori JSON](learn/webfiori-json)**
 
 **Previous: [Web Services](learn/web-services)**

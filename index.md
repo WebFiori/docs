@@ -1,6 +1,6 @@
 # Learning Center
 
-Here you will find topics which can help you getting started with WebFiori framework. For new learners, it is recommended to start from the top to bottom. Note that the topics are applicable to only version 2.0.0 of the framework.
+Here you will find topics which can help you getting started with WebFiori framework. For new learners, it is recommended to start from the top to bottom. Note that the topics are applicable to only version 2.1.0 of the framework.
 
 <meta name="description" content="A set of topics which helps in getting started with WebFiori Framework.">
 
@@ -10,6 +10,7 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Basic Usage](learn/basic-usage)
 * [Routing](learn/routing)
 * [The Class `Response`](learn/class-response)
+* [Web Pages](learn/web-pages)
 * [UI Package](learn/ui-package)
 * [Themes](learn/themes)
 * [Uploading Files](learn/uploading-files)

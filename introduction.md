@@ -28,12 +28,6 @@ In our opinion, web developer will need the following at minimum level to have a
 
 If we remove web pages, then the backend logic can be connected to any frontend such as a mobile application. WebFiori framework fullfil the 3 by providing a generic database layer, a library for creating web services which is fully integrated with the framework and theming. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible with WebFiori framework.
 
-## Quality Comes First, Documentation Second
-
-While developing the framework, we thought of code quality as first priority. For this reason, we tried to make the quality of the code as good as possible. For instance, the developer can understand what happens in the code without having to read documentation almost everywhere. Also, we have [coding standards](learn/coding-standards) that we followed while developing the framework.
-
-In addition to code quality, we tried to document all features by writing a meaningfull PHPDocs in all source code files of the framework. The docs are compiled and then published at https://webfiori.com/docs/webfiori. If you are familiar with Java programming language, you will notice that docs style is somehow similar to [JavaDocs](https://docs.oracle.com/javase/7/docs/api/) style.
-
 ## Features
 The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
 
@@ -97,10 +91,9 @@ The framework gives the developer the option to use themes. The main use of them
 ```php
 use webfiori\framework\Page;
 
-class MyPage {
+class MyPage extends WebPage {
    __construct() {
-       Page::theme('WebFiori V108');
-       Page::render();
+       $this->setTheme('WebFiori V108');
    }
 }
 ```
@@ -122,7 +115,6 @@ There are many template engines out there with many fancy features. WebFiori fra
 $template = HTMLNode::loadComponent('path/to/my/template.html', [
     'name' => 'Ibrahim Ali'
 ]);
-Page::insert($template);
 ```
 
 For more information on how to build web pages UI, [check here](learn/ui-package).

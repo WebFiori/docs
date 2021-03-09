@@ -20,6 +20,7 @@ The following set of requirements must be met in order for the framework to work
 * mbstring PHP Extension
 * mysqli PHP Extension
 * json PHP Extension
+
 ## Setup Local Development Environment In Windows
 
 Setting up a local development environment is simple. The setps for doing so are:
@@ -40,7 +41,7 @@ Composer is a dependency manager which is used to manage PHP packages. To downlo
 
 There are 2 ways to install the framework:
 * [Create Project Using Composer](#create-project-using-composer)
-* [Download The Framework](#download-the-ramework)
+* [Manual Installation](#manual-installation)
 
 #### Create Project Using Composer
 
@@ -50,9 +51,9 @@ C:\Server\php\php.exe composer.phar create-project --prefer-dist webfiori/framew
 ```
 This command will create new folder which has the name `my-site` and install the framework with all its dependencies insite. The name of the folder can be changed as needed. Once this is finished, your workspace will be the folder `C:\Server\apache2\htdocs\my-site\src\app`. The last step is to set document root of the local development server to `C:\Server\apache2\htdocs\my-site\src\public`.
 
-#### Download The Framework
+#### Manual Installation
 
-The other installation option is to download the framework from the official website. Simply, go to [https://webfiori.com/download](https://webfiori.com/download) and download the latest release of the framework. Once downloaded, the files should be extracted to a sub-folder inside the folder `C:\Server\apache2\htdocs`. Assuming that the name of the folder is `my-site`, your workspace will be the folder `C:\Server\apache2\htdocs\my-site\app`. Also, document root will be `C:\Server\apache2\htdocs\my-site\public` in this case.
+The other installation option is to download the framework from the official website and install it manually. Simply, go to [https://webfiori.com/download](https://webfiori.com/download) and download the latest release of the framework. Once downloaded, the files should be extracted to a sub-folder inside the folder `C:\Server\apache2\htdocs`. Assuming that the name of the folder is `my-site`, your workspace will be the folder `C:\Server\apache2\htdocs\my-site\app`. Also, document root will be `C:\Server\apache2\htdocs\my-site\public` in this case.
 
 ### Running The Project
 
@@ -64,14 +65,9 @@ Assuming that Bitnami Wamp Stack is installed, you need to update document root 
 
 Once this step is finished, save the file and close it. After that, apache server must be restarted to apply the changes. The server can be restarted using server manager. To open server manager, go to the folder `C:\Server` and click the executable which has the name `manager-windows.exe`. Click on the tap "Manage Servers" and click on "Apache Server" and hit "Restart". 
 
-Now when we open the web browser and navigate to `localhost`, a page with the following text will appear:
-``` bash
-This is the default page
-Add pages inside the folder 'app/pages'.
-Add routes for each page inside the class app/routes/ViewRoutes.php
-An example of a basic page can be found in the file 'app/pages/ExamplePage.php'.
-You can check example page by clicking here.
-```
+Now when we open the web browser and navigate to `localhost`, a which is similar to the following image will appear.:
+
+<img src="assets/images/wf-welcome.png" alt="WebFiori framework welcome page.">
 
 This means that local developent environment setup is finished.
 
@@ -85,7 +81,7 @@ When deploying your application in your production environment, you must set the
 
 If the framework is downloaded using composer, then you must upload the `src` and the `vendor` folder. Another option is to only upload the `src` folder and run composer in your server to install dependencies.
 
-If the framework is downloaded from the website, then simply upload the whole content of your project folder to the server.
+If the framework is downloaded from the website and installed manually, then simply upload the whole content of your project folder to the server.
 
 **Previous: [Introduction](learn/introduction)**
 
