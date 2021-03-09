@@ -2,11 +2,11 @@
 
 <meta name="description" content="One essential part of any website or web application are the pages that the user will interact with. WebFiori framework provides the developers with simple way to create web pages.">
 
-# Introduction
+## Introduction
 
-One essential part of any website or web application are the pages that the user will interact with. WebFiori framework provides the developers with simple way to create web pages. Any class that represents a web page must extend the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPage). This class has all needed utilities to add and modify the content of a web page without having to touch HTML.
+One essential part of any website or web application are the pages that the user will interact with. WebFiori framework provides the developers with simple way to create dynamic web pages. Any class that represents a web page must extend the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPage). This class has all needed utilities to add and modify the content of a web page without having to touch HTML.
 
-# Simple Use Case
+## Simple Use Case
 
 Assume that we would like to have a page that has only one statement which says "Hello World!". The first step is to create new PHP class that extends the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPage).
 
@@ -85,6 +85,105 @@ class ExamplePage extends WebPage {
         
         $div = $this->insert('div');
         $div->text("Hello World!");
+    }
+}
+```
+
+Now when we refersh the page on the web browser, the statement "Hello World!" should appear.
+
+## Adding Meta Tags
+
+The developer can use the method [`WebPage::addMeta()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addMeta). This method accespts two parameters and one optional. The first argument is the value of the attribute `name` of the tag. The second one is the value of the attribute `content` of the tag. The last argument is used to tell if the value of the attribute `content` will be overreden if a tag with such `name` already exist.
+
+``` php
+namespace webfiori\examples\views;
+
+use webfiori\framework\ui\WebPage;
+
+class ExamplePage extends WebPage {
+    public function __construct() {
+        parent::__construct();
+        
+        $this->addMeta('robots', 'index, follow');
+        
+        $div = $this->insert('div');
+        $div->text("Hello World!");
+    }
+}
+```
+
+
+## Adding CSS or JS Resource Files
+
+Adding extra CSS or JS resource files to your page can be performed using two methods. The first one is [`WebPage::addJS()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addJS). This method accepts two parameters. The first one is the value of the attribute `src` and the second one is an array that can have additional attributes for the JavaScript resource file such as `async`. 
+
+The second method is [`WebPage::addCSS()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addCSS). Similar to [`WebPage::addJS()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addJS), this method accepts two parameters. The first one is the value of the attribute `href` and the second one is an array that can have additional attributes for the CSS resource file. 
+
+``` php
+namespace webfiori\examples\views;
+
+use webfiori\framework\ui\WebPage;
+
+class ExamplePage extends WebPage {
+    public function __construct() {
+        parent::__construct();
+        
+        $this->addJS('https://example.com/ext-javascript.js');
+        
+        $this->addCSS('https://example.com/ext-style.css');
+        
+        $div = $this->insert('div');
+        $div->text("Hello World!");
+    }
+}
+```
+
+## Applying a Theme
+
+One of the great fetaures of the framework is the ability to create and apply themes. The main aim of themes is to give a unified look and feel for all the pages of the website or web application. Simply, to change the whole look of the page without modifying the content, change one line of code to apply new style. For more information on how to create themes, [check here](learn/themes). 
+
+There are two ways to apply a theme to a web page. One way is to use the name of the theme if you know its name and the other way is to use the class that represents the theme. One of the themes that comes with the framework has a class name `WebfioriV108`. To apply this theme, simply use the following syntax:
+``` php
+namespace webfiori\examples\views;
+
+use webfiori\framework\ui\WebPage;
+
+//First, import the theme.
+use webfiori\theme\WebFioriV108;
+
+class ExamplePage extends WebPage {
+    public function __construct() {
+        parent::__construct();
+        
+        //Apply the theme
+        $this->setTheme(WebFioriV108::class);
+        
+        $div = $this->insert('div');
+        $div->text("Hello World!");
+    }
+}
+```
+
+## Before Render Action
+
+Suppose that we would like to perform an event before the page is rendered. For example, we would like to make an element be the last one to be added to the page. This can be achived using the method [`WebPage::addBeforeRender()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addBeforeRender).
+
+``` php
+namespace webfiori\examples\views;
+
+use webfiori\framework\ui\WebPage;
+
+class ExamplePage extends WebPage {
+    public function __construct() {
+        parent::__construct();
+        
+        $this->addBeforeRender(function (WebPage $page, $name) {
+            $div = $page->insert('div');
+            $div->text($name);
+        }, ["Ibrahim"]);
+        
+        $div = $this->insert('div');
+        $div->text("Hello");
     }
 }
 ```
