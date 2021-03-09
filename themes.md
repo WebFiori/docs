@@ -18,7 +18,7 @@ Themes in WebFiori Framework are used to create different custom user interfaces
 
 ## Using Themes
 
-In order to apply a theme to your web page, all what you need to know about the theme is its name or the class that represent the theme. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
+In order to apply a theme to your web page, we have to use the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPag). For more information about web pages, [check here](learn/web-pages). After that, all what you need to know about the theme is its name or the class that represent the theme. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
 
 ``` php
 use webfiori\framework\Page;
