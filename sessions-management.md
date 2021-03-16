@@ -12,7 +12,7 @@ In this page:
 * [Adding Data to a Session](#adding-data-to-a-session)
 * [Retrieving Stored Data](#retrieving-stored-data)
 * [Generating New ID](#generating-new-id)
-* []()
+* [Creating Custom Sessions Storage](#creating-custom-sessions-storage)
 
 ## Introduction
 
@@ -130,6 +130,140 @@ SessionsManager::newId();
 // This will show different ID.
 Response::append('New Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
 ```
+
+## Creating Custom Sessions Storage
+
+By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/webfiori/framework/session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `app/storage/sessions`.
+
+Creating new sessions storage is very simple. For example, the developer might want to use database to store session data. In next steps, we will create a basic new sessions storage engine and use it.
+
+### Creating Database Table
+
+First step, we will create new database table class which we will use later on to store sessions.
+
+``` php
+
+namespace app\database;
+
+use webfiori\database\mysql\MySQLTable;
+
+class SessionsTable extends MySQLTable {
+    /**
+     * Creates new instance of the class.
+     */
+    public function __construct(){
+        parent::__construct('sessions');
+        $this->setComment('This table is used to store session related data');
+        $this->addColumns([
+            's-id' => [
+                'type' => 'varchar',
+                'size' => '128',
+                'primary' => true,
+                'is-unique' => true,
+                'comment' => 'The unique ID of the session.',
+            ],
+            'started-at' => [
+                'type' => 'timestamp',
+                'default' => 'now()',
+                'comment' => 'The date and time at which the session started.',
+            ],
+            'last-used' => [
+                'type' => 'datetime',
+                'default' => 'now()',
+                'comment' => 'The date and time at which the user has activity during the session.',
+            ],
+            'session-data' => [
+                'type' => 'mediumtext',
+                'comment' => 'Session state.',
+            ],
+        ]);
+    }
+}
+
+```
+
+### Implementing Database Access Methods
+
+Next step, we need to create a class which we can use to execute queries against the table to insert, update and delete sessions. We will be extending the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) and add our logic in the new class. In addition to that, we will make the class implement the interface [SessionStorage](https://webfiori.com/docs/webfiori/framework/session/SessionStorage). The interface has all methods needed to have a functional sessions storage engine.
+
+``` php 
+namespace app\database;
+
+use webfiori\framework\DB;
+use app\database\SessionsTable;
+use webfiori\framework\session\SessionStorage;
+
+class SessionsDatabase extends DB implements SessionStorage {
+
+    public function __construct() {
+         //Replace connection_to_use with the connection 
+         //of the database which will be used to store sessions.
+         parent::__construct('connection_to_use');
+         
+         //We need to add the table to the instance.
+         $this->addTable(new SessionsTable());
+    }
+    
+    public function read($sId) {
+        $this->table('sessions')->select()->where('s-id', '=', $sId)->execute();
+        $resultSet = $this->getLastResultSet();
+        if ($resultSet->getRowsCount() == 1) {
+            return $resultSet->getRows()[0]['session_data'];
+        }
+    }
+    
+    public function save($sId, $session) {
+        $sData = $this->getSession($sId);
+        if ($sData !== null) {
+            $this->table('sessions')->update([
+                'session-data' => $session,
+                'last-used' => date('Y-m-d H:i:s')
+            ])->where('s-id', '=', $sId)->execute();
+        } else {
+            $this->table('sessions')->insert([
+                's-id' => $sId,
+                'session-data' => $session,
+                'last-used' => date('Y-m-d H:i:s'),
+                'started-at' => date('Y-m-d H:i:s'),
+            ])->execute();
+        }
+    }
+    
+    public function gc() {
+        if (defined('SESSION_GC') && SESSION_GC > 0) {
+            $olderThan = time() - SESSION_GC;
+        } else {
+            //Clear any sesstion which is older than 30 days
+            $olderThan = time() - 60 * 60 * 24 * 30;
+        }
+        $date = date('Y-m-d H:i:s', $olderThan);
+        $ids = $this->getSessionsIDs($date);
+        foreach ($ids as $id) {
+            $this->removeSession($id);
+        }
+    }
+    
+    public function remove($sId) {
+        $this->table('sessions')->delete()->where('s-id', '=', $sId)->execute();
+    }
+    
+    //Helper method for gc
+    public function getSessionsIDs($olderThan) {
+        $this->table('sessions')->select()->where('last-used', '<=', $olderThan)->execute();
+        $resultSet = $this->getLastResultSet();
+        $resultSet->setMappingFunction(function ($data) {
+            $retVal = [];
+            foreach ($data as $record) {
+                $retVal[] = $record['s_id'];
+            }
+            return $retVal;
+        });
+        return $resultSet->getMappedRows();
+    }
+}
+```
+
+The last step is to use the newly created sessions storage engine. In order to have the framework use the new sessions manager, we have to define the constant `WF_SESSION_STORAGE` in the class [`GlobalConstants`](https://webfiori.com/docs/webfiori/ini/GlobalConstants). The value of the constant must be the value of the namespace and the class name (e.g. `\app\database\SessionsDatabase`). Once done, the framework will use this engine.
 
 **Next: [The Library WebFiori JSON](learn/webfiori-json)**
 
