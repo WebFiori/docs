@@ -107,7 +107,7 @@ There are many template engines out there with many fancy features. WebFiori fra
 ``` html
 <!--This is the template-->
 <div class="container">
- <p>Hello Mr. \{\{name\}\}</p>
+ <p>Hello Mr. \{{name}}</p>
 </div>
 ```
 
