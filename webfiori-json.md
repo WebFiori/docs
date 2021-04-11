@@ -248,7 +248,9 @@ class Employee {
 }
 ```
 
+
 Also, assuming that we add the object as follows:
+
 
 ``` php
 $jsonObj = new Json();
@@ -257,7 +259,9 @@ $jsonObj->addObject("obj", new Employee("Ibrahim", "BinAlshikh", 7200));
 
 ```
 
+
 The JSON output that will be created will be similar to the following:
+
 
 ``` json
 {
