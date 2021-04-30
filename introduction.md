@@ -19,7 +19,7 @@ In this page:
 
 ## What is WebFiori Framework
 
-WebFiori framework is a fully object oriented web development framework which was built in top of PHP language. Most PHP frameworks comes with many features and dependencies that the developer actually will never use. For this reason, the framework was developed to have the minimum features that a web developer might need to have a functional web application. Initially, the framework was developed as a generic template that can be used to only build static websites. But since then, it evolved into much more than a generic template.
+WebFiori framework is a fully object oriented web development framework which was built in top of PHP language. The framework was developed to have the minimum features that a web developer might need to have a functional web application. Initially, the framework was developed as a generic template that can be used to build only static websites. But since then, it evolved into much more than a generic template.
 
 In our opinion, web developer will need the following at minimum level to have a working web application:
 * A database (backend).
@@ -44,7 +44,7 @@ The framework comes with many features that can help in the process of building 
 
 ### Simple Routing Engine
 
-The main aim of routing is to take client request and sending it to correct resource. Most traditional framework will have routes which points to controller methods. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or function. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
+The main aim of routing is to take client request and sending it to correct resource. Most traditional framework which are fully MVC will have routes which points to controller methods. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or function. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
 
 ``` php
 // https://example.com/products/board-games/Chess
