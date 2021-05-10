@@ -1,6 +1,6 @@
 # Routing
 
-<meta name="description" contect="Routing in simple terms is the process of taking client request and sending it to correct location.">
+<meta name="description" contect="Routing in simple terms is the process of taking client request and sending it to correct resource.">
 
 In this page:
 * [Introduction](#introduction)
@@ -53,7 +53,7 @@ Also, the framework has its own custom `web.config` file that has a rule which i
 </rule>
 ```
 
-Once the request reaches the file `index.php`, The initialization process of the framework will start. After the initialization is completed without any errors, the final stage is to route the request to its final destination.
+Once the request reaches the file `index.php`, The initialization process of the application will start. After the initialization is completed without any errors, the final stage is to route the request to its final destination.
 
 The routing process is completed by the class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router). The whole magic of routing is completed by sending the requested URL as a parameter to the method [`Router::route()`](https://webfiori.com/docs/webfiori/framework/router/Router#route). If a resource was found at which the given URL is pointing to, the request will be sent to it. If no route is found, a 404 error is generated.
 
@@ -64,7 +64,7 @@ The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router)
 A resource can be simply a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good looking way.
 
 Most of the time, this class will be used to create routes but it can be used to perform other tasks as well. In general, there are 4 types of routes that can be created using this class:
-* View Route.
+* Page Route.
 * API Route.
 * Closure Route.
 * Custom Route.
@@ -75,6 +75,7 @@ For each type of route, there is a specific static method that can be used to cr
 * [Router::closure()](https://webfiori.com/docs/webfiori/framework/router/Router#closure)
 * [Router::addRoute()](https://webfiori.com/docs/webfiori/framework/router/Router#addRoute)
 
+
 ## Types of Routes
 
 We have said that there are 4 different types of routes. In general, the idea of creating route for each type will be the same. The only difference will be the location of the resource that the route will point to.
@@ -83,7 +84,7 @@ We have said that there are 4 different types of routes. In general, the idea of
 
 This type of route is the most common type of routes. It is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `app/pages` will contain all the views. The method [Router::view()](https://webfiori.com/docs/webfiori/framework/router/Router#view) is used to create such route.
 
-In order to make it easy for developers, they can use the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes) to create routes to all views. The developer can modify the body of the method [`ViewRoutes::create()`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes#create) to add new routes as needed.
+In order to make it easy for developers, they can use the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes) to create routes to all views. The developer can modify the body of the method [`ViewRoutes::create()`](https://webfiori.com/docs/app/ini/routes/ViewRoutes#create) to add new routes as needed.
 
 Lets assume that we have 3 views inside the folder `app/pages` as follows:
 * /pages/HomeView.html
@@ -96,7 +97,7 @@ Also, Lets assume that the base URL of the website is `https://example.com/`. We
 * `https://example.com/user-login` should point to the class `LoginView.php`
 * `https://example.com/dashboard` should point to the view `DashboardView.html`
 
-The following sample code shows how to create such a URL structre using the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes).
+The following sample code shows how to create such a URL structre using the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes).
 ``` php
 use LoginView;
 
@@ -226,19 +227,19 @@ class ClosureRoutes {
 }
 ```
 
-## Generic Routes
+## Route Parameters
 
 Suppose that we have a we have a website that publishes news. Each post will have its own link. The posts has a URI structute that looks like `https://example.com/news/some_post`. One way to route the user to the correct post is to create a unique route for each post. If there are 1000 posts, then we have to create 1000 routes which is overwhelming.
 
-WebFiori framework provides a way to create one route to all posts. This can be achived by using URI variables while creating your route. By adding variables, we created a generic route which can serve content based on the value of the variable.
+WebFiori framework provides a way to create one route to all posts. This can be achived by using route parameters while creating your route. By adding parameters, we created a generic route which can serve content based on the value of the variable.
 
-### URI Variable
+### URI Parameters
 
-A URI Variable is a string which is a part of URI's path which can have many values. The value of the variable can be specified when sending a request to the resource that the URI represents. In the above example, the value of the variable most probably will be the name of the post. URI variables can be also used to replace query string variables to make URIs user friendly.
+A URI parameter is a string which is a part of URI's path which can have many values. The value of the parameter can be specified when sending a request to the resource that the URI represents. In the above example, the value of the parameter most probably will be the name of the post. URI parameters can be also used to replace query string paramaters to make URIs user friendly.
 
-### Using URI Variable
+### Using URI Parameters
 
-We have already seen variables when we explained the diffrent types of routes ([Closure Route](#closure-route)). In order to add a variable to a route, we have to enclose its name between two curly braces `{}`. To access the value of the variable, the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) is used. The following sample code shows how to use URI variables in creating generic routes.
+We have already seen parameters when we explained the diffrent types of routes ([Closure Route](#closure-route)). In order to add a parameter to a route, we have to enclose its name between two curly braces `{}`. To access the value of the parameter, the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) is used. The following sample code shows how to use URI parameters in creating generic routes.
 
 ``` php
 use webfiori\framework\Response;
@@ -281,6 +282,10 @@ The option `vars-values` is used in generating the sitemap of the website. The o
 ### Middleware
 
 The option `middleware` is used to specify which middleware the request will go through when a request is made to the given resource. This option accespts middleware name or an array that holds middleware names. Also, this option can have the name of middleware group or an array of middleware groups. For more information about middleware, [here](learn/middleware).
+
+## Request Method
+
+By default, a route to a resource can be called using any request method. But it is possible to restrict that to specific request method (or methods). The option 'methods' can have a string which represents the method at which the resource can be fetched with (e.g. 'GET') or it can be an array that holds the names of request methods at which the resource can be fetched with.
 
 **Next: [The Class `Response`](learn/class-response)**
 
