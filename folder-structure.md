@@ -14,6 +14,7 @@ In this page:
 * [The `vendor` Folder](#the-vendor-folder)
 * [The `public` Folder](#the-public-folder)
 * [The `themes` Folder](#the-themes-folder)
+* [Setting Custom Application Folder](#setting-custom-application-folder)
 
 ## The `app` Folder
 
@@ -24,7 +25,7 @@ The folder `app` will contain all your application files. Anything that created 
 * `app/langs`: Used to hold translation files (for i18n support)
 * `app/pages`: Used to hold views and web pages.
 * `app/ini`: Used to hold classes which used to initialize parts of the system.
-* `app/routes`: A folder that contains classes for creating routes.
+* `app/ini/routes`: A folder that contains classes for creating routes.
 * `app/database`: Holds classes which are related to database.
 * `app/middleware`: Holds classes which represents a middleware.
 * `app/entity` Holds classes which represents system entities.
@@ -32,6 +33,8 @@ The folder `app` will contain all your application files. Anything that created 
 In addition to the given folders, the directory will have a file called `AppConfig.php`. This file contains a code for a class that holds configuration information for your application. If the file does not exist or was deleted, the framework will re-create it.
 
 Also, you may create your own folders and add files as you like. More details about the folders can be found below.
+
+> <b>Note:</b> It is possible to have different name for the folder `app` by changing the value of the constant `APP_DIR_NAME`. For more information, [check here](##setting-custom-application-folder).
 
 ### The `app/apis` Folder
 
@@ -76,6 +79,14 @@ The public folder is the root directory of your web application. You should incl
 
 ## The `themes` Folder
 The folder `themes` is a place that contains components that gives a unified look and feel for the website. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`.
+
+## Setting Custom Application Folder
+
+As of version 2.3.0, the developer have the option to set custom name for the folder that holds application code. This allows the developer to follow PSR-4 without having to add application configuration classes in a folder and application related classes in another folder. To set custom name for application folder, the developer have to define the name of application folder at the top of the file `index.php`. 
+
+When the source code of the file is observed, the `define` can be seen at [the top](https://github.com/WebFiori/app/blob/main/public/index.php#L10) of the file. The developer can specify new name for application folder by specifying a value for the constant `APP_DIR_NAME`. As noticed, default value is `app`. When the value of the constant is changed to something else, the framework will attempt to create the same structure as default application structure with all configuration classes.
+
+Note that the process of renaming the folder will change the namespace at which initialization classes belongs to. For example, the class `AppConfig` belongs to the namespace `app`. If the value of the constant `APP_DIR_NAME` is changed to `coolApp`, the class will be re-created by the framework at the namespace `coolApp`.
 
 **Previous: [Installation](learn/installation)**
 
