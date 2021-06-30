@@ -8,11 +8,12 @@ In this page:
 * [Life Cycle of a Request](#life-cycle-of-a-request)
 * [The Class Router](#the-class-router)
 * [Types of Routes](#types-of-routes)
-  * [View Route](#view-route)
+  * [Page Route](#view-route)
   * [API Route](#api-route)
   * [Closure Route](#closure-route)
   * [Custom Route](#custom-route)
   * [Class Route](#class-route)
+  * [Redirect Route](#redirect-route)
 * [Generic Routes](#generic-routes)
   * [URI Variable](#uri-variable)
   * [Using URI Variable](#using-uri-variable)
@@ -21,6 +22,9 @@ In this page:
   * [Case Sensitivity](#case-sensitivity)
   * [Languages](#languages)
   * [Variables Values](#variables-values)
+  * [Middleware](#middleware)
+  * [Request Method](#request-method)
+  * [Action](#action)
 
 ## Introduction
 
@@ -80,13 +84,13 @@ For each type of route, there is a specific static method that can be used to cr
 
 We have said that there are 4 different types of routes. In general, the idea of creating route for each type will be the same. The only difference will be the location of the resource that the route will point to.
 
-### View Route
+### Page Route
 
-This type of route is the most common type of routes. It is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `app/pages` will contain all the views. The method [Router::view()](https://webfiori.com/docs/webfiori/framework/router/Router#view) is used to create such route.
+This type of route is the most common type of routes. It is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `pages` of your application will contain all pages. The method [Router::page()](https://webfiori.com/docs/webfiori/framework/router/Router#page) is used to create such route.
 
-In order to make it easy for developers, they can use the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes) to create routes to all views. The developer can modify the body of the method [`ViewRoutes::create()`](https://webfiori.com/docs/app/ini/routes/ViewRoutes#create) to add new routes as needed.
+In order to make it easy for developers, they can use the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes) to create routes to all pages. The developer can modify the body of the method [`ViewRoutes::create()`](https://webfiori.com/docs/app/ini/routes/ViewRoutes#create) to add new routes as needed.
 
-Lets assume that we have 3 views inside the folder `app/pages` as follows:
+Lets assume that we have 3 pages inside the folder `pages` as follows:
 * /pages/HomeView.html
 * /pages/LoginView.php
 * /pages/system-views/DashboardView.php
@@ -103,19 +107,19 @@ use LoginView;
 
 class ViewRoutes {
     public static function create(){
-        Router::view([
+        Router::page([
             'path' => '/', 
             'route-to' => '/HomeView.html'
         ]);
-        Router::view([
+        Router::page([
             'path' => '/home', 
             'route-to' => '/HomeView.html'
         });
-        Router::view([
+        Router::page([
             'path' => '/user-login', 
             'route-to' => LoginView::class
         ]);
-        Router::view([
+        Router::page([
             'path' => '/dashboard', 
             'route-to' => '/system-views/DashboardView.html'
         ]);
@@ -126,7 +130,7 @@ class ViewRoutes {
   
 ### API Route
 
-An API route is a route that usually will point to a PHP class that exist in the folder `app/apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, we have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`.
+An API route is a route that usually will point to a PHP class that exist in the folder `apis` of your application. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, we have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`.
 
 Suppose that we have 3 services classes as follows:
 * `apis/UserServices.php`
@@ -227,6 +231,27 @@ class ClosureRoutes {
 }
 ```
 
+Also, it is possible to have the route point to specific method in the class by using the option `action`. This is usefule when using MVC in building the application and want from the route to point to specific controller method.
+
+``` php
+use my\super\FrontController;
+
+class ClosureRoutes {
+    public static function create(){
+        Router::addRoute([
+            'path' => '/rout-to-class', 
+            'route-to' => FrontController::class,
+            'action' => 'index'//Assuming the class FrontController has a method called `index`
+        ]);
+    }
+}
+```
+### Redirect Route
+
+This type of route is used to redirect specific request to another web page or website. This type of route can be added using the method [`Router::redirect()`](https://webfiori.com/docs/webfiori/framework/router/Router#redirect)
+
+
+
 ## Route Parameters
 
 Suppose that we have a we have a website that publishes news. Each post will have its own link. The posts has a URI structute that looks like `https://example.com/news/some_post`. One way to route the user to the correct post is to create a unique route for each post. If there are 1000 posts, then we have to create 1000 routes which is overwhelming.
@@ -235,7 +260,16 @@ WebFiori framework provides a way to create one route to all posts. This can be 
 
 ### URI Parameters
 
-A URI parameter is a string which is a part of URI's path which can have many values. The value of the parameter can be specified when sending a request to the resource that the URI represents. In the above example, the value of the parameter most probably will be the name of the post. URI parameters can be also used to replace query string paramaters to make URIs user friendly.
+A URI parameter is a string which is a part of URI's path which can have many values. It is a string which is placed between `{}`. The value of the parameter can be specified when sending a request to the resource that the URI represents. In the following example, the value of the parameter most probably will be the name of the post. 
+
+``` php
+Router::closure([
+    'path'=>'/news/{post-title}', 
+    'route-to'=>function(){}
+    ]);
+```
+
+URI parameters can be also used to replace query string paramaters to make URIs user friendly.
 
 ### Using URI Parameters
 
@@ -286,6 +320,10 @@ The option `middleware` is used to specify which middleware the request will go 
 ## Request Method
 
 By default, a route to a resource can be called using any request method. But it is possible to restrict that to specific request method (or methods). The option 'methods' can have a string which represents the method at which the resource can be fetched with (e.g. 'GET') or it can be an array that holds the names of request methods at which the resource can be fetched with.
+
+## Action
+
+The `action` option is used when the route is pointing to a class and the developer whould like to call one action from the class. This option can make your application more MVC-like.
 
 **Next: [The Class `Response`](learn/class-response)**
 
