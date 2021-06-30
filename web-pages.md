@@ -187,3 +187,6 @@ class ExamplePage extends WebPage {
     }
 }
 ```
+**Next: [UI Package](learn/ui-package)**
+
+**Previous: [The Class 'Response'](learn/class-response)**
