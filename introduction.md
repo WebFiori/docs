@@ -18,14 +18,14 @@ In this page:
 
 ## What is WebFiori Framework
 
-WebFiori framework is a fully object oriented web application framework which was built in top of PHP language. The main aim of the framework is to give you minimum features that you need to build a functional web application. Initially, the framework was developed as a generic PHP template that can be used to build static websites. But since then, it evolved into much more than that.
+WebFiori framework is a fully object oriented web application framework which was built in top of PHP language. The main aim of the framework is to give developers minimum features that you need to build a functional web application. Initially, the framework was developed as a generic PHP template that can be used to build static websites. But since then, it evolved into much more than that.
 
 In our opinion, you will need the following at minimum level to have a working web application:
 * A database (backend).
 * Web APIs (or services) (backend).
 * A way to create web pages and modify the look and feel easily (frontend).
 
-WebFiori framework fulfil the 3 by providing a generic database layer, a library for creating web services which is fully integrated with the framework and theming. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
+WebFiori framework fulfil the 3 by providing an optional-to-use generic database layer, a library for creating web services which is fully integrated with the framework and theming. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
 
 ## Features
 The framework comes with many features that can help you in the process of building web applications. The main features of the framework are:
@@ -59,6 +59,12 @@ Router::view([
 Router::addRoute([
    'path' => '/class-route',
    'route-to' => MyPHPClass::class
+]);
+//Optional to use MVC
+Router::addRoute([
+   'path' => '/api/add-user',
+   'route-to' => UsersController::class,
+   'action' => 'addUser'
 ]);
 ```
 
