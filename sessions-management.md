@@ -1,7 +1,7 @@
 
 # Sessions Management
 
-<meta name="description" content="Every web application must have a way to manage users sessions. The management may differe from one web development framework to another. A session in simple terms is a way to keep track of user intractions through your web application.">
+<meta name="description" content="Every web application must have a way to manage users sessions. The management may differe from one web development framework to another. A session in simple terms is a way to keep track of user intractions through a web application.">
 
 In this page:
 * [Introduction](#introduction)
@@ -13,6 +13,7 @@ In this page:
 * [Retrieving Stored Data](#retrieving-stored-data)
 * [Generating New ID](#generating-new-id)
 * [Creating Custom Sessions Storage](#creating-custom-sessions-storage)
+* [Configuring Database Session Storage](#configuring-database-session-storage)
 
 ## Introduction
 
@@ -264,6 +265,44 @@ class SessionsDatabase extends DB implements SessionStorage {
 ```
 
 The last step is to use the newly created sessions storage engine. In order to have the framework use the new sessions manager, we have to define the constant `WF_SESSION_STORAGE` in the class [`GlobalConstants`](https://webfiori.com/docs/webfiori/ini/GlobalConstants). The value of the constant must be the value of the namespace and the class name (e.g. `\app\database\SessionsDatabase`). Once done, the framework will use this engine.
+
+## Configuring Database Session Storage
+
+By default, the framework comes with two session storage engines. One is the default one which uses files and the other one which uses database. In order to be able to use database session storage, it must be first configured. Configuration steps are as follows:
+* Setting the value of the constant `WF_SESSION_STORAGE` to `\webfiori\framework\session\DatabaseSessionStorage`.
+* Adding a database connection with the name `sessions-connection` using the command `add`.
+* Creating the table that will store the sessions using the command `run-query`.
+
+### Setting the Value of The Constant `WF_SESSION_STORAGE`
+
+Inside the class `GlobalConstants`, there exist a place at which the constant is defined. If it does not exist, simply define it as follows:
+``` php
+define('WF_SESSION_STORAGE', '\webfiori\framework\session\DatabaseSessionStorage');
+```
+
+### Adding Database Connection
+
+To add the connection which will be used by database session storage, run the following command:
+```
+php webfiori add
+```
+From the menu, select the first option. Then it will start by asking about connection information. When the command asks about connection name, enter `sessions-connection`. The following image shows how the connection is added.
+
+<img src="assets/images/add-sessions-db-connection.png" alt="add sessions connection">
+
+### Initializing Database Table
+
+The final step is to initialize the table that will hold sessions data. First step in initializing the table is to run the following command:
+
+```
+php webfiori run-query
+```
+
+Then it will ask to select database connection. Select the one which has the name `sessions-connection`. Then it will ask for the type of the query that will be executed. Select the second option. Then provide the value `webfiori\framework\session\SessionsTable` as the table instance. Then select the first option which will create the table. Then it will ask to confirm for query execution. Select `y` and the table will be created.
+
+The following image shows all command execution steps.
+
+<img src="assets/images/init-db-session-storage.png" alt="Run query for session storage.">
 
 **Next: [The Library WebFiori JSON](learn/webfiori-json)**
 
