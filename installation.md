@@ -21,8 +21,11 @@ The following set of requirements must be met in order for the framework to work
 * mysqli PHP Extension
 * json PHP Extension
 
+In addition to that, it would be great to have an IDE that can help in writing code and debugging. We recommend to use [Apache Netbeans IDE](https://netbeans.apache.org/).
+
 ## Setup Local Development Environment In Windows
 
+In this setup, we will be using an actual web server instead of using the PHP's built-in server.
 Setting up a local development environment is simple. The setps for doing so are:
 * Download and Install WAMP stack (we will use [Bitnami WAMP](https://bitnami.com/stack/wamp/installer))
 * Download the framework.
