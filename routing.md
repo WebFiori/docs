@@ -17,6 +17,7 @@ In this page:
 * [Generic Routes](#generic-routes)
   * [URI Variable](#uri-variable)
   * [Using URI Variable](#using-uri-variable)
+* [Grouping Routes](#grouping-routes)
 * [Customizing Routes](#customizing-routes)
   * [Sitemap](#sitemap)
   * [Case Sensitivity](#case-sensitivity)
