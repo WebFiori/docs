@@ -74,7 +74,7 @@ Most of the time, this class will be used to create routes but it can be used to
 * Custom Route.
 
 For each type of route, there is a specific static method that can be used to create it. The 4 methods that corresponds to each type are:
-* [Router::view()](https://webfiori.com/docs/webfiori/framework/router/Router#view)
+* [Router::page()](https://webfiori.com/docs/webfiori/framework/router/Router#page)
 * [Router::api()](https://webfiori.com/docs/webfiori/framework/router/Router#api)
 * [Router::closure()](https://webfiori.com/docs/webfiori/framework/router/Router#closure)
 * [Router::addRoute()](https://webfiori.com/docs/webfiori/framework/router/Router#addRoute)
@@ -266,7 +266,7 @@ A URI parameter is a string which is a part of URI's path which can have many va
 Router::closure([
     'path'=>'/news/{post-title}', 
     'route-to'=>function(){}
-    ]);
+]);
 ```
 
 URI parameters can be also used to replace query string paramaters to make URIs user friendly.
@@ -290,6 +290,43 @@ class ClosureRoutes {
     }
 }
 ```
+
+## Grouping Routes
+
+One of the features of the router is the ability to group routes which share same part of the path. Suppose that w have 3 pages with following links:
+* `https://example.com/users`
+* `https://example.com/users/view-user/{user-id}`
+* `https://example.com/users/add-user`
+
+One thing to notice about the routes is that they share the same `users` path part. It is possible to create each route by it self but there is a better way that can be used to group the routes. The following code shows how to group routes.
+``` php
+Router::group([
+    'path' => '/users', 
+    'case-sensitive' => false,
+    'middleware' => [
+        'sample-middleware','sample-middleware-2'
+    ],
+    'methods' => 'get',
+    'routes' => [
+        [
+            'path' => '/', 
+            'route-to' => ListUsersPage::class,
+        ],
+        [
+            'path' => 'view-user/{user-id}', 
+            'route-to' => ViewUserPage::class,
+        ]
+        [
+            'path' => 'add-user', 
+            'route-to' => AddUserPage::class,
+        ]
+    ]
+]);
+```
+By grouping routes, we can achive the following:
+* Compact code
+* Sub-routes will share same proberties of parent path (middleware, request methods, languages and so on)
+
 
 ## Customizing Routes
 
