@@ -5,7 +5,7 @@
 
 ## Introduction
 
-The framework comes with a class which is only used to initialize global constants. They can be accessed anywhere within the scope of the framework. The class [GlobalConstants](https://webfiori.com/docs/webfiori/ini/GlobalConstants) is used to initialize the values of the constants. The developer can modify the values of the constants in the class as needed to configure some of the settings of the framework. Also, the developer can modify the content of the class and create his own constants.
+The framework comes with a class which is only used to initialize global constants. They can be accessed anywhere within the scope of the framework. The class [GlobalConstants](https://github.com/WebFiori/app/blob/main/app/ini/GlobalConstants.php) which will always exist inside application's folder is used to initialize the values of the constants. The developer can modify the values of the constants in the class as needed to configure some of the settings of the framework. Also, the developer can modify the content of the class and create his own constants.
 
 ## Constants
 
@@ -16,7 +16,7 @@ The following table lists all constants and for what each one is used.
 |`WF_VERSION`|Version number of the framework. The format of the version is `x.x.x`.|(`string`)|
 |`WF_VERSION_TYPE`|Framework version type such as 'beta', 'alpha', 'cr' or 'stable'.|(`string`)|
 |`WF_RELEASE_DATE`|The date at which this version of the framework was released on. The format of the date is 'YYYY-MM-DD'.|(`string`)|
-|`APP_DIR_NAME`|The name of the directory at which application source code will live in. Default value is `app`|(`string`)|
+|`APP_DIR_NAME`|The name of the directory at which application source code will live in. Default value is `app`. Developer can override the value if the constant inside the file [`public/index.php`](https://github.com/WebFiori/app/blob/main/public/index.php#L10)|(`string`)|
 |`ROOT_DIR`|Root directory of the theme. The value of this constant is usually the name of the directory at which framework and app files exist in.|(`string`)|
 |`USE_HTTP`|Sets the framework to use `http://` or `https://` for base URIs. The default behaviour of the framework is to use `https://`. But in some cases, there is a need for using `http://`. If this constant is set to true, the framework will use `http://` for base URI of the system. Default value is false.|false (`boolean`)|
 |`SCRIPT_MEMORY_LIMIT`|Memory limit per script. This constant represents the maximum amount of memory each script will consume before showing a fatal error. The developer can change this value as needed.|'2GB' (`string`)|
@@ -32,7 +32,9 @@ The following table lists all constants and for what each one is used.
 |`CLI_HTTP_HOST`|Host name to use in case the system is executed through CLI. When the application is running throgh CLI, there is no actual host name. For this reason, the host is set to `127.0.0.1` by default. If this constant is defined, the host will be changed to the value of the constant. Default value of the constant is 'example.com'.|'example.com' (`string`)|
 |`DS`|Directory separator. This one is is used as a shorthand instead of using PHP constant `DIRECTORY_SEPARATOR`. The two will have the same value.|(`string`)|
 |`USE_HTTP`|Sets the framework to use `http://` or `https://` for base URIs. The default behaviour of the framework is to use `https://`. But in some cases, there is a need for using `http://`. If this constant is set to true, the framework will use `http://` for base URI of the system. Default value is false.|false (`boolean`)|
-
+|`WF_PATH_TO_REMOVE`|An optional string which represents the path part of a URI. The part which is defined by this constant will be removed when constructing the path part of the `base` URL of web pages. This is useful for the cases where the application exist inside a folder which exist inside the document root of the server.|Not defined|
+|`WF_PATH_TO_APPEND`|An optional string which represents the path part of a URI. The part which is defined by this constant will be appended when constructing the path part of the `base` URL of web pages. This is useful for the cases where the application exist inside a folder which exist inside the document root of the server.|Not Defined|
+|`JSON_PROP_STYLE`|This constant is used to specify the global properties style which will be used by any `Json` instance. The constant can have one of the following values only: `snake`, `kebab`, `camel` and `none`.|Not Defined|
 
 
 
