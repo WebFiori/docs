@@ -2,94 +2,31 @@
 
 In this page:
 * [Introduction](#introduction)
-* [Required Classes for Sending an Email](#required-classes-for-sending-an-email)
-  * [The Class `SMTPAccount`](#the-class-smtpaccount)
-  * [The Class `MailConfig`](#the-class-mailconfig)
-  * [The Class `EmailMessage`](#the-class-emailmessage)
-  * [The Class `ConfigController`](#the-class-configcontroller)
-* [Sending an Email](#sending-an-email)
-  * [Storing SMTP Connection](#storing-smtp-connection)
-  * [Creating and Sending The Message](#creating-and-sending-the-message)
+* [Configuration](#configuration)
+* [Creating and Sending an Email](#creating-and-sending-an-email)
 * [Attaching Files](#attaching-files)
 
 ## Introduction
 
 One of the important features of any web application is the ability to send email messages. WebFiori Framework has all needed tools to allow the system be able to send HTML emails. Email messages are used in many ways. For example, they are used to activate user account, reset password, send ads, etc...
 
-## Required Classes for Sending an Email
+## Configuration
 
-In order to send emails using the framework you need to learn at least about 3 classes. These classes are:
-* [`SMTPAccount`](https://webfiori.com/docs/webfiori/framework/mail/SMTPAccount)
-* [`AppConfig`](https://webfiori.com/docs/app/AppConfig)
-* [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage)
+Before we can send any email, first we have to add SMTP account information that will be used to send emails. The account can be added in two ways. Either by using the command `php webfiori add` or by opening the class [`AppConfig`](https://github.com/WebFiori/app/blob/main/app/AppConfig.php) and adding the connection manually. The prefered way for adding SMTP connection information is the first one as it will validate connection information before storing them.
 
-In addition to the given 3, there exist one extra class which is [`ConfigController`](https://webfiori.com/docs/webfiori/framework/ConfigController). This one acts as a utility class for storing and validating SMTP connections.
+For every SMTP account, the following items must be specified:
 
-### The Class `SMTPAccount`
+* SMTP Server address.
+* Server port (usually 25, 465 or 586).
+* Username
+* Password
+* Sender address (usually same as username).
+* Sender name.
+* Account name.
 
-The class [`SMTPAccount`](https://webfiori.com/docs/webfiori/framework/mail/SMTPAccount) represents SMTP account connection information. It is used to keep SMTP server address, port number, SMTP credentials in addition to the email address and sender name. The first thing that a developer must have in order to send emails is SMTP account that can be used to connect with mailing server.
+The account name will act as an identifier for the account when sending a message.
 
-### The Class `MailConfig`
-
-The class [`AppConfig`](https://webfiori.com/docs/app/AppConfig) is a configuration class which is used to store some configuration settings of the framework. One of the configurations are SMTP connections which are used by the system to send emails. The class can be used to store unlimited number of SMTP accounts. Every account is kept as an object of type [`SMTPAccount`](https://webfiori.com/docs/webfiori/framework/mail/SMTPAccount).
-
-### The Class `EmailMessage`
-
-The class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) is used to send the actual email. It has methods which are used to set many attributes of an email message such as the subject, the people who will receive the email and its attachments.
-
-### The Class `ConfigController`
-
-The class [`ConfigController`](https://webfiori.com/docs/webfiori/framework/ConfigController) is a utility class which acts as an interface between the email message and the logic which is used to send the message. In addition, this class is used to modify the class The class [`AppConfig`](https://webfiori.com/docs/app/AppConfig) programatically by adding and removing connections.
-
-## Sending an Email
-
-In order to send an email, first we must have SMTP account that can connect to SMTP server. Once we have that, the following steps must be performed in order to send an email message:
-
-* Store SMTP connection information.
-* Initialize your message using the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage).
-* Specify the subject of the message.
-* Specify the people who will get the message (Original copy, CC or BCC).
-* Add content to the message body and add attachments (if any).
-* Send the message by ccalling the method EmailMessage::send()
-
-The first step is usually performed once. After storing connection information, the connection can be used multiple times for sending different messages.
-
-### Storing SMTP Connection
-
-As we have said before, the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig) is used to store SMTP connections. There are two ways to add new SMTP connections to the class. It is possible to open the file which has the class code and add the connection manually, or we can add the connection using command line interface. The second way is recommended as it will validate connection information before storing them. For the time being, we will use the manual way.
-
-Using the manual way, we add connection information by modifying the code in the constructor of the class "MailConfig". Lets assume that we have SMTP account that has the following info:
-* Server Address: "mail.example.com".
-* Port: "465".
-* Username: "no-reply@example.com".
-* Password: "123654".
-* Sender Name: "System Notifier".
-* Sender Address: "no-reply@example.com".
-
-Using the given info, Connection information can be added maually as follows:
-
-``` php
-//Inside the class AppConfig in the body of the method initSmtpConnections...
-$account00 = new SMTPAccount();
-$account00->setServerAddress('mail.example.com')
-$account00->setPort(465);
-$account00->setUsername('no-reply@example.com');
-$account00->setPassword('123654');
-
-//The next two can be set to any value.
-//They are the name and sender address which appear in email clients.
-$account00->setName('System Notifier');
-$account00->setAddress('no-reply@example.com');
-
-//This name will be used later as identefier for which account to use.
-$account00->setAccountName('no-replay-smtp');
-
-//Finally, add the account.
-//We must give our account a name in order to use it later.
-$this->addAccount($account00);
-```
-
-### Creating and Sending The Message
+## Creating and Sending an Email
 
 Sending HTML email messages is performed using the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage). This class has methods which are used to set the attributes of an email message such as its subject, importance and the people who will get the message. This class is usually used in the following way:
 
@@ -103,21 +40,24 @@ There are other things which might be performed to the message before sending it
 
 ``` php 
 //First thing to do, Specify SMTP account to use.
-//In our example, the name was 'no-replay-smtp'.
-$message = new EmailMessage('no-replay-smtp');
-$message->subject('This is a Test Email');
+//In our example, the name was 'no-reply'.
+$message = new EmailMessage('no-reply');
+$message->setSubject('This is a Test Email');
 
 //Adds a receiver. The method accepts a name and email address.
-$message->addReceiver('Blog User','user@example.com');
+$message->addTo('user@example.com', 'Blog User');
 
-//Write some text to the body of the message.
-$message->write('This is a welcome message.');
+//Insert a paragraph in the body of the message.
+$p = $message->insert('p');
+
+//Write some text
+$p->text('This is a welcome message.');
 
 //Final step, is sending the message.
 $message->send();
 ```
 
-The email will be sent in HTML format. To customize the content of the generated HTML, the developer must access the DOM of the message. Every instance which is created using the class has an object of type [`HTMLDoc`](https://webfiori.com/docs/webfiori/phpStructs/html/HTMLDoc) which is associated with it. The document object can be accessed using the method [`EmailMessage::documen()`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage#documen). In addition to that, it is possible to add objects of type [`HTMLNode`](https://webfiori.com/docs/webfiori/phpStructs/html/HTMLNode) to the body of the message using the method [`EmailMessage::insertNode()`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage#insertNode).
+The email will be sent in HTML format. To customize the content of the generated HTML, the developer must access the DOM of the message. Every instance which is created using the class has an object of type [`HTMLDoc`](https://webfiori.com/docs//webfiori/ui/HTMLDoc) which is associated with it. The document object can be accessed using the method [`EmailMessage::getDocument()`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage#getDocument). In addition to that, it is possible to add objects of type [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) to the body of the message using the method [`EmailMessage::insert()`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage#insert).
 
 ## Attaching Files
 
@@ -125,19 +65,16 @@ One of the features of the class [`EmailMessage`](https://webfiori.com/docs/webf
 
 Assuming that we have a file which has the name "My CV.docx" in the root directory of the framework, The file can be attached to the email as follows:
 ``` php
-$message = new EmailMessage('no-replay-smtp');
-$message->subject('Attached My Latest CV');
+$message = new EmailMessage('no-replay');
+$message->setSubject('Attached My Latest CV');
 
-$message->addReceiver('Blog User','user@example.com')
+$message->addTo('user@example.com', 'Blog User')
 
-//Write some text to the body of the message.
-$message->write('Attached is my newest CV. Please check it and replay to me if there is any thing extra you need from me.')
+$p = $message->insert('p');
+$p->text('Attached is my newest CV. Please check it and replay to me if there is any thing extra you need from me.')
 
 //Open the file that will be added as an attachment.
 $attachment = new File('My CV.docx',ROOT_DIR);
-//We have to read the file before adding it as an attachment.
-$attachment->read();
-//Finally, we add it to our message.
 $message->attach($attachment);
 
 $message->send()
