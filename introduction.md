@@ -25,7 +25,7 @@ In our opinion, a developer will need the following at minimum level to have a w
 * Web APIs (or services) (backend).
 * A way to create web pages and modify the look and feel easily (frontend).
 
-WebFiori framework fulfil the 3 by providing an optional-to-use generic database layer, a library for creating web services which is fully integrated with the framework and theming. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
+WebFiori framework fullfil the 3 by providing an optional-to-use generic database layer, a library for creating web services which is fully integrated with the framework and theming for creating unified frontend. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
 
 ## Features
 The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
@@ -43,7 +43,14 @@ The framework comes with many features that can help in the process of building 
 
 ### Simple Routing Engine
 
-The main aim of routing is to take client request and sending it to correct resource. Most traditional framework which are fully MVC will have routes which points to controller methods. Routes in WebFiori Framework will point to a file in most cases. For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or function. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
+The main aim of routing is to take client request and send it to correct resource. Most traditional frameworks which are fully MVC will have routes which points to controller methods. Routes in WebFiori will point to one of the following:
+
+* A file (php, html, text, image, etc...)
+* PHP Class
+* PHP function (closure route)
+* Class method (similar to MVC)
+
+For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or class method like any MVC based framework. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
 
 ``` php
 // https://example.com/products/board-games/Chess
@@ -72,7 +79,7 @@ For more information about routing, [check here](learn/routing).
 
 ### Sessions Management
 
-Sessions are used to keep client state when moving between different web pages in the web application. The frameworks provides developers with a sessions manager which does not depend on the implementation of PHP's session manager. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
+Sessions are used to keep client state when moving between different web pages in the application. The frameworks provides developers with a sessions manager which does not depend on the implementation of PHP's session manager. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
 
 ``` php
 // Start new session
@@ -91,7 +98,7 @@ In addition to that, developers can implement thier own way for storing sessions
 
 ### Theming
 
-The framework gives developers the option to use themes. The main use of themes is to have a unified look and feel in all web pages of the application. Inside every class that represent a web page, the only thing that developers must do to change the whole UI is to use its name. In addition to changing the whole user interface, themes can act as plugins that provide additional functionality to the application.
+The framework gives developers the option to use themes. The main use of themes is to have a unified look and feel in all pages of the application. Inside every class that represent a web page, the only thing that developers must do to change the whole UI is to use its name. In addition to changing the whole user interface, themes can act as plugins that provide additional functionality to the application.
 
 ```php
 use webfiori\framework\Page;
@@ -126,25 +133,26 @@ For more information on how to build web pages UI, [check here](learn/ui-package
 
 ### Middleware
 
-Middleware is a way that can be used to filter requests before reaching the actual application. They can be used to start sessions, validate request headers or reject a request. Middleware in WebFiori represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). To have a custom midleware, simply extend this class and implement its abstract methods. A class that represents middleware must be placed in the folder `/middleware` of the application to be auto registered.
+Middleware is a way that can be used to filter any request before reaching the actual application. They can be used to start sessions, validate request headers or reject a request. Middleware in WebFiori represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). To have a custom midleware, simply extend this class and implement its abstract methods. A class that represents middleware must be placed in the folder `/middleware` of the application to be auto-registered.
 
 For more information on middleware, [check here](learn/middleware).
 
 ### Background Tasks
 
-Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to cleanup temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP code and have it to execute at specific time with additional configuration. This can be achived using Cron Sub-system. To implement custom background job, extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background process must be placed in the folder `/jobs` of the application to be auto registered.
+Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to cleanup temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP and have it to execute at specific time with additional configuration. This can be achived using Cron Sub-system. To implement custom background job, extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background process must be placed in the folder `/jobs` of the application to be auto-registered.
 
 For more information about creating background jobs, [check here](learn/background-tasks).
 
 ### Sending HTML Emails
 
-Mostly, every web application out there will have to send email notifications for logins or registration. The framework has simplified the process of creating emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) to send nice looking HTML emails.
+Mostly, every web application out there will have to send email notifications for logins or registration. The framework has simplified the process of creating HTML emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) to send nice looking HTML emails.
 
 ``` php
 $message = new EmailMessage('no-reply');
-$message->subject('This is a Test Email');
-$message->addReceiver('Blog User','user@example.com');
-$message->write('This is a welcome message.');
+$message->setSubject('This is a Test Email');
+$message->addTo('user@example.com','Blog User');
+$paragraph = $message->insert('p');
+$paragraph->text('This is a welcome message.');
 $message->send();
 ```
 
@@ -157,7 +165,7 @@ The framework provide the developers with commands that can be used to speed up 
 
 ### Database Schema and Query Building
 
-Currntly, the framework has support for schema and query building for MySQL database only but more are planned for the future. Developer does not have to use this feature if he would like to use another database library or use PDO. For more information about this feature, [check here](learn/database).
+Currntly, the framework has support for schema and query building for MySQL and MSSQL databases only but more are planned for the future. Developer does not have to use this feature if he would like to use another database library or use PDO. For more information about this feature, [check here](learn/database).
 
 ### Web Services
 
