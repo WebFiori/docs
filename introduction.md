@@ -55,12 +55,12 @@ For example, it is possible to have a route which points to static HTML file or 
 
 ``` php
 // https://example.com/products/board-games/Chess
-Router::view([
+Router::page([
    'path' => 'products/{category}/{sub-category}',
    'route-to' => 'ViewProductsPage.php'
 ]);
 // https://example.com/
-Router::view([
+Router::page([
    'path' => '/',
    'route-to' => 'Home.html'
 ]);
