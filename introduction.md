@@ -50,6 +50,7 @@ The main aim of routing is to take client request and send it to correct resourc
 * PHP function (closure route)
 * Class method (similar to MVC)
 
+
 For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or class method like any MVC based framework. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
 
 ``` php
