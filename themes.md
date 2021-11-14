@@ -226,9 +226,31 @@ Running this command will create 5 classes:
 * A class with the name `AsideSection` which represents side section of the page.
 * A class with the name `FooterSection` which represents footer section of the page.
 
-The following image shows actuall run for creating a theme.
+The following shell output shows actuall run for creating a theme.
 
-<img alt="Creating themes in WebFiori" src="assets/images/create-theme-command.png">
+``` 
+PS C:\Server\apache2\htdocs\app> php webfiori create
+What would you like to create?
+0: Database table class.
+1: Entity class from table.
+2: Web service.
+3: Background job.
+4: Middleware.
+5: Database table from class.
+6: CLI Command.
+7: Theme.
+8: Quit. <--
+7
+Enter a name for the new class:
+SuperTheme
+Enter an optional namespace for the class: Enter = "themes"
+myOrganization\theme1
+Where would you like to store the class? (must be a directory inside 'C:\Server\apache2\htdocs\app') Enter = "myOrganization\theme1"
+
+Creating theme at "C:\Server\apache2\htdocs\app\myOrganization\theme1"...
+Success: Created.
+PS C:\Server\apache2\htdocs\app>
+```
 
 
 **Next: [Uploading Files](learn/uploading-files)**
