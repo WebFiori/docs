@@ -78,7 +78,9 @@ This folder contains core entities of the framework in addition to any libraries
 The public folder is the root directory of your web application. You should include any public resources inside this folder as it will be the entry point of any request. The folder must have the `assets` folder inside it. The `assets` folder will usesally contain all resource files. Also, the folder will contain themes assets.
 
 ## The `themes` Folder
-The folder `themes` is a place that contains components that gives a unified look and feel for the website. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`.
+The folder `themes` holds the themes which are bundeled with the framework. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`. The folde also can hold custom made themes.
+
+> <b>Note:</b> It is possible to have custom-made themes in another place other than the folder `themes`
 
 ## Setting Custom Application Folder
 
