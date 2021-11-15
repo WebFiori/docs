@@ -19,13 +19,14 @@ The following set of requirements must be met in order for the framework to work
 * PHP >= 5.6
 * mbstring PHP Extension
 * mysqli PHP Extension
+* MSSQL Server PHP Extension
 * json PHP Extension
 
 In addition to that, it would be great to have an IDE that can help in writing code and debugging. We recommend to use [Apache Netbeans IDE](https://netbeans.apache.org/).
 
 ## Setup Local Development Environment In Windows
 
-In this setup, we will be using an actual web server instead of using the PHP's built-in server.
+In this setup, we will be using an actual web server on Windows instead of using the PHP's built-in server.
 Setting up a local development environment is simple. The setps for doing so are:
 * Download and Install WAMP stack (we will use [Bitnami WAMP](https://bitnami.com/stack/wamp/installer))
 * Download the framework.
@@ -52,7 +53,9 @@ Assuming that composer is placed in the folder `C:\Server\apache2\htdocs`, the f
 ``` bash
 C:\Server\php\php.exe composer.phar create-project --prefer-dist webfiori/app my-site
 ```
-This command will create new folder which has the name `my-site` and install the framework with all its dependencies. The name of the folder can be changed as needed. Once this is finished, your workspace will be the folder `C:\Server\apache2\htdocs\my-site\app`. The last step is to set document root of the local development server to `C:\Server\apache2\htdocs\my-site\public` if you will test the application using Apache web server.
+This command will create new folder which has the name `my-site` and install the framework with all its dependencies. The name of the folder can be changed as needed. Once this is finished, your workspace will be the folder `C:\Server\apache2\htdocs\my-site\app` which is the application source code folder. The last step is to set document root of the local development server to `C:\Server\apache2\htdocs\my-site\public` if you will test the application using Apache web server.
+
+> <b>Note:</b> It is possible to rename application source code folder by changing the value of the constant `APP_DIR_NAME` in the top of the file `index.php`.
 
 #### Manual Installation
 
@@ -60,7 +63,7 @@ The other installation option is to download the framework from the official web
 
 ### Running The Project
 
-There are two ways to start your website. The first one is to use PHP's built-in web server and the second one is to use Apache Web Server. The recomended way is to use Apache Web Server as this will make sure that your application is running using real web server.
+There are two ways to start your website. The first one is to use PHP's built-in web server and the second one is to use Apache Web Server. The recomended way is to use Apache Web Server as this will make sure that your application is running using actual web server and .
 
 #### Using Apache Web Server
 
