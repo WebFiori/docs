@@ -1,7 +1,7 @@
 
 # Basic Usage
 
-<meta name="description" content="The most basic use case of the framework is to use it in serving web pages. The pages can be static or dynamic. We will be looking at both cases in this lesson.">
+<meta name="description" content="The most basic use case of the framework is to use it in serving web pages. The pages can be static or dynamic.">
 
 In this page:
 * [Introduction](#introduction)
@@ -10,11 +10,11 @@ In this page:
 
 ## Introduction
 
-The most basic use case of the framework is to use it in serving web pages. The pages can be static or dynamic. We will be looking at both cases. The pages will be served using a concept which is called [routing](learn/routing). Routing is simply a way to serve the correct requested resource. Pages in WebFiori Framework can be created inside the folder `app/pages`. It is possible to create pages in different place. The folder is only used to organize your application classes.
+The most basic use case of the framework is to use it in serving web pages. The pages can be static or dynamic. The pages will be served using a concept which is called [routing](learn/routing). Routing is simply a way to serve the correct requested resource. Pages in WebFiori Framework can be created inside the folder `app/pages`. It is possible to create pages in different place. The folder is only used to organize your application classes.
 
 ## Serving Static Pages
 
-Lets assume that we have HTML page which hase the name `index.html`. Also, let's assume tha the page has the following code in it:
+Assuming that there is an HTML page which has the name `index.html`. Also, let's assume tha the page has the following code in it:
 
 ``` html
 <!DOCTYPE html>
@@ -37,14 +37,14 @@ Lets assume that we have HTML page which hase the name `index.html`. Also, let's
 </html>
 ```
 
-In order to view the page, we have to create a route for it. Assuming that this page is in the folder `app/pages`, we can use the method [`Router::view()`](https://webfiori.com/docs/webfiori/framework/router/Router#view) to create its route. The class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes) has one static method which the developer can use to create routes to pages (or views). The following code shows how the route is created.
+In order to view the page, A route must be created that points to it. Assuming that this page is in the folder `app/pages`, the method [`Router::page()`](https://webfiori.com/docs/webfiori/framework/router/Router#page) to create its route. The class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes) has one static method which the developer can use to create routes to pages (or views). The following code shows how the route is created.
 
 ``` php
 namespace webfiori\framework\router;
 
 class ViewRoutes {
     public static function create() {
-        Router::view([
+        Router::page([
             'path' => '/home', 
             'route-to' => '/index.html'
         ]);
@@ -52,7 +52,7 @@ class ViewRoutes {
 }
 ```
 
-Assuming that the base URL of the website is `https//example.com`, if we navigate to `https//example.com/home` the page that we have created should appear in the web browser.
+Assuming that the base URL of the website is `https//example.com`, if navigated to `https//example.com/home` the page that was created should appear in web browser.
 
 ## Serving Dynamic Pages
 
@@ -60,7 +60,7 @@ Dynamic pages are files that can have executable PHP code. Also, it is possible 
 
 ### Routing to PHP Files
 
-Assuming that we have a page that has the name `SayHi.php` inside the folder `app/pages`. Also, assume that the page has the following code:
+Assuming that a page which has the name `SayHi.php` inside the folder `app/pages`. Also, assuming that the page has the following code:
 
 ``` php 
 use webfiori\framework\Response;
@@ -76,9 +76,9 @@ class SayHi {
 return __NAMESPACE__;
 ```
 
-You will notice that we have used something new here which is the class [`Response`](https://webfiori.com/docs/webfiori/http/Response). This class represents server response and the main functionality of the class is to collect server output and send it back to the client. The method [`Response::append()`](https://webfiori.com/docs/webfiori/http/Response#append) is used to append server output. You can learn more about this class [here](learn/class-response).
+Notice that in the code a new class is used which is the class [`Response`](https://webfiori.com/docs/webfiori/http/Response). This class represents server response and the main functionality of it is to collect server output and send it back to the client. The method [`Response::append()`](https://webfiori.com/docs/webfiori/http/Response#append) is used to append server output. You can learn more about this class [here](learn/class-response).
 
-Let's assume that route to the page is created as follows:
+Assuming that a route to the page is created as follows:
 
 ``` php
 namespace webfiori\framework\router;
@@ -97,7 +97,7 @@ class ViewRoutes {
 }
 ```
 
-If we navigate to `https://localhost/say-hi`, The output in the browser will be the string `Hi Visitor. Welcome to my website!`. This can be improved further. Instead of making the page says `Hi Visitor`, we can make it say `Hi Ibrahim` or `Hi Jon`. To achive this, we will use variables when creating the route. A variable is a part of the path in the URL which can have any value. Its name is enclosed between two curly braces (e.g. `{user-name}`). The code for creating a route with a variable will be similar to the following:
+If navigated to `https://localhost/say-hi`, The output in the browser will be the string `Hi Visitor. Welcome to my website!`. This can be improved further. Instead of making the page says `Hi Visitor`, it is possible to make it say `Hi Ibrahim` or `Hi Jon`. Achiving this goal can be done by using variables when creating the route. A variable is a part of the path in the URL which can have any value. Its name is enclosed between two curly braces (e.g. `{user-name}`). The code for creating a route with a variable will be similar to the following:
 
 ``` php
 namespace webfiori\framework\router;
@@ -116,7 +116,7 @@ class ViewRoutes {
 }
 ```
 
-To access the value of the variable inside the class `SayHi`, we have to use the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) as follows:
+Accessing the value of the variable inside the class `SayHi` can be perfomed by using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) as follows:
 
 ``` php
 use webfiori\framework\router\Router;
@@ -136,7 +136,7 @@ Now when navigating to `https://example.com/say-hi/Ibrahim BinAlshikh`, the mess
 
 ### Routing to PHP Classes
 
-Assuming that we have the following PHP class which represent a dynamic web page:
+Assuming that the following PHP class represent a dynamic web page:
 
 ``` php
 use webfiori\framework\router\Router;
@@ -171,7 +171,7 @@ class ViewRoutes {
 }
 ```
 
-What we did here is to import our class and add a route to it. This syntax is much better when creating routes but it has one issue. It may not help in identifying the exact location of a bug in your class if it has one.
+This syntax is much better when creating routes but it has one issue. It may not help in identifying the exact location of a bug in your class if it has one.
 
 **Next: [Routing](learn/routing)**
 
