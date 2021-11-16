@@ -23,7 +23,7 @@ In this page:
 
 ## Introduction
 
-One of the essential parts of any web application is to have an easy way to create the front end at which the users of the application will use. The front end of any web application will mostly consist of HTML, CSS and JavaScript. WebFiori frameworks gives the developers a package that contains a set of classes at which it can be used to build the DOM of a web page using PHP language without having to write HTML code. 
+One of the essential parts of any web application is to have an easy way to create the front end at which the users of the application will use. The front end of any web application will mostly consist of HTML, CSS and JavaScript. WebFiori frameworks gives the developers a package that consist of a set of classes that can be used to build the DOM of a web page using PHP language without having to write HTML code. 
 
 > **Note:** This library can be included using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/ui":"*"`.
 
@@ -37,14 +37,15 @@ The library consist of many classes which represents different types of HTML ele
 
 ### The class `HTMLDoc`
 
-This class represents HTML document. It can be used to build the DOM of the web page and modify it directly inside PHP. 
+This class represents a virtual HTML document. It can be used to build the DOM of the web page and modify it directly inside PHP. 
 
-> **Note:** An instance of the class `HTMLDoc` is wrapped inside the class [`Page`](https://webfiori.com/docs/webfiori/entity/Page). It is always recomended to use the class `Page` to represent any web page.
+> **Note:** An instance of the class `HTMLDoc` is wrapped inside the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPage). It is always recommended to use the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPage) to represent any web page.
 
 ## Using The Library
 
 ### Basic Usage
-The very basic use case is to have HTML document with some text in its body. What we have to do is simply to create an instance of the class [`HTMLDoc`](https://webfiori.com/docs/webfiori/ui/HTMLDoc) and add a text to its body:
+The very basic use case is to have HTML document with a text in its body. The developer can simply create an instance of the class [`HTMLDoc`](https://webfiori.com/docs/webfiori/ui/HTMLDoc) and add a text to its body:
+
 ``` php
 $doc = new HTMLDoc();
 $doc->getBody()->text('Hello World!');
@@ -66,7 +67,7 @@ The structure of HTML document that be rendered will be similar to the following
 </html>
 ```
 ### Building More Complex DOM
-To add more elements to the body of the document, the class <a href="https://webfiori.com/docs/webfiori/ui/HTMLNode">HMLNode</a> can be used to do that. It simply can be used to create any type of HTML element. The developer even can extend the class to create his own custom UI components. The library has already some pre-made components which are used in the next code sample. A list of the components can be found <a href="https://webfiori.com/docs/webfiori/ui">here</a>. The following code shows a code which is used to create a basic login form.
+To add more elements to the body of the document, the class [`HMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) can be used. It simply can be used to create any type of HTML element. The developer can extend this class to create his own custom UI components. The library has already a set of pre-made components which are used in the next code sample. A list of the classes which represents the components can be found [here](https://webfiori.com/docs/webfiori/ui). The following code shows how to create a basic login form.
 
 ``` php
 
@@ -74,18 +75,14 @@ To add more elements to the body of the document, the class <a href="https://web
 $doc = new HTMLDoc();
 
 // Build a login form.
-$doc->getBody()->text('Login to System')
-        ->hr()
-        ->form(['method' => 'post', 'action' => 'https://example.com/login'])
-        ->label('Username:')
-        ->br()
-        ->input('text', ['placeholder'=>'You can use your email address.', 'style' => 'width:250px'])
-        ->br()
-        ->label('Password:')
-        ->br()
-        ->input('password', ['placeholder' => 'Type in your password here.', 'style' => 'width:250px'])
-        ->br()
-        ->input('submit', ['value' => 'Login']);
+$body = $doc->getBody();
+$body->text('Login to System')->hr();
+$form = $body->form(['method' => 'post', 'action' => 'https://example.com/login']);
+$form->label('Username:')->br();
+$form->input('text', ['placeholder'=>'You can use your email address.', 'style' => 'width:250px'])->br();
+$form->label('Password:')->br()
+$form->input('password', ['placeholder' => 'Type in your password here.', 'style' => 'width:250px'])->br();
+$form->input('submit', ['value' => 'Login']);
 ```
 
 The given PHP would be rendered to the following HTML code.
@@ -191,7 +188,7 @@ This would render to the following HTML.
 
 ### Setting Multiple Attributes
 
-If the developer would like to set the values for more than one attribute at one shot, he can use the method [`HTMLNode::setAttributes()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttributes). The method accespts an array that contains the values of the attributes.
+If developer would like to set the values for more than one attribute at one shot, he can use the method [`HTMLNode::setAttributes()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttributes). The method accespts an array that contains the values of the attributes.
 
 ``` php
 $node = new HTMLNode();
@@ -226,11 +223,11 @@ In addition to the method [`HTMLNode::setAttribute()`](https://webfiori.com/docs
 
 ## Working With HTML Template Files
 
-One of the features of the library that it provides a very basic templating engine which only uses slots. It is possible to write HTML document in a separate HTML files and then combine files inside PHP to build the whole document. This can be helpful in making your code reusable.
+One of the features of the library that it provides a basic templating engine which only uses slots. It is possible to write HTML document in a separate HTML files and then combine files inside PHP to build the whole document. This can be helpful in making your code reusable.
 
 ### Loading Template File
 
-Loading HTML files can be achived using the static method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). Assuming that we have the following HTML code and we would like to load it into `HTMLNode` instance.
+Loading HTML files can be achived using the static method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). Assuming that there exist the following HTML code and a developer would like to load it into `HTMLNode` instance.
 
 ``` html
 <section>
@@ -246,7 +243,7 @@ The following PHP code can be used to load the file.
 ``` php
 $component = HTMLNode::loadComponent('path/to/template/my-html-file.html');
 
-//Now we can modify the component as needed.
+//Now the developer can modify the component as needed.
 $component->setClassName('main-section')
           ->paragraph('Another paragraph inside my super page.')
           ->comment('The element was modified inside PHP.')
@@ -276,7 +273,7 @@ The rendered HTML of the given example will be similar to the following:
 
 Slots in simple terms are places in your code that can be filled with values. The values are usually dynamically generated or taken from a storage such as a database or files. Slots in HTML template files are represented using mustache syntax. Any string in your HTML code which is placed between `{{}}` is considered as slot. Slots can be placed in any place in your HTML code.
 
-Assuming that we have the following HTML document which has slots:
+Assuming that there exist the following HTML document which has slots:
 
 ``` html
 <html>
@@ -297,7 +294,7 @@ Assuming that we have the following HTML document which has slots:
     </body>
 </html>
 ```
-In order to fill slots with values, we have to use the second argument of the method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). The second argument is an associative array that can have slots values.
+In order to fill slots with values, the developer have to use the second argument of the method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). The second argument is an associative array that can have slots values.
 
 The following code shows how to load the document into  [`HTMLDoc`](https://webfiori.com/docs/webfiori/ui/HTMLDoc) instance and fill the solts with values. 
 
