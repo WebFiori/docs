@@ -10,13 +10,13 @@ In this page:
 
 ## Introduction
 
-When trying to upload files in PHP, you have to access the global array [`$_FILES`](https://www.php.net/manual/en/reserved.variables.files.php) which can lead to a mess in some use cases. Also, it is difficult to use the global constant in case of multiple file uploads. More than that, there are security concerns when using the array directly for uploading user files.
+When trying to upload files in PHP, the developer have to access the global array [`$_FILES`](https://www.php.net/manual/en/reserved.variables.files.php) which can lead to a mess in some use cases. Also, it is difficult to use the global constant in case of multiple file uploads. More than that, there are security concerns when using the array directly for uploading user files.
 
 The framework has a utility class that can be used to handle file uploads using mimimum amount of effort and code. The name of the class is [`Uploader`](https://webfiori.com/docs/webfiori/framework/Uploader) and its part of the namespace `webfiori\framework`.
 
 ## The Class `Uploader`
 
-The class [`Uploader`](https://webfiori.com/docs/webfiori/framework/Uploader) is a utility class which is used to handle file uploads in PHP in a very simple way. It has all necessary tools to handle one file upload or multiple files upload. The class will help in achieving the following:
+The class [`Uploader`](https://webfiori.com/docs/webfiori/framework/Uploader) is a utility class which is used to handle file uploads in PHP in a simple way. It has all necessary tools to handle one file upload or multiple files upload. The class will help in achieving the following:
 
 * Restrict uploaded files types.
 * Get MIME type of most file types using file extension only.
@@ -24,7 +24,7 @@ The class [`Uploader`](https://webfiori.com/docs/webfiori/framework/Uploader) is
 * View the status of each uploaded file in a simple way.
 * No need to use the array `$_FILES` to upload files.
 * Ability to create upload files API in matter of fiew lines
-* Store the uploaded file(s) to a specific location on the server.
+* Store the uploaded file(s) in a specific location on the server.
 * Filtering for tainted user input.
 
 ## Using the Class `Uploader`
@@ -59,6 +59,7 @@ $uploader->setUploadDir('\home\files\sys-uploads');
 $uploader->addExts(['doc','docx','pdf']);
 
 //sets the name of the location where files are kept in front-end
+//This usually is the value of the attribute 'name' in case of HTML input element.
 $uploader->setAssociatedFileName('files-input');
 
 //start upload process. Replace if already uploaded.
@@ -71,14 +72,13 @@ echo $uploader;
 Assuming that a route to our upload API is created and the route is `apis/upload-files`, The front end code would be like the following:
 
 ``` php
-use webfiori\framework\Page;
+use webfiori\framework\ui\WebPage;
 use webfiori\ui\HTMLNode;
 use webfiori\ui\Input;
 
-class UploadView {
+class UploadView extends WebPage {
     __construct(){
-        $form = new HTMLNode();
-        Page::insert($form);
+        $form = $this->insert('form');
         //assume that upload API exist in the URL apis\upload-files
         $form->setAttributes([
             'method'=>'post'
@@ -87,15 +87,14 @@ class UploadView {
         ]);
         $filesInput = new Input('file');
         $form->addChild($filesInput);
-        //The attribute name must be set to the value which
         
+        //The attribute name must be set to the value which
         // is passed to the method Uploader::setAssociatedFileName()
         $file->setName('files-input')
         
         $submit = new Input('submit');
         $form->addChild($submit);
         
-        Page::render();
     }
 }
 return __NAMESPACE__
