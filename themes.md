@@ -63,7 +63,7 @@ In the next set of steps, we will show you how to create a very basic theme.
 
 ### Creating Theme Directory and Resources Folders
 
-Themes in WebFiori Framework exist inside the folder `/themes` but it is possible to have a theme in another folder. Usually, the folder will hold theme components such as template HTML files or any PHP files that the theme depends on. The first step in creating new theme is to create new folder for it inside themes folder. let's assume that the name of the folder is `custom-theme`. 
+Themes in WebFiori Framework exist inside the folder `/themes` but it is possible to have a theme in another folder. Usually, the folder will hold theme components such as template HTML files or any PHP files that the theme depends on. The first step in creating new theme is to create new folder for it inside themes folder. let's assume that the name of the folder is `customTheme`. 
 
 After creating theme folder, we have to create theme resources folder. Resources folder of the theme must exist inside the folder `public/assets` and must have the same name as theme folder. In this case, the directory of theme resources folder will be `public/assets/customTheme`. We also can create 3 additional optional folders inside the new folder. The 3 folders will be used to hold theme CSS, JavaScript and images. Let's give the names `js`, `css` and `images`. This means that the folder structure of the theme will be as follows:
 * `/themes/customTheme` For theme components.
