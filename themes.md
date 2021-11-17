@@ -131,7 +131,7 @@ class CustomTheme extends Theme {
 
 After that, we will start the actual theme implementation. In this step, we have to implement 4 abstract methods which exist in the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme). The 4 abstract methods are:
 * [`Theme::getHeadNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getHeadNode)
-* [`Theme::getHeadrNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getHeaderNode)
+* [`Theme::getHeaderNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getHeaderNode)
 * [`Theme::getAsideNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getAsideNode)
 * [`Theme::getFooterNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getFooterNode)
 
