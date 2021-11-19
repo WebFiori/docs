@@ -17,7 +17,7 @@ In this page:
 
 ## Introduction
 
-Every web application must have a way to manage users sessions. The management may differe from one web development framework to another. A session in simple terms is a way to keep track of user intractions through your web application. They can be used to keep state between different requests for the same user. WebFiori framework provides one class at which the developer can use to manage application sessions. The name of the class is [`SessionsManager`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager). Sessions in WebFiori framework can be used with and without HTTP as long as the client keep session ID in his side.
+Every web application must have a way to manage user sessions. The management may differe from one web development framework to another. A session in simple terms is a way to keep track of user intractions through a web application. They can be used to keep state between different requests for the same user. WebFiori framework provides one class at which the developer can use to manage application sessions. The name of the class is [`SessionsManager`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager). Sessions in WebFiori framework can be used with and without HTTP as long as the client keep session ID in his side.
 
 ## Starting New Session
 
@@ -72,7 +72,7 @@ To create a non-persistent session, use the value 0 for session duration. If the
 
 ## Resuming a Session
 
-To resume a session, simply use the same method which is used to start a new session. In the following code sample, we start a new session, close it and resume it again. Note that when resuming a session, options array is ignored.
+To resume a session, the developer simply have to use the same method which is used to start a new session. The following code sample shows how to start a new session, close it and resume it again. Note that when resuming a session, options array is ignored.
 
 ``` php
 SessionsManager::start('hello-session');
@@ -83,7 +83,7 @@ Response::append(SessionsManager::getActiveSession()->toJSON());
 
 ## Destroying a Session
 
-To destroy an active session, simply call the method  [`SessionsManager::destroy()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#destroy).
+To destroy an active session, The developer have to call the method  [`SessionsManager::destroy()`](https://webfiori.com/docs/webfiori/framework/session/SessionsManager#destroy). After starting or resuming the session.
 
 ``` php
 SessionsManager::start('hello-session');
@@ -134,13 +134,13 @@ Response::append('New Session ID: '.SessionsManager::getActiveSession()->getId()
 
 ## Creating Custom Sessions Storage
 
-By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/webfiori/framework/session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `app/storage/sessions`.
+By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/webfiori/framework/session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `app/sto/sessions`.
 
-Creating new sessions storage is very simple. For example, the developer might want to use database to store session data. In next steps, we will create a basic new sessions storage engine and use it.
+Creating new sessions storage is very simple. For example, the developer might want to use database to store session data.
 
 ### Creating Database Table
 
-First step, we will create new database table class which we will use later on to store sessions.
+First step, developer must create new database table class which will be used later on to store sessions.
 
 ``` php
 
@@ -185,7 +185,7 @@ class SessionsTable extends MySQLTable {
 
 ### Implementing Database Access Methods
 
-Next step, we need to create a class which we can use to execute queries against the table to insert, update and delete sessions. We will be extending the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) and add our logic in the new class. In addition to that, we will make the class implement the interface [SessionStorage](https://webfiori.com/docs/webfiori/framework/session/SessionStorage). The interface has all methods needed to have a functional sessions storage engine.
+Next step, the developer need to create a class which will be used to execute queries against the table to insert, update and delete sessions. Developer must extend the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) and add logic in the new class. In addition to that, developer must make the class implement the interface [SessionStorage](https://webfiori.com/docs/webfiori/framework/session/SessionStorage). The interface has all methods needed to have a functional sessions storage engine.
 
 ``` php 
 namespace app\database;
@@ -264,11 +264,12 @@ class SessionsDatabase extends DB implements SessionStorage {
 }
 ```
 
-The last step is to use the newly created sessions storage engine. In order to have the framework use the new sessions manager, we have to define the constant `WF_SESSION_STORAGE` in the class [`GlobalConstants`](https://webfiori.com/docs/webfiori/ini/GlobalConstants). The value of the constant must be the value of the namespace and the class name (e.g. `\app\database\SessionsDatabase`). Once done, the framework will use this engine.
+The last step is to use the newly created sessions storage engine. In order to have the framework use the new sessions manager, developer have to define the constant `WF_SESSION_STORAGE` in the class [`GlobalConstants`](https://webfiori.com/docs/webfiori/ini/GlobalConstants). The value of the constant must be the value of the namespace and the class name of session storage (e.g. `\app\database\SessionsDatabase`). Once done, the framework will use this engine.
 
 ## Configuring Database Session Storage
 
-By default, the framework comes with two session storage engines. One is the default one which uses files and the other one which uses database. In order to be able to use database session storage, it must be first configured. Configuration steps are as follows:
+By default, the framework comes with two session storage engines. One is the default one which uses files and the other one which uses database (One for MySQL and one for MSSQL). In order to be able to use database session storage, it must be first configured. Configuration steps are as follows:
+
 * Setting the value of the constant `WF_SESSION_STORAGE` to `\webfiori\framework\session\DatabaseSessionStorage`.
 * Adding a database connection with the name `sessions-connection` using the command `add`.
 * Creating the table that will store the sessions using the command `run-query`.
@@ -288,21 +289,21 @@ php webfiori add
 ```
 From the menu, select the first option. Then it will start by asking about connection information. When the command asks about connection name, enter `sessions-connection`. The following image shows how the connection is added.
 
-<img src="assets/images/add-sessions-db-connection.png" alt="add sessions connection">
+<img src="assets/images/add-sessions-db-connection.png" alt="add sessions connection" style="height:auto;max-width:100%;border:1px solid;">
 
 ### Initializing Database Table
 
 The final step is to initialize the table that will hold sessions data. First step in initializing the table is to run the following command:
 
 ```
-php webfiori run-query
+php webfiori run-query --schema=webfiori\framework\session\SessionOperations
 ```
 
-Then it will ask to select database connection. Select the one which has the name `sessions-connection`. Then it will ask for the type of the query that will be executed. Select the second option. Then provide the value `webfiori\framework\session\SessionsTable` as the table instance. Then select the first option which will create the table. Then it will ask to confirm for query execution. Select `y` and the table will be created.
+This command will ask to select what type of query that will be executed on the schema which is used to store the tables for sessions management. The developer must select the first option to run a query which will create all tables that are used to store sessions.
 
 The following image shows all command execution steps.
 
-<img src="assets/images/init-db-session-storage.png" alt="Run query for session storage.">
+<img src="assets/images/init-db-session-storage.png" alt="Run query for session storage." style="height:auto;max-width:100%;border:1px solid;">
 
 **Next: [The Library WebFiori JSON](learn/webfiori-json)**
 
