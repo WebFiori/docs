@@ -25,13 +25,13 @@ In this page:
 
 ## Introduction
 
-When desining web services, the developer must deside on the format at which the server will send back to the client after processing the request. One of the most widely used format is called [JSON](https://www.json.org/json-en.html). PHP does provide functions for encoding and decoding JSON using the methods [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php). And [`json_decode()`](https://www.php.net/manual/en/function.json-decode.php). Since the framework promots the use of OOP approach, it uses a library called [`WebFiori Json`](https://github.com/WebFiori/json) to create well formatted JSON output.
+When designing web services, the developer must decide on the response format at which the server will send back to the client after processing the request. One of the most widely used formats is called [JSON](https://www.json.org/json-en.html). PHP does provide functions for encoding and decoding JSON using the methods [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php). And [`json_decode()`](https://www.php.net/manual/en/function.json-decode.php). Since the framework promots the use of OOP approach, it uses a library called [`WebFiori Json`](https://github.com/WebFiori/json) to create well formatted JSON output.
 
 > **Note:** This library can be included using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/jsonx":"*"`. 
 
 ## Library Structure
 
-The lirary has only one class and one interface. The class [`Json`](https://webfiori.com/docs/webfiori/json/Json) is the core of the library. This class is the one which is used to create the final JSON output. In addition to that, it can be used to parse JSON strings and convert them to `Json` objects. 
+The library has only one class and one interface. The class [`Json`](https://webfiori.com/docs/webfiori/json/Json) is the core of the library. This class is the one which is used to create the final JSON output. In addition to that, it can be used to parse JSON strings and convert them to `Json` objects. 
 
 The interface [`JsonI`](https://webfiori.com/docs/webfiori/json/JsonI) can be used to customize JSON representation of objects which implement it when encoded. The interface has only one method which is [`JsonI::toJSON()`](https://webfiori.com/docs/webfiori/json/JsonI#toJSON).
 
@@ -105,7 +105,7 @@ In addition to the method [`Json::add()`](https://webfiori.com/docs/webfiori/jso
 
 ## Working With Arrays
 
-Arrays in PHP language can be associative, indexed or a mix of the two. When adding arrays to an instance of `Json`, the type of the array must be put into consideration. When adding the array using the method [`Json::add()`](https://webfiori.com/docs/webfiori/json/Json#add), It will be added as array. But there is one thing that must be noted. If the array is a mix between indexed and associative, the indices which are associative will be converted to objects.
+Arrays in PHP language can be associative, indexed or a mix of the two. When adding arrays to an instance of `Json`, the type of the array must be put into consideration. When adding the array using the method [`Json::add()`](https://webfiori.com/docs/webfiori/json/Json#add), It will be added as array. But there is one catch. If the array is a mix between indexed and associative, the indices which are associative will be converted to objects.
 
 ``` php
 $jsonObj = new Json();
