@@ -28,26 +28,28 @@ In this page:
 
 ## Introduction
 
-One of the important features of any web application is to have a simple-unified interface at which the developer can use to access application database. WebFiori framework has an abstract layer that provides the developer with all needed tools to create databases and performs queries on them. Currently, the abstraction layer supportes only MySQL database but there are plans to support more in the future.
+One of the important features of any web application is to have a simple-unified interface at which the developer can use to access application database. WebFiori framework has an abstract layer that provides the developer with all needed tools to create databases and performs queries on them. Currently, the abstraction layer supportes MySQL and MSSQL database but there are plans to support more in the future.
 
 > **Note:** It is possible to connect to any database using PDO driver of PHP. The database layer helps in defining your database in easy way and also it helps in making the process of building SQL queries much simpler task.
 
 ## The Idea
 
-Each table in your MySQL database is represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable). Every table consist of columns. Every column is represented by the class [`MySQLColumn`](https://webfiori.com/docs/webfiori/database/mysql/MySQLColumn). Each table must be part of a schema (or database). The database is represented by the class [`Database`](https://webfiori.com/docs/webfiori/database/Database). WebFiori framework has the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) which adds extra functionality to the class [`Database`](https://webfiori.com/docs/webfiori/database/Database). The database instance is used to connect to MySQL database and run queries on it. 
+Each table in your database is represented by the class [`Table`](https://webfiori.com/docs/webfiori/database/Table). Every table consist of columns and every column is represented by the class [`Column`](https://webfiori.com/docs/webfiori/database/Column). Each table must be part of a schema (or database). The database is represented by the class [`Database`](https://webfiori.com/docs/webfiori/database/Database). WebFiori framework has the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) which adds extra functionality to the class [`Database`](https://webfiori.com/docs/webfiori/database/Database). The database instance is used to connect to database and run queries on it. 
+
+In case of MySQL database, database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable) and table columns represented by the class [`MySQLColumn`](https://webfiori.com/docs/webfiori/database/mysql/MySQLColumn). In case of MSSQL, database tables represented by the class [`MSSQLTable`](https://webfiori.com/docs/webfiori/database/mssql/MSSQLTable) and table columns represented by the class [`MSSQLColumn`](https://webfiori.com/docs/webfiori/database/mssql/MSSQLColumn). 
 
 ## Initializing your Database
 
-The following set of steps will show you how to create your database structure and connect to the database and execute queries. Overall, there are x steps in the process:
+The following set of steps will show you how to create your database structure and connect to the database and execute queries. Overall, there are 3 steps in the process:
 * Adding connection information.
 * Creating database tables as classes.
-* Creating a class that acts as the actual database and adding tables to it.
+* Creating a class that acts as the database schema and adding tables to it.
 
 ### Adding Connection Information
 
-Database connections are represented by the class [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Connection information is stored inside the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig). It is possible to store multiple connecion inside it. There are two ways to add connection information. The first one is to add it manually to the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig). The second way is to use command line interface.
+Database connections are represented by the class [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Connection information are stored inside the class [`AppConfig`](https://github.com/WebFiori/app/blob/main/app/AppConfig.php#L465). It is possible to store multiple connecion in it. There are two ways to add connection information. The first one is to add it manually or adding it using command line interface.
 
-Adding connection information manually is simple. All what we have to do is to edit the code in the constructor of the class [`AppConfig`](https://webfiori.com/docs/webfiori/conf/AppConfig). Assuming that we have MySQL database with the name `testing_db` and username `root` and password `123456`, then the connection can be added as follows:
+Adding connection information manually is simple. The developer have to edit the code inside the method [`AppConfig::initDbConnections()`](https://github.com/WebFiori/app/blob/main/app/AppConfig.php#L465). Assuming that we have MySQL database with the name `testing_db` and username `root` and password `123456`, then connection can be added as follows:
 
 ``` php
 private function initDbConnections() {() {
@@ -59,13 +61,13 @@ private function initDbConnections() {() {
 }
 ```
 
-The connection information is added inside the array `$dbConnections`. This array can have any number of connections. The index in the array represents connection name (`connection-00` in this example) and the value is an object of type [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Note that connection name will be used later to connect to the database.
+The connection information is added inside the array `$dbConnections`. This array can have any number of connections. The key in the array represents connection name (`connection-00` in this example) and the value is an object of type [`ConnectionInfo`](https://webfiori.com/docs/webfiori/database/ConnectionInfo). Note that connection name will be used later to connect to the database.
 
 ### Creating Database Tables
 
-Database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable). Each table in the database must be represented as a sub class of this class. There are two ways at which the developer can create a class that represent a database table. One is manual way and the other one is to use command line interface.
+MySQL Database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable). Each table in the database must be represented as a sub class of this class. There are two ways at which the developer can create a class that represent a database table. One is manual way and the other one is to use command line interface.
 
-To create a table class manually, we have to create new class that extend the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable) and add columns to it as needed. Let's assume that we would like to place our database tables in the folder `app/database` with namespace `app\database`. We will start by creating new PHP class. Let's assume that we would like to create a table for keeping contacts information. 
+To create a table class manually, developer have to create new class that extend the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable) and add columns to it as needed. Assuming that the developer would like to place database tables in the folder `app/database` with namespace `app\database`. Also, assuming that the developer would like to create a table for keeping contacts information. 
 
 The [constructor](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable#__construct) of the class accepts one parameter which is the name of the table as it appears in the database. Let's assume that the name of the table is `contacts`.
 
@@ -82,7 +84,7 @@ class ContactsTable extends MySQLTable {
 
 ```
 
-After setting the name of the table, we can start by adding columns to the table. There is more than one way to add columns to the table but we will be looking at the easist way. The method [`MySQLTable::addColumns()`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable#addColumns) can be used to add multiple columns at once. The method accepts an associative array. The indices of the array are columns names and the value of each index is a sub associative array that holds column properties. 
+After setting the name of the table, developer can start by adding columns to the table. There is more than one way to add columns to the table. The method [`MySQLTable::addColumns()`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable#addColumns) can be used to add multiple columns at once. The method accepts an associative array. The indices of the array are columns names and the value of each index is a sub associative array that holds column properties. 
 
 ``` php
 namespace app\database;
@@ -124,13 +126,11 @@ class ContactsTable extends MySQLTable {
 
 ```
 
-This table will be used to store basic information about contacts. We will look at how to actually create the table in the database later on.
+This table will be used to store basic information about contacts. It will act as an interface between the application and the actual database table.
 
 ### Creating Database Class
 
-After creating tables as classes, we have to add them to an instance of the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) which represents the actual database instance. WebFiori framework extends this class by adding extra functionality. The class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) will provide same functionality at which the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) provides. For this reason, we will be extending the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB). Let's create new class inside the folder `app/database` and give it the name `TestingDatabase`.
-
-The constructor of the class accepts one parameter which is the name of the connection that will be used by database instance.
+After creating tables as classes, developer have to add them to an instance of the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) which represents the actual database instance. WebFiori framework have the class The class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) which adds extra functionality like the ability to automatically register multiple tables automatically. For this reason,the developer should use the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB). Assuming that the name of the database class is  `TestingDatabase`.
 
 ``` php
 namespace app\database;
@@ -144,8 +144,7 @@ class TestingDatabase extends DB {
     }
 }
 ```
-
-After that, we will add the table that we created to the database. To do that, we use the method [`DB`](https://webfiori.com/docs/webfiori/database/Database#addTable).
+The constructor of the class accepts one parameter which is the name of the connection that will be used by database instance. After that, database table classes must be registered in order to perform queries on them. To do that, the developer can use the method [`DB::addTable()`](https://webfiori.com/docs/webfiori/framework/DB#addTable) for registering single table or the method [`DB::register()`](https://webfiori.com/docs/webfiori/framework/DB#register) to add multiple tables which belongs to same namespace.
 
 
 ``` php
@@ -163,7 +162,7 @@ class TestingDatabase extends DB {
 }
 ```
 
-Now that we have the table added, we can create an instance of the class `ContactsTable` and start building queries as needed.
+Now that the table is added, we can create an instance of the class `TestingDatabase` and start building queries as needed.
 
 ## Database Queries
 
@@ -171,7 +170,7 @@ The library provides a query builder which can be used to build almost any type 
 
 ### Insert Record
 
-The method [MySQLQuery::insert()](https://webfiori.com/docs/webfiori/database/mysql/MySQLQuery#insert) is used to build an insert query for MySQL database. The following code sample shows how to use that method to create an insert query.
+The method [AbstractQuery::insert()](https://webfiori.com/docs/webfiori/database/AbstractQuery#insert) is used to build an insert query for MySQL and MSSQL database. The following code sample shows how to use that method to create an insert query in case of MySQL database. It is used in same way in case of MSSQL.
 
 ``` php
 
@@ -209,10 +208,10 @@ $db->table('contacts')->insert([
 
 ### Update Record
 
-The method [MySQLQuery::update()](https://webfiori.com/docs/webfiori/database/mysql/MySQLQuery#update) is used to build a delete record query for MySQL database. The following code sample shows how to use that method to create an update record query with a condition.
+The method [AbstractQuery::update()](https://webfiori.com/docs/webfiori/database/AbstractQuery#update) is used to build a delete record query for MySQL and MSSQL database. The following code sample shows how to use that method to create an update record query with a condition.
 
 ``` php
-$db = new MainDatabase();
+$db = new TestingDatabase();
 $db->table('contacts')->update([
     'age' => 44,
     'email' => 'new-email@exmple.com'
@@ -223,10 +222,10 @@ $db->table('contacts')->update([
 
 ### Delete Record
 
-The method [MySQLQuery::delete()](https://webfiori.com/docs/webfiori/database/mysql/MySQLQuery#delete) is used to build a delete record query for MySQL database. The following code sample shows how to use that method to create a drop record query with a condition.
+The method [AbstractQuery::delete()](https://webfiori.com/docs/webfiori/database/AbstractQuery#delete) is used to build a delete record query for MySQL and MSSQL database. The following code sample shows how to use that method to create a drop record query with a condition.
 
 ``` php
-$db = new MainDatabase();
+$db = new TestingDatabase();
 
 $db->table('contacts')->delete()->where('name', '=', 'Contact 1');
 
@@ -269,7 +268,7 @@ $db->table('contacts')->select([
 // select `name` as `full_name`, `age` as `contact_age` from `contacts`
 ```
 
-We can also add a `where` condition to the query. There are 3 methods which can be used to add a where condition:
+Developer can also add a `where` condition to the query. There are 3 methods which can be used to add a where condition:
 * [AbstractQuery::where()](https://webfiori.com/docs/webfiori/database/AbstractQuery#where)
 * [AbstractQuery::orWhere()](https://webfiori.com/docs/webfiori/database/AbstractQuery#orWhere)
 * [AbstractQuery::andWhere()](https://webfiori.com/docs/webfiori/database/AbstractQuery#andWhere)
@@ -291,7 +290,7 @@ After building the query, it must be executed on the database. To execute a quer
 
 ### Retrieving Records
 
-After executing a select query in the database, we would like to get the result of the query. To get query result, the method [`Database::getLastResultSet()`](https://webfiori.com/docs/webfiori/database/Database#getLastResultSet). This metho will return an object of type [`ResultSet`](https://webfiori.com/docs/webfiori/database/ResultSet). 
+To get query result, the method [`Database::getLastResultSet()`](https://webfiori.com/docs/webfiori/database/Database#getLastResultSet) can be used. This metho will return an object of type [`ResultSet`](https://webfiori.com/docs/webfiori/database/ResultSet). 
 
 ``` php 
 
@@ -304,9 +303,10 @@ foreach($result as $record) {
 }
 ```
 
-The variable `$record` in the given example will be an associative array. The indices of the array are columns names.
+The variable `$record` in the given example will be an associative array. The indices of the array are columns names as they appear in database.
 
 ### Mapping Records to Objects
+
 It is possible to map the records to objects. To achive this, the developer can use the method [`ResultSet:: setMappingFunction()`](https://webfiori.com/docs/webfiori/database/ResultSet#setMappingFunction). This method is used to set a function which can use to manipulate the result set after fetching. The method must return an array that contains the records after mapping.
 
 ``` php
