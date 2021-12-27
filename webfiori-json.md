@@ -490,6 +490,7 @@ echo $j->toJSONxString();
     <json:boolean name="bool-true">
         true
     </json:boolean>
+    <json:boolean name="bool-false">
         false
     </json:boolean>
 </json:object>
