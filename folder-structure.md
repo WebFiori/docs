@@ -18,19 +18,20 @@ In this page:
 
 ## The `app` Folder
 
-The folder `app` will contain all your application files. Anything that created by you must exist inside this folder. The folder can be kept under source control because of this reason. This folder can have extra sub-folders for maintaining your code. The folders are:
-* `app/apis`: Used to hold web services and services managers.
-* `app/commands`: Used to hold custom CLI commands.
+The folder `app` will contain all your application files. Any PHP source code files must exist inside this folder. This folder can have extra sub-folders for maintaining source code of the application. The folders are:
+
+* `app/apis`: Used to hold web services and services managers (Web APIs).
+* `app/commands`: Used to hold custom-made CLI commands.
 * `app/jobs`: Used to hold cron jobs.
 * `app/langs`: Used to hold translation files (for i18n support)
-* `app/pages`: Used to hold views and web pages.
-* `app/ini`: Used to hold classes which used to initialize parts of the system.
-* `app/ini/routes`: A folder that contains classes for creating routes.
-* `app/database`: Holds classes which are related to database.
+* `app/pages`: Used to hold anything related to user interface such as web pages, views or UI components.
+* `app/ini`: Used to hold classes which are used to initialize the application.
+* `app/ini/routes`: A folder that contains classes for initializing routes.
+* `app/database`: Holds classes which are related to database and database access.
 * `app/middleware`: Holds classes which represents a middleware.
 * `app/entity` Holds classes which represents system entities.
 
-In addition to the given folders, the directory will have a file called `AppConfig.php`. This file contains a code for a class that holds configuration information for your application. If the file does not exist or was deleted, the framework will re-create it.
+In addition to given folders, the directory will have a file called `AppConfig.php`. This file contains a code for a class that holds configuration information for your application. If the file does not exist or was deleted, the framework will re-create it.
 
 Also, you may create your own folders and add files as you like. More details about the folders can be found below.
 
@@ -42,7 +43,7 @@ This folder can have all classes that are related to web services. This folder w
 
 ### The `app/commands` Folder
 
-This folder can have any custom CLI commands which are created by you. A CLI command can be created by extending the class [`CLICommand`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand) and implementing the abstract methods of the class. Any command inside this folder will be auto-registered by the framework.
+This folder can have any custom CLI commands which are created by you. A CLI command can be created by extending the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand) and implementing the abstract methods of the class. Any command inside this folder will be auto-registered by the framework.
 
 ### The `app/jobs` Folder
 
@@ -50,37 +51,37 @@ This folder can hold background jobs. Background jobs contains a code which is s
 
 ### The `app/langs` Folder 
 
-This folder contains files which adds support for i18n. You can create your own language classes or add labels to existing one. A language class must extend the class [`Language`](https://webfiori.com/docs/webfiori/framework/i18n/Language).
+This folder contains files which adds support for internationalization (i18n). You can create your own language classes or add labels to existing one. A language class must extend the class [`Language`](https://webfiori.com/docs/webfiori/framework/Language).
 
 ### The `app/pages` Folder
 
-This folder must contains the classes which represents the pages of your application. Also, it can contain HTML template files which represent views. The routes to classes which exist in this folder can be added using the method <a  href="https://webfiori.com/docs/webfiori/framework/router/Router#view">`Router::view()`</a>.
+This folder must contains the classes which represents the pages of the application or the components that a page consist of. Also, it can contain HTML template files which represent views. The routes to classes which exist in this folder can be added using the method <a  href="https://webfiori.com/docs/webfiori/framework/router/Router#page">`Router::page()`</a>.
 
 ## The `app/ini` Folder
 
-This folder contains initialization classes. You can use the classes to initialize system privileges, custom jobs, custom CLI commands, custom autoload directories, middleware and global constants. The folder can be kept under source control as you might modify the code in the initialization classes.
+This folder contains initialization classes. Classes in this folder are used to initialize system privileges, custom jobs, custom CLI commands, custom autoload directories, middleware and global constants.
 
 
 ### The `app/ini/routes` Folder
 
-This folder contains classes which are used to create different types of routes to any resources which exist in the application. The folder already has 4 classes. Each class has one static method at which you can modify its body to add new routes.
+This folder contains classes which are used to create different types of routes to any resources exist in the application. The folder already has 4 classes. Each class has one static method. The code in each static method should be used to initialize routes.
 
 ## The `app/middleware` Folder
 
-This folder can have the classes which provides implementation for the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The classes in this folder represents every middleware you will create.
+This folder can have the classes which provides implementation for the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The classes in this folder represents every middleware that will be created. A middleware is a class which is used to provide a layer in top of the application for filtering requests before actual routing happens.
 
 ## The `vendor` Folder
 
-This folder contains core entities of the framework in addition to any libraries you install using composer. You should not modify this folder or add any code which is related to his web application. The folder should be kept outside source control.
+This folder contains core entities of the framework in addition to any libraries that are installed using composer.
 
 ## The `public` Folder
 
-The public folder is the root directory of your web application. You should include any public resources inside this folder as it will be the entry point of any request. The folder must have the `assets` folder inside it. The `assets` folder will usesally contain all resource files. Also, the folder will contain themes assets.
+The public folder is the root directory of the application. Any public resources should be includedinside this folder as it will be the entry point of any request. Public resources include JavaScript files, CSS or any images that the application may use. The folder must have the `assets` folder inside it. The `assets` folder will usesally contain all resource files. Also the `assets` folder will contain themes assets.
 
 ## The `themes` Folder
-The folder `themes` holds the themes which are bundeled with the framework. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`. The folde also can hold custom made themes.
+The folder `themes` holds themes which are bundeled with the framework. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`. The folde also can hold custom made themes.
 
-> <b>Note:</b> It is possible to have custom-made themes in another place other than the folder `themes`
+> <b>Note:</b> It is possible to have custom-made themes in another place other than the folder `themes`. In this case, custom made themes should use CDN to include thier reasource files.
 
 ## Setting Custom Application Folder
 
