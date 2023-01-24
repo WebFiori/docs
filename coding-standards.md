@@ -16,21 +16,28 @@ The framework has its owon autoloader implementation which follows <a href="http
 The framework can be configured to not throw an exception. This can be performed during the process of initializing the autoloader <a href="https://webfiori.com/docs/webfiori/entity/AutoLoader" target="_blank">AutoLoader</a>.
 
 ## Coding Style
-It is recommended to follow the following rules while writing any PHP code using the framework or writing code which is part of the framework. Note that not all rules follow PSR. Also, some of them violate PHP and PSR coding standards. The rules are:
+Recomended coding style is drived from PHP's recommended style and PSR but it does not strictly follow it. For this reason, there are few diffrences. The rules are devided into two types, styles that must always be followd and recomended styles.
 
-* Always use `<?php` for PHP tags.
+### Must Follow
+* Always use `<?php` instead of `<?` for PHP tags.
 * Namespaces must be all `lower\case`.
 * Class constants and global constants names must be decalred in `ALL_CAPS`.
 * Methods names, non-static class attributes must be decalred in `camelCase`.
-* Classed names and static attributes names must be decalred in `PascalCase`.
+* Classed names, static attributes names must be decalred in `PascalCase`.
 * An opening braces `{` must be on the same line for method and class declaration.
 * Never use `elseif`. Always use `else if`.
-* Always include access modifiers for class methods even if they are public.
-* Private methods names should always start with underscore.
+* Always include access modifiers for class methods, even if they are public.
 * When extending a class, the first statement in the child's constructor should be calling the parent's constructor.
 * Do not use aliases for imported classes or class constants (e.g. `use webfiori\MyClass as XYZ`).
 * Method names and attributes must be defined as follows, first include access modifier followed by `static` or/then `final` (e.g. `public static final function myFunc()`).
-* For comparison, you should always use strict comparison (`===` or `!==`) when comparing booleans or `null`.
+* For comparison, always use strict comparison (`===` or `!==`) when comparing `bool` or `null`.
+* Do not use the construct `empty()` to check for `null` values.
+
+### Recomendations
+* Privat method names start with underscore.
+* Always place PHP code in classes.
+* Always specify method parameters's data type.
+* Always specify method's return type.
 
 ## Documentation Style
 The PHPDoc block must be similar to the following style:
