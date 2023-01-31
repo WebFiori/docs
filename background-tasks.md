@@ -27,22 +27,21 @@ In this page:
 
 ## Introduction
 
-One of the features of the framework is the ability to schedule PHP code to run at specific time in the background. For example, it is possible to make your web application send reports at specific time using email or any comunication way. The framework give the developers all needed tools to schedule background tasks in a very simple way.
+One of the features of the framework is the ability to schedule PHP code to run at specific time in background. For example, it is possible to make your web application send reports at specific time using email. The framework give the developers all needed tools to schedule background tasks in a simple way.
 
 ## Main Classes
 
-The sub-system which is responsible for scheduling jobs consist of 4 main classes. In order to schedule jobs, we have to use at least the first one. The classes are:
+The sub-system which is responsible for scheduling jobs consist of 3 classes. The classes are:
 
-* The class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob)
-* The class [`CronJob`](https://webfiori.com/docs/webfiori/framework/cron/CronJob)
-* The class [`Cron`](https://webfiori.com/docs/webfiori/framework/cron/Cron)
-* The class [`InitCron`](https://webfiori.com/docs/webfiori/framework/cron/InitCron)
+* [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob)
+* [`CronJob`](https://webfiori.com/docs/webfiori/framework/cron/CronJob)
+* [`Cron`](https://webfiori.com/docs/webfiori/framework/cron/Cron)
 
-There are other classes that makes the system for scheduling jobs works but they are mainly utility class. In order to schedule a job, mostly we have to work with the 4 given classes.
+There are other classes that makes the system for scheduling jobs works but they are mainly utility class.
 
 ### The Class `AbstractJob`
 
-This class has all needed methods for created a custom job. The developer can extend this class and implement the abstract methods to create the job. The class has 4 abstract methods which can be implemented:
+Developer can extend this class and implement the abstract methods to create the job. The class has 4 abstract methods which must be implemented:
 
 * [`AbstractJob::execute()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#execute)
 * [`AbstractJob::afterExec()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#afterExec)
@@ -57,24 +56,20 @@ This class provides basic implementation for the class `AbstractJob`. The develo
 
 This class is the controller for jobs scheduling system. This class performs many operations including jobs management, executing jobs, trigger job execution and so on.
 
-### The Class `InitCron`
-
-This class is one of the framework initialization classes. The class is used to initialize the scheduled jobs. The developer can use it to create an instance of his job and schedule it there. The class has one ststic method which is [`InitCron::init()`](https://webfiori.com/docs/webfiori/ini/InitCron#init). The developer can modify the body of the method as he needs.
-
 ## Scheduling Jobs
 
-A job can be created using one of two ways, As a closure, or by extending the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob).
+A job can be implemented using one of two ways, As a closure, or by extending the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob).
 
 ### Scheduling Job as a Closure
 
-The easiest and simplest way is to schedule a job as a closure. To schedule a job as a closure, we have to use the class [`Cron`](https://webfiori.com/docs/webfiori/framework/cron/Cron). The class has many pre-made methods which can be used to schedule jobs as closures in diffrent tomes. These methods include the following ones:
+This way is straightforward and does not require lots of coding. To schedule a job as a closure, the class [`Cron`](https://webfiori.com/docs/webfiori/framework/cron/Cron) is used directly. The class has many pre-made methods which can be used to schedule jobs as closures in diffrent times. These methods include the following ones:
 
 * [`Cron::createJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#createJob): Schedule a job using specific cron expression.
 * [`Cron::dailyJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#dailyJob): Schedule a job to run every day at specific time.
 * [`Cron::monthlyJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#monthlyJob): Schedule a job to run once every month in a specific day and time.
 * [`Cron::weeklyJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#weeklyJob): Schedule a job to run once every week in a specific day and time.
 
-The following code sample shows how to use each one of the methods to schedule jobs.
+The following code sample shows how to use each one of the methods to schedule jobs. Initializing jobs must be performed in the class `[APP_DIR]\ini\InitCron`
 
 ``` php
 namespace webfiori\ini;
@@ -110,9 +105,9 @@ class InitCron {
 
 ### Using the Class `AbstractJob`
 
-If the job that will be scheduled is simple, it is recomended to schedule it as closure. But if the job is complex, it is recomended to implement it as a class to make it easier when managing it. In order to implement a job as a class, the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob) must be extended.
+This method of implementing jobs should be used for complex jobs. In this approach, the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob) is extended and its abstract methods are implemented.
 
-As we have said before, this class has 4 abstract methods at which the developer can implement. The method [`AbstractJob::execute()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#execute) will contain the actual job code that will be executed when it is time to run the job. The method must return a boolean value or null. If the job successfully executed, it must return `true` or `null`. If the job fails, the method must return `false`. Note that if the method throws an exception or error while it executes, the job will be considered as failed.
+This class has 4 abstract methods at which the developer must implement. The method [`AbstractJob::execute()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#execute) will contain the actual job logic that will be executed. The method must return a boolean value or null. If the job successfully executed, it must return `true` or `null`. If the job fails, the method must return `false`. Note that if the method throws an exception or error while it executes, the job will be considered as failed.
 
 The method [`AbstractJob::onFail()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#onFail) can have a code that will be executed if the job has failed to complete successfully. For example, it can have a code that will notify system admins that a background job has failed. A job will be considered as a failed job in two cases. If the method [`AbstractJob::execute()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#execute) return `false` or when it throws an exception.
 
@@ -122,10 +117,10 @@ The method [`AbstractJob::afterExec()`](https://webfiori.com/docs/webfiori/frame
 
 #### A Sample Job
 
-The developer can place the class that represents the job in any directory as long as it is in autoload directories. But if the developer would like from the framework to auto-register the job, he can place it in the folder `app/jobs`. The following code shows a sample job that writes a text to a file.
+It is recomended to place jobs at the folder `[APP_DIR]/jobs` as they will be auto-registered if they are placed in this folder. The following code shows a sample job that writes a text to a file.
 
 ``` php
-namespace webfiori\framework\cron;
+namespace app\jobs;
 
 use webfiori\framework\cron\AbstractJob;
 use webfiori\framework\File;
@@ -158,13 +153,13 @@ class WriteFileJob extends AbstractJob{
 }
 ```
 
-After implementing the job, it must be registered. If the class is placed in the folder `app/jobs`, then the registration process will be automatic. If the job class is somewhere else, then it must be registered manualy. The developer can use the method [`Cron::scheduleJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#scheduleJob) to register jobs. The code which can be used to register a job can be placed in the class `InitCron`. The following code shows how it is done.
+After implementing the job, it must be registered. If the class is placed in the folder `[APP_DIR]/jobs`, then the registration process will be automatic. If the job class is somewhere else, then it must be registered manualy. The developer can use the method [`Cron::scheduleJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#scheduleJob) to register jobs. The code which can be used to register a job can be placed in the class `[APP_DIR]\InitCron`. The following code shows how it is done.
 
 ``` php
 namespace webfiori\ini;
 
 use webfiori\framework\cron\Cron;
-use webfiori\framework\cron\WriteFileJob;
+use app\jobs\WriteFileJob;
 
 class InitCron {
     /**
@@ -182,13 +177,16 @@ class InitCron {
 
 ## Jobs Execution
 
-When a job is scheduled, it will not get executed by it self even if it is time to run it. A job can be only get executed if there was a trigger that caused it to execute. The trigger can be a forced trigger or automatic trigger.
+When a job is scheduled, it will not get executed by it self even if it is time to run it. A job can be only executed if there was a trigger that caused it to execute. The trigger can be a forced trigger or automatic trigger.
 
 ### Using `crontab` Entry to Trigger Execution
 
-The recomended way is to add a CRON entry on your server which looks like this one: `* * * * * php webfiori cron p="pass" --check`. This will execute the command `cron` of the framework with the option `--check` every minute. The option `pass` must be included if a password is set to protect jobs from unauthorized execution. It will simply check all scheduled jobs and to check if it is time to execute them. Note that the path to PHP interpreter and the framework my differ. Because of this, the format of the entry may differ.
+The recomended way is to add a CRON entry on your server which looks like this one: `* * * * * php webfiori cron p="pass" --check`. This will execute the command `cron` of the framework with the option `--check` every minute. The option `pass` must be included if a password is set to protect jobs from unauthorized execution. It will simply check all scheduled jobs and to check if it is time to execute them. 
 
 If the server is runnig on windows, it is possible to use "Task Scheduler" to achieve the same result.
+
+>> Note: The path to PHP interpreter and the framework my differ. Because of this, the format of the entry may differ.
+
 
 ### Using Command Line Interface to Trigger Execution
 
@@ -209,7 +207,7 @@ One of the features of the framework is the ability to force a scheduled job to 
 
 #### Force a Job to Execute Using Cron Web Interface
 
-If the constant `CRON_THROUGH_HTTP` is defined and is set to `true`, it will be possible to access cron web interface and use it to force a job to execute. The control panel can be accessed using any web browser by navigating to the URL `https://yoursite.com/cron`. If a password is set to protect the jobs, it will open a login page to enter protection password.
+If the envoronment variable `CRON_THROUGH_HTTP` is defined and is set to `true`, it will be possible to access cron web interface and use it to force a job to execute. The control panel can be accessed using any web browser by navigating to the URL `https://yoursite.com/cron`. If a password is set to protect the jobs, it will open a login page to enter protection password.
 
 <img src="assets/images/cron01.png" alt="Cron web interface.">
 
@@ -218,7 +216,7 @@ If the constant `CRON_THROUGH_HTTP` is defined and is set to `true`, it will be 
 Forcing a job to execute thorugh terminal is useful in case of debugging. The terminal can be used to show the full output of executing a job. To force execution of a specific job, simply we have to run the following command:
 
 ```
-php webfiori cron p="pass" --force
+php webfiori cron p="pass" --force --show-log
 ```
 
 Once this command is executed, the terminal will ask the user to select one of the scheduled jobs to force. The following image shows the full terminal output when using this way to force a job.
@@ -249,8 +247,12 @@ class GenerateAttendanceReportJob extends AbstractJob {
         
         // Add two arguments
         $this->addExecutionArgs([
-            'start-date',
-            'end-date',
+            'start-date' => [
+                'default' => date('Y-m-d', strtotime(date('Y-m-d').' -30 days'))
+            ],
+            'end-date' => [
+                'default' => date('Y-m-d')
+            ],
         ]);
     }
     public function afterExec() {
@@ -258,20 +260,10 @@ class GenerateAttendanceReportJob extends AbstractJob {
     }
 
     public function execute() {
-        //Access argument value.
-        $startDate = $this->getArgValue('start-date');
-        if ($startDate === null) {
-            Cron::log('Start date is missing. Using default value.');
-            //TODO: Set a default start date which should be the start of prev month
-            $startDate = '2020-06-01';
-        }
         
+        $startDate = $this->getArgValue('start-date');
         $endDate = $this->getArgValue('end-date');
-        if ($endDate === null) {
-            Cron::log('End date is missing. Using default value.');
-            //TODO: Set a default start date which should be the start of prev month
-            $endDate = '2020-06-30';
-        }
+        
         Cron::log('Start date = "'.\$startDate.'"');
         Cron::log('End date = "'.\$endDate.'"');
         //TODO: Generate the report.
@@ -314,7 +306,7 @@ One of the things that the framework supports is the ability to send email notif
 
 In order to send email notifications, the class [`CronEmail`](https://webfiori.com/docs/webfiori/framework/cron/CronEmail) must be used. This class can be used to send an email regarding the status of background job execution (failed or success). This class must be only used in one of the abstract methods of a background job since using it while no job is active will have no effect. It is recommended to create an instance of this class in the body of the method [`AbstractJob::afterExec()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#afterExec).
 
-The following code sample shows how to use the class to send notifications to one email address. It assumes that there exist SMTP account which has the name `notifications` and it will be used to send the notifications.
+The following code sample shows how to use the class to send notifications to one email address. It assumes that there exist SMTP account which has the name `cron-notifications` is added to the class `[APP_DIR]\config\AppConfig` and it will be used to send the notifications.
 
 ``` php
 namespace webfiori\framework\cron;
@@ -338,7 +330,7 @@ class GenerateAttendaceReportJob extends AbstractJob {
     }
     public function afterExec() {
         //Send email that shows the status of job execution
-        new CronEmail('notifications', [
+        new CronEmail('cron-notifications', [
             'ibrahim@example.com' => 'Ibrahim' 
         ]);
     }
