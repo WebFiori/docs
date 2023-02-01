@@ -30,9 +30,10 @@ The following table lists all environment variables and for what each one is use
 |`THEMES_PATH`|This constant represents the directory at which themes exist.|'themes' (`string`)|
 |`CLI_HTTP_HOST`|Host name to use in case the system is executed through CLI. When the application is running throgh CLI, there is no actual host name. For this reason, the host is set to `127.0.0.1` by default. If this constant is defined, the host will be changed to the value of the constant. Default value of the constant is 'example.com'.|'example.com' (`string`)|
 |`DS`|Directory separator. This one is is used as a shorthand instead of using PHP constant `DIRECTORY_SEPARATOR`. The two will have the same value.|(`string`)|
-|`WF_PATH_TO_REMOVE`|An optional string which represents the path part of a URI. The part which is defined by this constant will be removed when constructing the path part of the `base` URL of web pages. This is useful for the cases where the application exist inside a folder which exist inside the document root of the server.|Not defined|
-|`WF_PATH_TO_APPEND`|An optional string which represents the path part of a URI. The part which is defined by this constant will be appended when constructing the path part of the `base` URL of web pages. This is useful for the cases where the application exist inside a folder which exist inside the document root of the server.|Not Defined|
-|`JSON_PROP_STYLE`|This constant is used to specify the global properties style which will be used by any `Json` instance. The constant can have one of the following values only: `snake`, `kebab`, `camel` and `none`.|Not Defined|
+|`WF_PATH_TO_REMOVE`|An optional string which represents the path part of a URI. The part which is defined by this constant will be removed when constructing the path part of the `base` URL of web pages. This is useful for the cases where the application exist inside a folder which exist inside the document root of the server.|Not defined(`string`)|
+|`WF_PATH_TO_APPEND`|An optional string which represents the path part of a URI. The part which is defined by this constant will be appended when constructing the path part of the `base` URL of web pages. This is useful for the cases where the application exist inside a folder which exist inside the document root of the server.|Not Defined(`string`)|
+|`JSON_PROP_STYLE`|This constant is used to specify the global properties style which will be used by any `Json` instance. The constant can have one of the following values only: `snake`, `kebab`, `camel` and `none`.|Not Defined(`string`)|
+|`SESSION_GC`|The value of this variable is used to detrmine the time at which sessions will be cleared after in seconds.|Not Defined (`int`)| 
 
 
 
