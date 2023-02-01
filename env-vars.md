@@ -1,5 +1,5 @@
 
-# Global Constants
+# Environment Variables
 
 <meta name="description" content="A reference of all environment variables which are global in WebFiori Framework.">
 
