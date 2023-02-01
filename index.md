@@ -23,5 +23,5 @@ Here you will find topics which can help you getting started with WebFiori frame
 * [Middleware](learn/middleware)
 * [Background Tasks](learn/background-tasks)
 * [Internationalization](learn/i18n)
-* [Global Constants](learn/global-constants)
+* [Environment Variables](learn/env-vars)
 * [Coding Standards](learn/coding-standards)
