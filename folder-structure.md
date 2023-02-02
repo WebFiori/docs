@@ -3,6 +3,7 @@
 
 In this page:
 * [The `app` Folder](#the-app-folder)
+  * [The `app/config` Folder](#the-appconfig-folder)
   * [The `app/apis` Folder](#the-appapis-folder)
   * [The `app/commands` Folder](#the-appcommands-folder)
   * [The `app/jobs` Folder](#the-appjobs-folder)
@@ -20,22 +21,27 @@ In this page:
 
 The folder `app` will contain all your application files. Any PHP source code files must exist inside this folder. This folder can have extra sub-folders for maintaining source code of the application. The folders are:
 
-* `app/apis`: Used to hold web services and services managers (Web APIs).
-* `app/commands`: Used to hold custom-made CLI commands.
-* `app/jobs`: Used to hold cron jobs.
-* `app/langs`: Used to hold translation files (for i18n support)
-* `app/pages`: Used to hold anything related to user interface such as web pages, views or UI components.
-* `app/ini`: Used to hold classes which are used to initialize the application.
-* `app/ini/routes`: A folder that contains classes for initializing routes.
+* `app/apis`: Holds web services and services managers (Web APIs).
+* `app/commands`: Holds custom-made CLI commands.
+* `app/config`: Hold application configuration classes.
 * `app/database`: Holds classes which are related to database and database access.
-* `app/middleware`: Holds classes which represents a middleware.
 * `app/entity` Holds classes which represents system entities.
+* `app/ini`: Holds classes which are used to initialize the application.
+* `app/ini/routes`: Holds classes for initializing routes.
+* `app/jobs`: Holds cron jobs.
+* `app/langs`: Holds translation files (for i18n support)
+* `app/middleware`: Holds classes which represents a middleware.
+* `app/pages`: Holds anything related to user interface such as web pages, views or UI components.
+
 
 In addition to given folders, the directory will have a file called `AppConfig.php`. This file contains a code for a class that holds configuration information for your application. If the file does not exist or was deleted, the framework will re-create it.
 
 Also, you may create your own folders and add files as you like. More details about the folders can be found below.
 
-> <b>Note:</b> It is possible to have different name for the folder `app` by changing the value of the constant `APP_DIR_NAME`. For more information, [check here](##setting-custom-application-folder).
+> <b>Note:</b> It is possible to have different name for the folder `app` by changing the value of the constant `APP_DIR`. For more information, [check here](##setting-custom-application-folder).
+
+### The `app/config` Folder
+This folder will hold two classes which are used to configure the application. The first class is `AppConfig` and the second one is `Env`. The class `AppConfig` is used to store application related configurations such as its name, default language, database connections and SMTP connections. The class `Env` is used to initialize environment variables only.
 
 ### The `app/apis` Folder
 
@@ -85,11 +91,11 @@ The folder `themes` holds themes which are bundeled with the framework. Each the
 
 ## Setting Custom Application Folder
 
-As of version 2.3.0, the developer have the option to set custom name for the folder that holds application code. This allows the developer to follow PSR-4 without having to add application configuration classes in a folder and application related classes in another folder. To set custom name for application folder, the developer have to define the name of application folder at the top of the file `index.php`. 
+The developer have the option to set custom name for the folder that holds application code. This allows the developer to follow PSR-4 without having to add application configuration classes in a folder and application related classes in another folder. To set custom name for application folder, the developer have to define the name of application folder at the top of the file `index.php`. 
 
-When the source code of the file is observed, the `define` can be seen at [the top](https://github.com/WebFiori/app/blob/main/public/index.php#L10) of the file. The developer can specify new name for application folder by specifying a value for the constant `APP_DIR_NAME`. As noticed, default value is `app`. When the value of the constant is changed to something else, the framework will attempt to create the same structure as default application structure with all configuration classes.
+When the source code of the file is observed, the `define` can be seen at [the top](https://github.com/WebFiori/app/blob/main/public/index.php#L10) of the file. The developer can specify new name for application folder by specifying a value for the constant `APP_DIR`. As noticed, default value is `app`. When the value of the constant is changed to something else, the framework will attempt to create the same structure as default application structure with all configuration classes.
 
-Note that the process of renaming the folder will change the namespace at which initialization classes belongs to. For example, the class `AppConfig` belongs to the namespace `app`. If the value of the constant `APP_DIR_NAME` is changed to `coolApp`, the class will be re-created by the framework at the namespace `coolApp`.
+Note that the process of renaming the folder will change the namespace at which initialization classes belongs to. For example, the class `AppConfig` belongs to the namespace `app\config`. If the value of the constant `APP_DIR` is changed to `coolApp`, the class will be re-created by the framework at the namespace `coolApp\config`.
 
 **Previous: [Installation](learn/installation)**
 
