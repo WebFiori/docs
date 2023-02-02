@@ -134,7 +134,7 @@ Response::append('New Session ID: '.SessionsManager::getActiveSession()->getId()
 
 ## Creating Custom Sessions Storage
 
-By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/webfiori/framework/session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `app/sto/sessions`.
+By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/webfiori/framework/session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `[APP_DIR]/sto/sessions`.
 
 Creating new sessions storage is very simple. For example, the developer might want to use database to store session data.
 
