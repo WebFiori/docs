@@ -6,72 +6,65 @@ In this page:
 * [Introduction](#introduction)
 * [Using Themes](#using-themes)
 * [Creating Custom Theme](#creating-custom-theme)
-  * [Creating Theme Directory and Resources Folders](#creating-theme-directory-and-resources-folders)
-  * [Adding Theme Resources](#adding-theme-resources)
-  * [Implementing The Theme](#implementing-the-theme)
-* [Using Command Line to Create Themes](#using-command-line-to-create-themes)
+  * [Manually Creating a Theme](#manually-creating-a-theme) 
+    * [Creating Theme Directory and Resources Folders](#creating-theme-directory-and-resources-folders)
+    * [Adding Theme Resources](#adding-theme-resources)
+    * [Implementing The Theme](#implementing-the-theme)
+  * [Using Command Line to Create Themes](#using-command-line-to-create-themes)
 
 ## Introduction
 
-A web application or a website which provide useful content isn't good enough if it does not provide good and easy to use user interface. User interface is one of the important factors that can be used to mesure how good a website is. For that reason, WebFiori Framework provide the needed tools which can be used to create a custom unified user interface for your website or web application.
+A web application or a website which provide useful content isn't good enough if it does not provide good and easy to use user interface. For that reason, WebFiori Framework provide the needed tools which can be used to create a custom unified user interface for your website or web application.
 
-Themes in WebFiori Framework are used to create different custom user interfaces for your website or web application. In addition, they work like a plug-ins and can provide additional functionality. Themes can be found inside the folder `themes` of the framework.
+Themes in WebFiori Framework are used to create different custom user interfaces for your website or web application. In addition, they work like a plug-ins and can provide additional functionality. There is a set of default themes which comes with the framework and can be found under the folder `themes` of the framework.
 
 ## Using Themes
 
-In order to apply a theme to your web page, we have to use the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPag). For more information about web pages, [check here](learn/web-pages). After that, all what you need to know about the theme is its name or the class that represent the theme. The name of the theme acts as an identifier for it. If theme name is known, simply supply its name to the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) before rendering the page. For example, if theme name is `WebFiori Theme`, then the theme can be applied as follows:
+Each page in the application must be represented by the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPag) for themes to work. For more information about web pages, [check here](learn/web-pages). After that, all what needed about the theme is the class that represent it. A theme can be applied to a page using the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme). For example, if theme class is `wf\themes\WebFioriTheme`, then the theme can be applied as follows:
 
 ``` php
+namespace app\pages;
+
 use webfiori\framework\ui\WebPage;
 
 class MyWebPage extends WebPage {
     public function __construct() {
-        $this->setTheme('WebFiori Theme');
+        $this->setTheme(wf\themes\WebFioriTheme::class);
         
         // Add page content here
     }
 }
 ```
-Note that if the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in the class [`AppConfig`](https://webfiori.com/docs/app/AppConfig).
+Note that if the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in application configuration (the class [`AppConfig`](https://webfiori.com/docs/app/config/AppConfig)).
 
-In addition to loading a theme using its name, it is possible to use the class of the theme in order to apply it to a web page.
-
-
-``` php
-use webfiori\framework\ui\WebPage;
-use app\theme\MyTheme;
-
-class MyWebPage extends WebPage {
-    public function __construct() {
-        $this->setTheme(MyTheme::class);
-        
-        // Add page content here
-        
-    }
-}
-```
 
 ## Creating Custom Theme
 
-Creating new theme is very simple. In general, theme creation process consist of the following:
-* Creating theme folder (usually inside the folder `/themes`).
+There are two ways to implement themes, one is the manuall way and another one which is using command line interface.
+
+### Manually Creating a Theme
+In general, theme creation process consist of the following:
+
+* Creating theme folder.
 * Creating theme assets folder inside the folder `public/assets`.
 * Creating new PHP class inside theme directory that extends the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme).
 * Implementing the abstract methods of the class.
 
-In the next set of steps, we will show you how to create a very basic theme.
+Following next set of steps shows how to implement a basic theme.
 
-### Creating Theme Directory and Resources Folders
+#### Creating Theme Directory and Resources Folders
 
-Themes in WebFiori Framework exist inside the folder `/themes` but it is possible to have a theme in another folder. Usually, the folder will hold theme components such as template HTML files or any PHP files that the theme depends on. The first step in creating new theme is to create new folder for it inside themes folder. let's assume that the name of the folder is `customTheme`. 
+By default, themes in WebFiori Framework exist inside the folder `/themes`, but it is possible to have a theme in another folder. Usually, the folder will hold theme components such as template HTML files or any PHP files that the theme depends on. Let's assume that the name of the folder is `customTheme`. 
 
-After creating theme folder, we have to create theme resources folder. Resources folder of the theme must exist inside the folder `public/assets` and must have the same name as theme folder. In this case, the directory of theme resources folder will be `public/assets/customTheme`. We also can create 3 additional optional folders inside the new folder. The 3 folders will be used to hold theme CSS, JavaScript and images. Let's give the names `js`, `css` and `images`. This means that the folder structure of the theme will be as follows:
-* `/themes/customTheme` For theme components.
+After creating theme folder, theme resources folder should be created. Resources folder of the theme must exist inside the folder `public/assets` and must have the same name as theme folder in order to include all theme assets automatically. In this case, the directory of theme resources folder will be `public/assets/customTheme`. Inside the resources folder, there should be two additional folders, one to hold CSS files and another one to hold JS files. Default names of the folders should be `css` and `js`. Additionally, One last folder can be also created to hold the images that the theme might use. Default name of the folder is `images`.
+
+This means that the folder structure of the theme will be as follows:
+* `/themes/customTheme` For main theme components.
 * `/public/assets/customTheme/css` For CSS files.
 * `/public/assets/customTheme/js` For JavaScript files.
 * `/public/assets/customTheme/images` For the images that the theme might use.
 
-### Adding Theme Resources
+#### Adding Theme Resources
 
 At this step, we will create one CSS file. The file will be added in the folder `/public/assets/customTheme/css`. Let's give the file the name `theme.css` This CSS file will only contain selectors to give different colors for each section within the page. The code within the file will be something like the following:
 
@@ -99,14 +92,14 @@ At this step, we will create one CSS file. The file will be added in the folder 
     padding: 20px;
 }
 ```
-### Implementing The Theme
+#### Implementing The Theme
 
 At this step, we will start by writing the code which will make the theme functional. At minimum level, we need to do the following for our theme:
 * Set the name of the theme.
 * Set the names of theme resource directories (CSS, JS and Images).
 * Implementing the abstract methods of the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme).
 
-The name of the theme is needed because it acts like an identifier for it and is used to load it. The name can be set using the method [`Theme::setName()`](https://webfiori.com/docs/webfiori/framework/Theme#setName). Setting the names of theme resources folders will help in loading all JavaScript and CSS files automatically. For JavaScript files, there exist the method [`Theme::setJsDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setJsDirName), for CSS files, there exist the method [`Theme::setCssDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setCssDirName) and for images, there exist the method [`Theme::setImagesDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setImagesDirName). The last step is simply to define the actual structure of the page when the theme is loaded. 
+The name of the theme is needed because it acts like an identifier for it and can be used to load it. The name can be set by passing it to the `parent` constructor or by using the method [`Theme::setName()`](https://webfiori.com/docs/webfiori/framework/Theme#setName). Setting the names of theme resources folders will help in loading all JavaScript and CSS files automatically. For JavaScript files, there exist the method [`Theme::setJsDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setJsDirName), for CSS files, there exist the method [`Theme::setCssDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setCssDirName) and for images, there exist the method [`Theme::setImagesDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setImagesDirName). The last step is simply to define the actual structure of the page when the theme is loaded. 
 
 Let's assume that the name of the class that represents the theme is `CustomTheme`. The file that will contain the code of the theme will be `themes/customTheme/CustomTheme.php`.
 
@@ -189,34 +182,27 @@ Once this step is finished, our basic theme is ready. What we can do now is to t
 ``` php 
 <?php
 
-namespace webfiori\examples\views;
+namespace app\pages;
 
 use webfiori\framework\ui\WebPage;
+use themes\customTheme\CustomTheme;
 
 class ExamplePage extends WebPage {
     public function __construct() {
-        $this->setTheme('Custom Theme');
+        $this->setTheme(CustomTheme::class);
         
-        $this->setTitle($this->get('pages/sample-page/title'));
-        $this->setDescription($this->get('pages/sample-page/description'));
-        
-        $mainContentArea = $this->getDocument()->getChildByID('main-content-area');
-        
-        //Load HTML component and insert it in the body of the page.
-        $templateDir = ROOT_DIR.DS.'app'.DS.'pages'.DS.'example-template.html';
-        $mainContentArea->component($templateDir, $this->get('pages/sample-page'));
-        
+        $this->setTitle('Hello Page');
+        $this->setDescription('My hello world page.');
     }
 }
 ```
 
-## Using Command Line to Create Themes
+### Using Command Line to Create Themes
 
 Instead of going through all theme creation steps manually, it is recommended to use command line interface to create themes using the command `create` of the framework. This command will create a basic theme skeleton where the developer can use to build his theme. 
 
-### Steps
-* Run the command `php webfiori create`.
-* From the options, select the option `Theme`
+#### Steps
+* Run the command `php webfiori create --w=theme`.
 * Provide theme class information (name, namespace and path)
 
 Running this command will create 5 classes:
@@ -229,18 +215,8 @@ Running this command will create 5 classes:
 The following shell output shows actuall run for creating a theme.
 
 ``` 
-PS C:\Server\apache2\htdocs\app> php webfiori create
-What would you like to create?
-0: Database table class.
-1: Entity class from table.
-2: Web service.
-3: Background job.
-4: Middleware.
-5: Database table from class.
-6: CLI Command.
-7: Theme.
-8: Quit. <--
-7
+php webfiori create --w=theme
+
 Enter a name for the new class:
 SuperTheme
 Enter an optional namespace for the class: Enter = "themes"
@@ -249,7 +225,7 @@ Where would you like to store the class? (must be a directory inside 'C:\Server\
 
 Creating theme at "C:\Server\apache2\htdocs\app\myOrganization\theme1"...
 Success: Created.
-PS C:\Server\apache2\htdocs\app>
+
 ```
 
 
