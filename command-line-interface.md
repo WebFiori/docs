@@ -23,16 +23,11 @@ One of the features of the framework is the ability to run it as a command line 
 After completing the next set of tutorials, the developer should be able to use the framework using CLI. Also, he should be able to create his own custom commands and run them.
 
 ## Setup
-Depending on the operating system that will be in use, the run way may differ. But there is one thing which is common. The first thing is that we must know where PHP interpeter is installed. After that, we run it as follows:
+Depending on the operating system that will be in use, the run way may differ. But there is one thing which is common. The first thing is that we must know where PHP interpeter is installed. After that, the folder that contain the executable must be added to `PATH` environment variable. This situation is applicable to Windows OS.
 
-```
-PATH_TO_PHP webfiori
-```
-Here, `PATH_TO_PHP` is the location where PHP interpeter executable is located at.
+If a WebFiori application based is created and the developer is inside project folder, the following output would be seen when running the command `php webfiori`:
 
-Assuming that PHP interpeter is installed on Linux. If the framework is downloaded and all standard libraries of the framework are also included, the following output would be seen when running the command `php webfiori`:
-
-``` 
+``` bash
 $ php webfiori                                                                                                                       
 |\                /|
 | \      /\      / |              |  / \  |
@@ -44,55 +39,29 @@ $ php webfiori
      \/  /\  \/ /  /                  |
       \ /  \ / /  /                   |
        ______ /__/                    |
-
-WebFiori Framework  (c) Version 2.4.1 Stable
+WebFiori Framework  (c) Version 3.0.0-RC3 Beta
 
 
 Usage:
     command [arg1 arg2="val" arg3...]
 
+Global Arguments:
+    --ansi:[Optional] Force the use of ANSI output.
 Available Commands:
-    help
-        Display CLI Help. To display help for specific command, use the argument "--command-name" with this command.
-
-    v
-        Display framework version info.
-
-    show-config
-        Display framework configuration.
-
-    list-themes
-        List all registered themes.
-
-    list-jobs
-        List all scheduled CRON jobs.
-
-    list-routes
-        List all created routes and which resource they point to.
-
-    cron
-               Run CRON Scheduler
-
-    route
-        Test the result of routing to a URL
-
-    create
-        Creates a system entity (middleware, web service, background process ...).
-
-    add
-        Add a database connection or SMTP account.
-
-    update-table
-         Update a database table.
-
-    run-query
-        Execute SQL query on specific database.
-
-    update-settings
-        Update application settings which are stored in the class "AppConfig".
+    help:                Display CLI Help. To display help for specific command, use the argument "--command-name" with this command.
+    v:                   Display framework version info.
+    show-settings:       Display application configuration.
+    cron:                Run CRON Scheduler.
+    create:              Creates a system entity (middleware, web service, background process ...).
+    add:                 Add a database connection or SMTP account.
+    list-routes:         List all created routes and which resource they point to.
+    list-themes:         List all registered themes.
+    run-query:           Execute SQL query on specific database.
+    update-settings:     Update application settings which are stored in the class "AppConfig".
+    update-table:        Update a database table.
 ```
 
-Once this output appears, it means everything is ready to use the framework in CLI environment.
+Once this output appears, it means everything is ready to use the framework in terminal.
  
 ## Running Commands
 
@@ -109,89 +78,67 @@ One of the commands that the framework supports is the command `help`. When tryi
 
 ```
 $ php webfiori help                                                                                                           
+WebFiori Framework  (c) Version 3.0.0-RC3 Beta
+
+
 Usage:
     command [arg1 arg2="val" arg3...]
 
+Global Arguments:
+    --ansi:[Optional] Force the use of ANSI output.
 Available Commands:
-    help
-        Display CLI Help. To display help for specific command, use the argument "--command-name" with this command.
-
-    v
-        Display framework version info.
-
-    show-config
-        Display framework configuration.
-
-    list-themes
-        List all registered themes.
-
-    list-jobs
-        List all scheduled CRON jobs.
-
-    list-routes
-        List all created routes and which resource they point to.
-
-    cron
-               Run CRON Scheduler
-
-    route
-        Test the result of routing to a URL
-
-    create
-        Creates a system entity (middleware, web service, background process ...).
-
-    add
-        Add a database connection or SMTP account.
-
-    update-table
-         Update a database table.
-
-    run-query
-        Execute SQL query on specific database.
-
-    update-settings
-        Update application settings which are stored in the class "AppConfig".
+    help:                Display CLI Help. To display help for specific command, use the argument "--command-name" with this command.
+    v:                   Display framework version info.
+    show-settings:       Display application configuration.
+    cron:                Run CRON Scheduler.
+    create:              Creates a system entity (middleware, web service, background process ...).
+    add:                 Add a database connection or SMTP account.
+    list-routes:         List all created routes and which resource they point to.
+    list-themes:         List all registered themes.
+    run-query:           Execute SQL query on specific database.
+    update-settings:     Update application settings which are stored in the class "AppConfig".
+    update-table:        Update a database table.
 ```
 
 From the help, it can be noticed that the help supports one argument and the name of the argument is `--command-name`. This argument is used to show help for a specific command. For example, if developer would like to show the help for the command `cron`, then he can do it as follows:
 
 ```
 $ php webfiori help --command-name=cron                
-    cron
-               Run CRON Scheduler
+    cron:                Run CRON Scheduler.
     Supported Arguments:
-                            p:  CRON password.
-                        check: [Optional] Run a check aginst all jobs to check if it is time to execute them or not.
-                        force: [Optional] Force a specific job to execute.
-                     job-name: [Optional] The name of the job that will be forced to execute.
-                show-job-args: [Optional] If this one is provided with job name and a job has custom execution args, they will be shown.
-                     show-log: [Optional] If set, execution log will be shown after execution is completed.
+                            p:[Optional] CRON password. If it is set in CRON, then it must be provided here.
+                       --list:[Optional] List all scheduled CRON jobs.
+                      --check:[Optional] Run a check aginst all jobs to check if it is time to execute them or not.
+                      --force:[Optional] Force a specific job to execute.
+                   --job-name:[Optional] The name of the job that will be forced to execute or to show its arguments.
+              --show-job-args:[Optional] If this one is provided with job name and a job has custom execution args, they will be shown.
+                   --show-log:[Optional] If set, execution log will be shown after execution is completed.
 ```
 
 ## Implementing CLI Commands
 
 One of the features of the framework is that it allow developers to extend the functionality which is provided by CLI engine of the framework by creating their own custom commands. Creating new one is very simple. It involves the following steps:
 
-* Creating new PHP class that extends the class [`CLICommand`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand)
-* Implementing the abstract method [`CLICommand::exec()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#exec).
-* Register the command using the method [`CLI::register()`](https://webfiori.com/docs/webfiori/framework/cli/CLI#register).
+* Creating new PHP class that extends the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand)
+* Implementing the abstract method [`CLICommand::exec()`](https://webfiori.com/docs/webfiori/cli/CLICommand#exec).
+* Register the command.
 
-The last setp must be performed if the command class is created outside the folder `app/commands`. If the command is created inside that folder, it will be auto-registered.
+The last setp must be performed if the command class is created outside the folder `[APP_DIR]/commands`. If the command is created inside that folder, it will be auto-registered.
 
 ### Extending The Class "CLICommand"
 
-The first step in creating new command is to create new PHP class and make the class a child of the class [`CLICommand`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand). It can be noticed that the constructor of the class takes 3 parameters. The first one is the name of the command, the second one is an array of arguments and the last one is a description of the command. 
+The first step in creating new command is to create new PHP class and make the class a child of the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand). It can be noticed that the constructor of the class takes 3 parameters. The first one is the name of the command, the second one is an array of arguments and the last one is a description of the command. 
 
-The name of the command is a string which will be used to call it from the terminal. The arguments represented as an array that contains sub associative arrays. The description of the command is a string that will be shown when the command `help` is executed.
+The name of the command is a string which will be used to call it from the terminal. The arguments represented as an array that contains sub associative arrays. The arguments also can be objects of type [`CommandArgument`](https://webfiori.com/docs/webfiori/cli/CommandArgument). The description of the command is a string that will be shown when the command `help` is executed.
 
-Suppose that a developer would like to implement a command that takes the name of a person from the terminal as an input and display the string "Hi 'name'". Assuming that the name of the command is `say-hi`. The command that will be created will be in the folder `app/commands`. The following code snippit shows how this command is created.
+Suppose that a developer would like to implement a command that takes the name of a person from the terminal as an input and display the string "Hi '{name}'". Assuming that the name of the command is `say-hi`. The command that will be created will be in the folder `app/commands`. The following code snippit shows how this command is created.
 
 ``` php
 <?php
 
-namespace webfiori\framework\cli;
+namespace app\commands;
 
-use webfiori\framework\cli\CLICommand;
+use webfiori\cli\CLICommand;
 
 class SayHiCommand extends CLICommand {
     
@@ -206,30 +153,28 @@ class SayHiCommand extends CLICommand {
     }
 
 }
-return __NAMESPACE__
 
 ```
-The method [`CLICommand::getInput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#getInput) is used to read user input from an [`InputStream`](https://webfiori.com/docs/webfiori/framework/cli/InputStream). The default input stream is represented by the class [`StdIn`](https://webfiori.com/docs/webfiori/framework/cli/StdIn). The method accepts 3 parameters but for now, only the first one will be used. The first parameter of the method is simply a prompt text that will be shown to the user. The text is used to specify what the developer would like to get from the user.
+The method [`CLICommand::getInput()`](https://webfiori.com/docs/webfiori/cli/CLICommand#getInput) is used to read user input from an [`InputStream`](https://webfiori.com/docs/webfiori/cli/InputStream). The default input stream is represented by the class [`StdIn`](https://webfiori.com/docs/webfiori/cli/StdIn). The method accepts 3 parameters but for now, only the first one will be used. The first parameter of the method is a prompt text that will be shown to the user. The text is used to specify what the developer would like to get from the user.
 
-The method [`CLICommand::println()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#println) is used to show output. It will send it directly to [`OutputStream`](https://webfiori.com/docs//webfiori/framework/cli/OutputStream). The default output stream is represented by the class [`StdOut`](https://webfiori.com/docs//webfiori/framework/cli/StdOut).
+The method [`CLICommand::println()`](https://webfiori.com/docs/webfiori/cli/CLICommand#println) is used to show output. It will send it directly to [`OutputStream`](https://webfiori.com/docs//webfiori/cli/OutputStream). The default output stream is represented by the class [`StdOut`](https://webfiori.com/docs//webfiori/cli/StdOut).
 
 ### Registering the command
 
-If the command is created inside the folder `app/commands`, it will be registered automatically. But if the command is created somewhere else, it must be registered manually. To register any custom-created command, the class [`InitCliCommands`](https://github.com/WebFiori/app/blob/main/app/ini/InitCliCommands.php) can be used to complete this task. The class has one static method at which the developer can modify its body. The following code shows how to register new command.
+If the command is created inside the folder `[APP_DIR]/commands`, it will be registered automatically. But if the command is created somewhere else, it must be registered manually. To register any custom-created command, the class [`InitCommands`](https://github.com/WebFiori/app/blob/main/app/ini/InitCommands.php) can be used to complete this task. The class has one static method at which the developer can modify its body. The following code shows how to register new command.
 
 ``` php
-namespace webfiori\ini;
+namespace app\ini;
 
-use webfiori\framework\cli\CLI;
+use webfiori\framework\WebFioriApp;
 
 //first, import the command.
-use webfiori\framework\cli\SayHiCommand;
+use app\commands\SayHiCommand;
 
 class InitCliCommands {
 
     public static function init() {
-        //After importing, register it.
-        CLI::register(new SayHiCommand());
+        WebFioriApp::getRunner()->register(new SayHiCommand());
     }
 }
 ```
@@ -252,18 +197,19 @@ Hi Ibrahim BinAlshikh
 Usually, a command can have arguments which are passed to it when it is called. Some arguments can be optional and some are not. In addition to that, some arguments might work as an options. If added, they will make the command behave in different way based on its implementation.
 
 Adding support for arguments to a command can be achived in 3 ways:
-* Supply the arguments to the constructor of the class [`CLICommand`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#__construct).
-* Using the method [`CLICommand::addArgs()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#addArgs) to add multiple args at once.
-* Using the method [`CLICommand::addArg()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#addArg) to add one argument.
+* Supply the arguments to the constructor of the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand#__construct).
+* Using the method [`CLICommand::addArgs()`](https://webfiori.com/docs/webfiori/cli/CLICommand#addArgs) to add multiple args at once.
+* Using the method [`CLICommand::addArg()`](https://webfiori.com/docs/webfiori/cli/CLICommand#addArg) to add one argument.
+* Using the method [`CLICommand::addArgument()`](https://webfiori.com/docs/webfiori/cli/CLICommand#addArgument) to add one argument as object of type [`CommandArgument`](https://webfiori.com/docs/webfiori/cli/CommandArgument).
 
 Assuming that the developer would like to add two arguments to the command `SayHiCommand`, `--name` and `--email`. If the name is not provided, will simply read it when the job starts to execute.
 
 ``` php
 <?php
 
-namespace webfiori\framework\cli;
+namespace app\commands;
 
-use webfiori\framework\cli\CLICommand;
+use webfiori\cli\CLICommand;
 
 class SayHiCommand extends CLICommand{
     
@@ -311,7 +257,7 @@ Hi Ibrahim
 Warning: Email is not provided.
 ```
 
-It can be noticed that the statement which was shown by the method [`CLICommand::warning()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#warning) is pre-formatted. It is one of the methods which is used to format the output automatically.
+It can be noticed that the statement which was shown by the method [`CLICommand::warning()`](https://webfiori.com/docs/webfiori/cli/CLICommand#warning) is pre-formatted. It is one of the methods which is used to format the output automatically.
 
 The next output will be shown when running the command without providing any arguments.
 
@@ -324,7 +270,7 @@ Warning: Email is not provided.
 ```
 ## Reading User Input
 
-One of the methods which is used to read user input is the method [`CLICommand::getInput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#getInput). The framework provides the developers with the most commonly used helper inputs like asking a question or asking the user to select one of multiple options. 
+One of the methods which is used to read user input is the method [`CLICommand::getInput()`](https://webfiori.com/docs/webfiori/cli/CLICommand#getInput). The framework provides the developers with the most commonly used helper inputs like asking a question or asking the user to select one of multiple options. 
 
 ### Prompt
 
@@ -354,7 +300,7 @@ $this->println("Fruit name: $userInput");
 
 ### Confirm
 
-The method [`CLICommand::confirm()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#confirm) is used to ask the user question which can have two answers only, yes or no. The method have two parameters. The first one is the text that will be shown in the console and the second is a boolean that represents default value if the user hit "Enter" without specifying an answer. The method will return `true` if the answer was "yes" and `false` if the answer is "no". The default answer will appear in upper case in terminal if specified.
+The method [`CLICommand::confirm()`](https://webfiori.com/docs/webfiori/cli/CLICommand#confirm) is used to ask the user question which can have two answers only, yes or no. The method have two parameters. The first one is the text that will be shown in the console and the second is a boolean that represents default value if the user hit "Enter" without specifying an answer. The method will return `true` if the answer was "yes" and `false` if the answer is "no". The default answer will appear in upper case in terminal if specified.
 
 To submit an answer, the user have to type n for "no" or y for "yes" in the console and hit "Enter". Note that if the user submitted any other answer, the method will keep asking till he submit one of the two answers.
 
@@ -374,7 +320,7 @@ The following image shows the output of the command when executed.
 
 ### Multiple Choice
 
-A multiple choice input is a way to make the user select one option of multiple options. The method [`CLICommand::select()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#select) is used to show the question and the possible choices. The method accepts 3 parameters. The first one is the text that will be shown to the user. The second one is the array that contains the choices at which the user will select from. The last parameter is an optional default value to use in case the user hit "Enter" without selecting any choice (answer index). The user can select an answer by supplying its number as an input or the full text of the choice.
+A multiple choice input is a way to make the user select one option of multiple options. The method [`CLICommand::select()`](https://webfiori.com/docs/webfiori/cli/CLICommand#select) is used to show the question and the possible choices. The method accepts 3 parameters. The first one is the text that will be shown to the user. The second one is the array that contains the choices at which the user will select from. The last parameter is an optional default value to use in case the user hit "Enter" without selecting any choice (answer index). The user can select an answer by supplying its number as an input or the full text of the choice.
 
 The following code sample shows how to use it by asking a simple question.
 
@@ -396,7 +342,9 @@ if ($answer == 'HTML') {
 
 ## Coloring Output
 
-One of the things that programmers like are the colors which appear in any terminal. In addition to making the output looks nice, colors can be used as an indicator for warnings or errors during execution. The framework supports output formatting using colors if the method [`CLICommand::println()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#println) or the method [`CLICommand::prints()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#prints). In addition to that, it is possible to format a string using ANSI escape sequences using the static method [`CLICommand::formatOutput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#formatOutput). The way to formate the output will be the same for the 3 methods.
+One of the things that programmers like are the colors which appear in any terminal. In addition to making the output looks nice, colors can be used as an indicator for warnings or errors during execution. The framework supports output formatting using colors if the method [`CLICommand::println()`](https://webfiori.com/docs/webfiori/cli/CLICommand#println) or the method [`CLICommand::prints()`](https://webfiori.com/docs/webfiori/cli/CLICommand#prints) is used. In addition to that, it is possible to format a string using ANSI escape sequences using the static method [`CLICommand::formatOutput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#formatOutput). The way to formate the output will be the same for the 3 methods.
+
+>> Note: Output formatting is disabled by default. To enabled it, the argument `--ansi` must be provided.
 
 Formatting output is very simple. The method [`CLICommand::prints()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#prints) takes two parameters, the first one is the output value and the second one is an associative array of formatting options. If the developer would like to output ANSI formatted text, simply he must supply the second argument. In order to change the color of the output, we must set the value of the index `color` color to the color that we would like to use.
 
@@ -447,11 +395,11 @@ $this->println("%s", "Blinking With Red Background", [
 
 ### Pre-made Methods For Output Formatting
 
-The class [`CLICommand`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand) provides the developer with methods which can be used to display the output formatted without using formatting options. The methods can be used to show output for repeated tasks. The methods are:
-* [`CLICommand::error()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#error): Output a message that represents an error.
-* [`CLICommand::info()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#info): Output a message that represents extra information().
-* [`CLICommand::success()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#success): Output a message that represents success state.
-* [`CLICommand::warning()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#warning): Output a message that represents a warning.
+The class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand) provides the developer with methods which can be used to display the output formatted without using formatting options. The methods can be used to show output for repeated tasks. The methods are:
+* [`CLICommand::error()`](https://webfiori.com/docs/webfiori/cli/CLICommand#error): Output a message that represents an error.
+* [`CLICommand::info()`](https://webfiori.com/docs/webfiori/cli/CLICommand#info): Output a message that represents extra information().
+* [`CLICommand::success()`](https://webfiori.com/docs/webfiori/cli/CLICommand#success): Output a message that represents success state.
+* [`CLICommand::warning()`](https://webfiori.com/docs/webfiori/cli/CLICommand#warning): Output a message that represents a warning.
 
 ``` php
 $this->error('Unable to log in.');
