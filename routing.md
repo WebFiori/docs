@@ -60,15 +60,17 @@ Also, the framework has its own custom `web.config` file that has a rule which i
 
 Once the request reaches the file `index.php`, initialization process of the application will start. After the initialization is completed without any errors, the final stage is to route the request to its final destination.
 
+> <b>Note:</b> [`mod_rewrite`](https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html) must be enabled on Apache to use Re-Write Rules. For IIS, [URL ReWrite](https://www.iis.net/downloads/microsoft/url-rewrite) must be installed.
+
 The routing process is completed by the class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router). The whole magic of routing is completed by sending the requested URL as a parameter to the method [`Router::route()`](https://webfiori.com/docs/webfiori/framework/router/Router#route). If a resource was found at which the given URL is pointing to, the request will be sent to it. If no route is found, a 404 error is generated.
 
 ## The Class `Router`
 
-The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core framework classes. The main aim of this class is to direct client request to the correct resource. In addition to that, this class is used to create routes to different resources.
+The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core framework classes. The main aim of this class is to create routes to resources and direct client request to them.
 
-A resource can be simply a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good looking way.
+A resource can be a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good looking way.
 
-Most of the time, this class will be used to create routes but it can be used to perform other tasks as well. In general, there are 4 types of routes that can be created using this class:
+In general, there are 4 types of routes that can be created using this class:
 * Page Route.
 * API Route.
 * Closure Route.
@@ -82,19 +84,19 @@ For each type of route, there is a specific static method that can be used to cr
 
 
 ## Types of Routes
-As said before, there are 4 different types of routes. In general, the idea of creating route for each type will be the same. The only difference will be the location of the resource that the route will point to in addition to [middleware](learn/middleware) group that the route will be assigned to.
+In general, the idea of creating route for each type of routes will be the same. The only difference will be the location of the resource that the route will point to in addition to [middleware](learn/middleware) group that the route will be assigned to.
 
 ### Page Route
 
-This type of route is the most common type of routes. It is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `pages` of your application will contain all pages. The method [Router::page()](https://webfiori.com/docs/webfiori/framework/router/Router#page) is used to create such route.
+This type is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `[APP_DIR]/pages` of the application will contain all pages. The method [Router::page()](https://webfiori.com/docs/webfiori/framework/router/Router#page) is used to create such route.
 
-In order to make it easy for developers, they can use the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes) to create routes to all pages. The developer can modify the body of the method [`ViewRoutes::create()`](https://webfiori.com/docs/app/ini/routes/ViewRoutes#create) to add new routes as needed.
+In order to make it easy for developers, they can use the class `[APP_DIR]/ini/routes/PagesRoutes` to create routes to all pages. The developer can modify the body of the method `PagesRoutes::create()` to add new routes as needed.
 
-Assuming that there exist 3 pages inside the folder `pages` as follows:
+Assuming that there exist 3 pages inside the folder `[APP_DIR]/pages` as follows:
 
-* /pages/HomeView.html
-* /pages/LoginView.php
-* /pages/system-views/DashboardView.php
+* `[APP_DIR]/pages/HomeView.html`
+* `[APP_DIR]/pages/LoginView.php`
+* `[APP_DIR]/pages/system-views/DashboardView.php`
 
 Also, assuming that the base URL of the website is `https://example.com/`. Assuming that the developer would like from the user to see the pages as follows:
 * `https://example.com/` should point to the view `HomeView.html`
@@ -104,9 +106,9 @@ Also, assuming that the base URL of the website is `https://example.com/`. Assum
 
 The following sample code shows how to create such a URL structre using the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes).
 ``` php
-use LoginView;
+namespace app\ini\routes;
 
-class ViewRoutes {
+class PagesRoutes {
     public static function create(){
         Router::page([
             'path' => '/', 
@@ -118,7 +120,7 @@ class ViewRoutes {
         });
         Router::page([
             'path' => '/user-login', 
-            'route-to' => LoginView::class
+            'route-to' => \app\pages\LoginView::class
         ]);
         Router::page([
             'path' => '/dashboard', 
@@ -132,21 +134,21 @@ class ViewRoutes {
   
 ### API Route
 
-An API route is a route that usually will point to a PHP class that exist in the folder `apis` of the application. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, the developer have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`. More information about web services can be found [here](learn/web-services).
+An API route is a route that will point to a PHP class that exist in the folder `[APP_DIR]/apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, the developer have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`. More information about web services can be found [here](learn/web-services).
 
 Suppose that there exist 3 services classes as follows:
-* `apis/UserServices.php`
-* `apis/ArticleServices.php`
-* `apis/ContentServices.php`
+* `[APP_DIR]/apis/UserServicesManager.php`
+* `[APP_DIR]/apis/ArticleServicesManager.php`
+* `[APP_DIR]/apis/ContentServicesManager.php`
 
 Assuming that the base URL of the website is `https://example.com/`, Assuming that the developer would like to have the URLs of the APIs (or services) to be like that:
-* `https://example.com/web-apis/user/add-user` should point to `apis/UserServices.php`
-* `https://example.com/web-apis/user/update-user` should point to `apis/UserServices.php`
-* `https://example.com/web-apis/user/delete-user` should point to `apis/UserServices.php`
-* `https://example.com/web-apis/article/publish-article` should point `apis/writer/ArticleServices.php`
-* `https://example.com/web-apis/article/revert-publish` should point `apis/writer/ArticleServices.php`
-* `https://example.com/web-apis/article-content/add-content` should point to `/apis/writer/ContentServices.php`
-* `https://example.com/web-apis/article-content/remove-content` should point to the view `/apis/writer/ContentServices.php`
+* `https://example.com/web-apis/user/add-user` should point to `UserServicesManager.php`
+* `https://example.com/web-apis/user/update-user` should point to `UserServicesManager.php`
+* `https://example.com/web-apis/user/delete-user` should point to `UserServicesManager.php`
+* `https://example.com/web-apis/article/publish-article` should point `ArticleServicesManager.php`
+* `https://example.com/web-apis/article/revert-publish` should point `ArticleServicesManager.php`
+* `https://example.com/web-apis/article-content/add-content` should point to `ContentServicesManager.php`
+* `https://example.com/web-apis/article-content/remove-content` should point to the view `ContentServicesManager.php`
 
 One thing to note about creating APIs is that API name (or service name) must be passed alongside request body as a GET or POST parameter (e.g. `service=add-user` or `service-name=add-user`). As noticed from the above URLs, the name of the service is appended to the end of the URL. The router will know that this is a route to a web service if Generic Route is used.
 
