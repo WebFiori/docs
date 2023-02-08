@@ -20,8 +20,8 @@ In this page:
     * [Force a Job to Execute Using Cron Web Interface](#force-a-job-to-execute-using-cron-web-interface)
     * [Force a Job to Execute Using Command Line Interface](#force-a-job-to-execute-using-command-line-interface)
 * [Using Arguments With Forced Jobs](#using-aguments-with-forced-jobs)
-  * [Sending Arguments Throgh CRON Web Interface](#sending-arguments-throgh-cron-web-interface)
-  * [Sending Arguments Throgh Terminal](#sending-arguments-throgh-terminal)
+  * [Sending Arguments Through CRON Web Interface](#sending-arguments-through-cron-web-interface)
+  * [Sending Arguments Through Terminal](#sending-arguments-through-terminal)
 * [Sending CRON Notifications](#sending-cron-notifications)
   * [The Class `CronEmail`](#the-class-cronemail)
 
@@ -37,7 +37,7 @@ The sub-system which is responsible for scheduling jobs consist of 3 classes. Th
 * [`CronJob`](https://webfiori.com/docs/webfiori/framework/cron/CronJob)
 * [`Cron`](https://webfiori.com/docs/webfiori/framework/cron/Cron)
 
-There are other classes that makes the system for scheduling jobs works but they are mainly utility class.
+There are other classes that makes the system for scheduling jobs works, but they are mainly utility class.
 
 ### The Class `AbstractJob`
 
@@ -72,7 +72,7 @@ This way is straightforward and does not require lots of coding. To schedule a j
 The following code sample shows how to use each one of the methods to schedule jobs. Initializing jobs must be performed in the class `[APP_DIR]\ini\InitCron`
 
 ``` php
-namespace webfiori\ini;
+namespace app\ini;
 
 use webfiori\framework\cron\Cron;
 
@@ -117,7 +117,7 @@ The method [`AbstractJob::afterExec()`](https://webfiori.com/docs/webfiori/frame
 
 #### A Sample Job
 
-It is recomended to place jobs at the folder `[APP_DIR]/jobs` as they will be auto-registered if they are placed in this folder. The following code shows a sample job that writes a text to a file.
+It is recommended to place jobs at the folder `[APP_DIR]/jobs` as they will be auto-registered if they are placed in this folder. The following code shows a sample job that writes a text to a file.
 
 ``` php
 namespace app\jobs;
@@ -153,10 +153,10 @@ class WriteFileJob extends AbstractJob{
 }
 ```
 
-After implementing the job, it must be registered. If the class is placed in the folder `[APP_DIR]/jobs`, then the registration process will be automatic. If the job class is somewhere else, then it must be registered manualy. The developer can use the method [`Cron::scheduleJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#scheduleJob) to register jobs. The code which can be used to register a job can be placed in the class `[APP_DIR]\InitCron`. The following code shows how it is done.
+After implementing the job, it must be registered. If the class is placed in the folder `[APP_DIR]/jobs`, then the registration process will be automatic. If the job class is somewhere else, then it must be registered manually. The developer can use the method [`Cron::scheduleJob()`](https://webfiori.com/docs/webfiori/framework/cron/Cron#scheduleJob) to register jobs. The code which can be used to register a job can be placed in the class `[APP_DIR]\InitCron`. The following code shows how it is done.
 
 ``` php
-namespace webfiori\ini;
+namespace app\ini;
 
 use webfiori\framework\cron\Cron;
 use app\jobs\WriteFileJob;
@@ -177,13 +177,13 @@ class InitCron {
 
 ## Jobs Execution
 
-When a job is scheduled, it will not get executed by it self even if it is time to run it. A job can be only executed if there was a trigger that caused it to execute. The trigger can be a forced trigger or automatic trigger.
+When a job is scheduled, it will not get executed by itself even if it is time to run it. A job can be only executed if there was a trigger that caused it to execute. The trigger can be a forced trigger or automatic trigger.
 
 ### Using `crontab` Entry to Trigger Execution
 
-The recomended way is to add a CRON entry on your server which looks like this one: `* * * * * php webfiori cron p="pass" --check`. This will execute the command `cron` of the framework with the option `--check` every minute. The option `pass` must be included if a password is set to protect jobs from unauthorized execution. It will simply check all scheduled jobs and to check if it is time to execute them. 
+The recommended way is to add a CRON entry on your server which looks like this one: `* * * * * php webfiori cron p="pass" --check`. This will execute the command `cron` of the framework with the option `--check` every minute. The option `pass` must be included if a password is set to protect jobs from unauthorized execution. It will simply check all scheduled jobs and to check if it is time to execute them. 
 
-If the server is runnig on windows, it is possible to use "Task Scheduler" to achieve the same result.
+If the server is running on windows, it is possible to use "Task Scheduler" to achieve the same result.
 
 >> Note: The path to PHP interpreter and the framework my differ. Because of this, the format of the entry may differ.
 
@@ -196,7 +196,7 @@ Another way to trigger jobs execution is to use command line interface (or termi
 php webfiori cron p="pass" --check
 ```
 
-Executing jobs through terminal can be usefull if the developer would like to inspect the output of jobs or would like to check what causes a job to fail.
+Executing jobs through terminal can be useful if the developer would like to inspect the output of jobs or would like to check what causes a job to fail.
 
 ### Forcing a Job to Execute
 
@@ -207,13 +207,13 @@ One of the features of the framework is the ability to force a scheduled job to 
 
 #### Force a Job to Execute Using Cron Web Interface
 
-If the envoronment variable `CRON_THROUGH_HTTP` is defined and is set to `true`, it will be possible to access cron web interface and use it to force a job to execute. The control panel can be accessed using any web browser by navigating to the URL `https://yoursite.com/cron`. If a password is set to protect the jobs, it will open a login page to enter protection password.
+If the environment variable `CRON_THROUGH_HTTP` is defined and is set to `true`, it will be possible to access cron web interface and use it to force a job to execute. The control panel can be accessed using any web browser by navigating to the URL `https://yoursite.com/cron`. If a password is set to protect the jobs, it will open a login page to enter protection password.
 
 <img src="assets/images/cron01.png" alt="Cron web interface.">
 
 #### Force a Job to Execute Using Command Line Interface
 
-Forcing a job to execute thorugh terminal is useful in case of debugging. The terminal can be used to show the full output of executing a job. To force execution of a specific job, simply we have to run the following command:
+Forcing a job to execute through terminal is useful in case of debugging. The terminal can be used to show the full output of executing a job. To force execution of a specific job, simply we have to run the following command:
 
 ```
 php webfiori cron p="pass" --force --show-log
@@ -225,15 +225,15 @@ Once this command is executed, the terminal will ask the user to select one of t
 
 ## Using Arguments With Forced Jobs
 
-One of the things that a developer might want from a job to do is when it is forced to execute is to behave in a diffrent way based on some inputs given by the one who will execute it. One of the features that the framework provides is the ability to add custom execution arguments to a job. The arguments can be sent to the job when it is firced to execute throgh the control panel of the jobs or throgh command line interface.
+One of the things that a developer might want from a job to do is when it is forced to execute is to behave in a different way based on some inputs given by the one who will execute it. One of the features that the framework provides is the ability to add custom execution arguments to a job. The arguments can be sent to the job when it is forced to execute through the control panel of the jobs or through command line interface.
 
 ### Adding Arguments
 
-Job arguments are associated with an instance of the class `AbstractJob`. In order to add arguments to a job, simply use the method [`AbstractJob::addExecutionArg()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#addExecutionArg). Also, it is possible to add multiple arguments at once using the method [`AbstractJob::addExecutionArgs()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#addExecutionArgs). Ususlly, arguments are added to the job when initialized (in the constructor). But it is possible to add them after the job has been scheduled.
+Job arguments are associated with an instance of the class `AbstractJob`. In order to add arguments to a job, simply use the method [`AbstractJob::addExecutionArg()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#addExecutionArg). Also, it is possible to add multiple arguments at once using the method [`AbstractJob::addExecutionArgs()`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob#addExecutionArgs). Usually, arguments are added to the job when initialized (in the constructor). But it is possible to add them after the job has been scheduled.
 
 The following code sample shows how to add arguments to job.
 ``` php
-namespace webfiori\framework\cron;
+namespace app\jobs;
 
 use webfiori\framework\cron\AbstractJob;
 use webfiori\frameworl\cron\Cron;
@@ -280,15 +280,15 @@ class GenerateAttendanceReportJob extends AbstractJob {
 }
 ```
 
-### Sending Arguments Throgh CRON Web Interface
+### Sending Arguments Through CRON Web Interface
 
-If the ability to execute cron jobs through HTTP is enabled, it will be possible to access cron control panel to force execution of a job. The access to the control panel can be enabled by defining the constant <code>CRON_THROUGH_HTTP</code> and setting its value to <code>true</code>. Assuming that the server has the URL "https://example.com", the cron control panel can be accessed throgh "https://example.com/cron".
+If the ability to execute cron jobs through HTTP is enabled, it will be possible to access cron control panel to force execution of a job. The access to the control panel can be enabled by defining the constant <code>CRON_THROUGH_HTTP</code> and setting its value to <code>true</code>. Assuming that the server has the URL "https://example.com", the cron control panel can be accessed through "https://example.com/cron".
 
-To supply arguments to a job when forceing it to execute, simply navigate to the page that shows job information by clicking on its name in the page that lists all scheduled jobs. In the lower side of the page, there will be a table at which the user can see the names of the argumens. The next image shows the whole page that shows the details of the job.
+To supply arguments to a job when forcing it to execute, simply navigate to the page that shows job information by clicking on its name in the page that lists all scheduled jobs. In the lower side of the page, there will be a table at which the user can see the names of the arguments. The next image shows the whole page that shows the details of the job.
 
 <img src="assets/images/cron03.png" alt="Cron Job arguments">
 
-### Sending Arguments Throgh Terminal
+### Sending Arguments Through Terminal
 
 Another way to force jobs to execute is to use command line interface. The command `cron` is used to force the execution of a job. To force a job, simply supply the argument `--force` 
 
@@ -309,7 +309,7 @@ In order to send email notifications, the class [`CronEmail`](https://webfiori.c
 The following code sample shows how to use the class to send notifications to one email address. It assumes that there exist SMTP account which has the name `cron-notifications` is added to the class `[APP_DIR]\config\AppConfig` and it will be used to send the notifications.
 
 ``` php
-namespace webfiori\framework\cron;
+namespace app/jobs;
 
 use webfiori\framework\cron\AbstractJob;
 use webfiori\framework\cron\Cron;
