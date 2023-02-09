@@ -28,7 +28,7 @@ In this page:
 
 ## Introduction
 
-One of the important features of any web application is to have a simple-unified interface at which the developer can use to access application database. WebFiori framework has an abstract layer that provides the developer with all needed tools to create databases and performs queries on them. Currently, the abstraction layer supportes MySQL and MSSQL database but there are plans to support more in the future.
+One of the important features of any web application is to have a simple-unified interface at which the developer can use to access application database. WebFiori framework has an abstract layer that provides the developer with all needed tools to create databases and performs queries on them. Currently, the abstraction layer supports MySQL and MSSQL database but there are plans to support more in the future.
 
 > **Note:** It is possible to connect to any database using PDO driver of PHP. The database layer helps in defining your database in easy way and also it helps in making the process of building SQL queries much simpler task.
 
@@ -65,7 +65,7 @@ The connection information is added inside the array `$dbConnections`. This arra
 
 ### Creating Database Tables
 
-MySQL Database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable). Each table in the database must be represented as a sub class of this class. There are two ways at which the developer can create a class that represent a database table. One is manual way and the other one is to use command line interface.
+MySQL Database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable). Each table in the database must be represented as a sub class of this class. There are two ways at which the developer can create a class that represent a database table. One is a manual way and the other one is to use command line interface.
 
 To create a table class manually, developer have to create new class that extend the class [`MySQLTable`](https://webfiori.com/docs/webfiori/database/mysql/MySQLTable) and add columns to it as needed. Assuming that the developer would like to place database tables in the folder `app/database` with namespace `app\database`. Also, assuming that the developer would like to create a table for keeping contacts information. 
 
@@ -130,7 +130,7 @@ This table will be used to store basic information about contacts. It will act a
 
 ### Creating Database Class
 
-After creating tables as classes, developer have to add them to an instance of the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) which represents the actual database instance. WebFiori framework have the class The class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) which adds extra functionality like the ability to automatically register multiple tables automatically. For this reason,the developer should use the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB). Assuming that the name of the database class is  `TestingDatabase`.
+After creating tables as classes, developer have to add them to an instance of the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) which represents the actual database instance. WebFiori framework have the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB) which adds extra functionality like the ability to automatically register multiple tables automatically. For this reason,the developer should use the class [`DB`](https://webfiori.com/docs/webfiori/framework/DB). Assuming that the name of the database class is  `TestingDatabase`.
 
 ``` php
 namespace app\database;
@@ -166,7 +166,7 @@ Now that the table is added, we can create an instance of the class `TestingData
 
 ## Database Queries
 
-The library provides a query builder which can be used to build almost any type of query. All query builders extend the class [AbstractQuery](https://webfiori.com/docs/webfiori/database/AbstractQuery) which acts as a base query builder. It has many methods to support the process of building queries. Note that the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) acts as an interface for this class. To get the query bulder instance, use the method [`Database::getQueryGenerator()`](https://webfiori.com/docs/webfiori/database/Database#getQueryGenerator).
+The library provides a query builder which can be used to build almost any type of query. All query builders extend the class [AbstractQuery](https://webfiori.com/docs/webfiori/database/AbstractQuery) which acts as a base query builder. It has many methods to support the process of building queries. Note that the class [`Database`](https://webfiori.com/docs/webfiori/database/Database) acts as an interface for this class. To get the query builder instance, use the method [`Database::getQueryGenerator()`](https://webfiori.com/docs/webfiori/database/Database#getQueryGenerator).
 
 ### Insert Record
 
@@ -208,7 +208,7 @@ $db->table('contacts')->insert([
 
 ### Update Record
 
-The method [AbstractQuery::update()](https://webfiori.com/docs/webfiori/database/AbstractQuery#update) is used to build a delete record query for MySQL and MSSQL database. The following code sample shows how to use that method to create an update record query with a condition.
+The method [AbstractQuery::update()](https://webfiori.com/docs/webfiori/database/AbstractQuery#update) is used to build delete record query for MySQL and MSSQL database. The following code sample shows how to use that method to create an update record query with a condition.
 
 ``` php
 $db = new TestingDatabase();
@@ -290,7 +290,7 @@ After building the query, it must be executed on the database. To execute a quer
 
 ### Retrieving Records
 
-To get query result, the method [`Database::getLastResultSet()`](https://webfiori.com/docs/webfiori/database/Database#getLastResultSet) can be used. This metho will return an object of type [`ResultSet`](https://webfiori.com/docs/webfiori/database/ResultSet). 
+To get query result, the method [`Database::getLastResultSet()`](https://webfiori.com/docs/webfiori/database/Database#getLastResultSet) can be used. This method will return an object of type [`ResultSet`](https://webfiori.com/docs/webfiori/database/ResultSet). 
 
 ``` php 
 
@@ -307,7 +307,7 @@ The variable `$record` in the given example will be an associative array. The in
 
 ### Mapping Records to Objects
 
-It is possible to map the records to objects. To achive this, the developer can use the method [`ResultSet:: setMappingFunction()`](https://webfiori.com/docs/webfiori/database/ResultSet#setMappingFunction). This method is used to set a function which can use to manipulate the result set after fetching. The method must return an array that contains the records after mapping.
+It is possible to map the records to objects. To achieve this, the developer can use the method [`ResultSet:: setMappingFunction()`](https://webfiori.com/docs/webfiori/database/ResultSet#setMappingFunction). This method is used to set a function which can use to manipulate the result set after fetching. The method must return an array that contains the records after mapping.
 
 ``` php
 $db = TestingDatabase();
@@ -349,7 +349,7 @@ This way of adding database connections is recommended since connection informat
 
 ### Creating Database Table
 
-It is recomended to use command line interface in creating table classes. By using CLI, you only have to give database table properties as inputs and the class will be created automatically for you. To create a new database table class, simply run the command `php webfiori create` and select the desired option from the menu.
+It is recommended to use command line interface in creating table classes. By using CLI, you only have to give database table properties as inputs and the class will be created automatically for you. To create a new database table class, simply run the command `php webfiori create` and select the desired option from the menu.
 
 <img src="assets/images/add-table-command.gif" alt="Add database table command.">
 
