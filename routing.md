@@ -1,6 +1,6 @@
 # Routing
 
-<meta name="description" contect="Routing in simple terms is the process of taking client request and sending it to correct resource.">
+<meta name="description" content="Routing in simple terms is the process of taking client request and sending it to correct resource.">
 
 In this page:
 * [Introduction](#introduction)
@@ -29,17 +29,17 @@ In this page:
 
 ## Introduction
 
-One thing that website owners care about is to have a friendly URLs that can be remembered easily. In addition to that, having a well defined URL structure can help in SEO. For example, instead of having something like `http://example.com/view-something?something={a-something}`, it is better to have something like `http://example.com/view-something/{a-something}`. In this example, something can be an image, user profile, a file or a simple HTML web page. Routing can help in achiving such URL structure without having to create each individual resource.
+One thing that website owners care about is to have a friendly URLs that can be remembered easily. In addition to that, having a well-defined URL structure can help in SEO. For example, instead of having something like `http://example.com/view-something?something={a-something}`, it is better to have something like `http://example.com/view-something/{a-something}`. In this example, something can be an image, user profile, a file or a simple HTML web page. Routing can help in achieving such URL structure without having to create each individual resource.
 
 ## The Definition of Routing
 
-One essential part of the framework is routing. Routing in simple terms is sending user request to its correct destination. The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core classes which are resposibile for performing this task. It can be used to create routes and send requests to correct resources.
+One essential part of the framework is routing. Routing in simple terms is sending user request to its correct destination. The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core classes which are responsible for performing this task. It can be used to create routes and send requests to correct resources.
 
 After finishing the following set of topics, the developer should be able to understand how routing sub-system works and create his own custom URIs structure.
 
 ## Life Cycle of a Request
 
-Every web server must have some kind of a configuration file. In Apache server, the configuration files have the name [`.htaccess`](https://httpd.apache.org/docs/current/howto/htaccess.html) and in IIS has the name `web.config`. Usually, the configuration files will get executed before the actual code.
+Every web server must have some kind of configuration file. In Apache server, the configuration files have the name [`.htaccess`](https://httpd.apache.org/docs/current/howto/htaccess.html) and in IIS has the name `web.config`. Usually, the configuration files will get executed before the actual code.
 
 WebFiori Framework uses a custom `.htaccess` file that has a rule to re-write the requested URL and redirect every request to the root the file `index.php`. The file can be found inside the directory `public`. If the content of the `.htaccess` file is viewed, the re-write rule will look like the following:
 ```
@@ -68,7 +68,7 @@ The routing process is completed by the class [`Router`](https://webfiori.com/do
 
 The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core framework classes. The main aim of this class is to create routes to resources and direct client request to them.
 
-A resource can be a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good looking way.
+A resource can be a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good-looking way.
 
 In general, there are 4 types of routes that can be created using this class:
 * Page Route.
@@ -104,7 +104,7 @@ Also, assuming that the base URL of the website is `https://example.com/`. Assum
 * `https://example.com/user-login` should point to the class `LoginView.php`
 * `https://example.com/dashboard` should point to the view `DashboardView.html`
 
-The following sample code shows how to create such a URL structre using the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes).
+The following sample code shows how to create such a URL structure using the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes).
 ``` php
 namespace app\ini\routes;
 
@@ -152,9 +152,9 @@ Assuming that the base URL of the website is `https://example.com/`, Assuming th
 
 One thing to note about creating APIs is that API name (or service name) must be passed alongside request body as a GET or POST parameter (e.g. `service=add-user` or `service-name=add-user`). As noticed from the above URLs, the name of the service is appended to the end of the URL. The router will know that this is a route to a web service if Generic Route is used.
 
-A generic route is a route that has some of its path parts unkown. They can be used to serve dynamic content pased on generic path value. A generic path value is a value that is enclosed between `{}` while creating the route. For example, the first 3 APIs can have one URL in the form `https://example.com/web-apis/user/{service-name}` or `https://example.com/web-apis/user/{service}`.
+A generic route is a route that has some of its path parts unknown. They can be used to serve dynamic content passed as path parameter. A path parameter is a value that is enclosed between `{}` while creating the route. For example, the first 3 APIs can have one URL in the form `https://example.com/web-apis/user/{service-name}` or `https://example.com/web-apis/user/{service}`.
 
-The following sample code shows how to create such a URL structre using the class `APIRoutes`. Note that the value of the generic must be `action`, `service-name` or `service` or the API call will fail.
+The following sample code shows how to create such a URL structure using the class `APIRoutes`. Note that the value of path parameter must be `action`, `service-name` or `service` or the API call will fail.
 
 ``` php 
 use ContentServices;
@@ -162,15 +162,15 @@ use ContentServices;
 class APIRoutes {
     public static function create(){
         Router::api([
-            'path' => '/web-apis/user/{action}', 
+            'path' => '/web-apis/user/{service}', 
             'route-to'=>'/UserAPIs.php'
         ]);
         Router::api([
-            'path' => '/web-apis/article/{service-name}', 
+            'path' => '/web-apis/article/{service}', 
             'route-to'=>'/writer/ArticleAPIs.php'
         ]);
         Router::api([
-            'path' => '/web-apis/article-content/{service-name}', 
+            'path' => '/web-apis/article-content/{service}', 
             'route-to' => ContentServices::class
         ]);
     }
@@ -178,9 +178,9 @@ class APIRoutes {
 ```
 ### Closure Route
 
-A closure route is a route to a user defined code that will be executed when the resource is requested. In other terms, it is a function that will be called when a request is made. It is simply an Anonymous Function. Suppose that a developer would like to create a route to a function that will output `Hello Mr.{A_Name}` When its called. The URL that will be requested will have the form `https://example.com/say-hello-to/{A_Name}`. As noticed,a generic path variable in the URL is added which will hold the name that the function will say hello to.
+A closure route is a route to a user defined code that will be executed when the resource is requested. In other terms, it is a function that will be called when a request is made. It is simply an Anonymous Function. Suppose that a developer would like to create a route to a function that will output `Hello Mr.{A_Name}` When it's called. The URL that will be requested will have the form `https://example.com/say-hello-to/{A_Name}`. As noticed,a generic path variable in the URL is added which will hold the name that the function will say hello to.
 
-The value of the variable can be accessed using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue). All what needed to be done is to pass variable name and the method will return its value. The following code sample shows how its done.
+The value of the variable can be accessed using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue). All what needed to be done is to pass variable name and the method will return its value. The following code sample shows how it's done.
 
 ``` php 
 use webfiori\framework\Response;
@@ -211,7 +211,7 @@ class ClosureRoutes {
             'route-to'=>'sys-files/views/HomeView.php'
         ]);
         Router::addRoute([
-            'path'=>'/apis/auth/{action}', 
+            'path'=>'/apis/auth/{service}', 
             'route-to'=>'sys-files/apis/AuthAPI.php',
             'as-api'=>true
         ]);
@@ -236,7 +236,7 @@ class ClosureRoutes {
 }
 ```
 
-Also, it is possible to have the route point to specific method in the class by using the option `action`. This is usefull when using MVC in building the application and want from the route to point to specific controller method.
+Also, it is possible to have the route point to specific method in the class by using the option `action`. This is useful when using MVC in building the application and want from the route to point to specific controller method.
 
 ``` php
 use my\super\FrontController;
@@ -259,9 +259,9 @@ This type of route is used to redirect specific request to another web page or w
 
 ## Route Parameters
 
-Suppose that there exist a website that publishes news. Each post will have its own link. Each post have a URI structute that looks like `https://example.com/news/some_post`. One way to route the user to the correct post is to create a unique route for each post. If there are 1000 posts, then developer have to create 1000 routes which is overwhelming.
+Suppose that there exist a website that publishes news. Each post will have its own link. Each post have a URI structure that looks like `https://example.com/news/some_post`. One way to route the user to the correct post is to create a unique route for each post. If there are 1000 posts, then developer have to create 1000 routes which is overwhelming.
 
-WebFiori framework provides a way to create one route to all posts. This can be achived by using route parameters while creating your route. By adding parameters, the developer just  created a generic route which can serve content based on the value of the variable.
+WebFiori framework provides a way to create one route to all posts. This can be archived by using route parameters while creating your route. By adding parameters, the developer just  created a generic route which can serve content based on the value of the variable.
 
 ### URI Parameters
 
@@ -274,11 +274,11 @@ Router::closure([
 ]);
 ```
 
-URI parameters can be also used to replace query string paramaters to make URIs user friendly.
+URI parameters can be also used to replace query string parameters to make URIs user-friendly.
 
 ### Using URI Parameters
 
- In order to add a parameter to a route, the developer have to enclose the name of the parameter between two curly braces `{}`. To access the value of the parameter, the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) is used. The following sample code shows how to use URI parameters in creating generic routes.
+In order to add a parameter to a route, the developer have to enclose the name of the parameter between two curly braces `{}`. To access the value of the parameter, the method [`Router::getParameterValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getParameterValue) is used. The following sample code shows how to use URI parameters in creating generic routes.
 
 ``` php
 use webfiori\framework\Response;
@@ -295,6 +295,28 @@ class ClosureRoutes {
     }
 }
 ```
+### Optional URI Parameters
+
+It is possible to have URI parameters as optional. In this case, the route will be resolved even if no value is provided in the path. To mark a parameter as optional, a question mark can be added to the end of parameter name as follows: `{var?}`.
+``` php
+use webfiori\framework\Response;
+
+class ClosureRoutes {
+    public static function create(){
+        Router::closure([
+            'path'=>'/news/{post-title?}', 
+            'route-to'=>function(){
+                $name = Router::getVarValue('post-title');
+                if ($name === null) {
+                    Response::append('No title is provided.');
+                } else {
+                    Response::append('You tried to open the post which has the title "'.$name.'"');
+                }
+            }
+        ]);
+    }
+}
+```
 
 ## Grouping Routes
 
@@ -303,7 +325,7 @@ One of the features of the router is the ability to group routes which share sam
 * `https://example.com/users/view-user/{user-id}`
 * `https://example.com/users/add-user`
 
-One thing to notice about the routes is that they share the same `users` path part. It is possible to create each route by it self but there is a better way that can be used to group the routes. The following code shows how to group routes.
+One thing to notice about the routes is that they share the same `users` path part. It is possible to create each route by itself but there is a better way that can be used to group the routes. The following code shows how to group routes.
 ``` php
 Router::group([
     'path' => '/users', 
@@ -328,9 +350,9 @@ Router::group([
     ]
 ]);
 ```
-By grouping routes, the developer can achive the following:
+By grouping routes, the developer can achieve the following:
 * Compact code
-* Sub-routes will share same proberties of parent path (middleware, request methods, languages and so on)
+* Sub-routes will share same properties of parent path (middleware, request methods, languages and so on)
 
 
 ## Customizing Routes
@@ -341,15 +363,15 @@ Each method which is used to add new route supports options which can be used to
 
 The option `in-sitemap` is a boolean which is used to tell if the URI will be in the sitemap which is generated automatically or not. Default value of this option is `false`
 
-> Note: To create a sitemap using added routes, the method [`Router::incSiteMapRoute()`](https://webfiori.com/webfiori/framework/router/Router#incSiteMapRoute). The sitemap will be accessable throght `http://example/sitemap.xml`.
+> Note: To create a sitemap using added routes, the method [`Router::incSiteMapRoute()`](https://webfiori.com/webfiori/framework/router/Router#incSiteMapRoute). The sitemap will be accessible through `http://example/sitemap.xml`.
 
 ### Case Sensitivity
 
-One of the available options is `case-sensitive`. This option is used to make the URI case sensitive or not. If this one is set to false, then if a request is made to the URI `https://example.com/one/two`, It will be the same as requesting the URI `https://example.com/OnE/tWO`. By default, this one is set to true.
+One of the available options is `case-sensitive`. This option is used to make the URI case-sensitive or not. If this one is set to false, then if a request is made to the URI `https://example.com/one/two`, It will be the same as requesting the URI `https://example.com/OnE/tWO`. By default, this one is set to true.
 
 ### Languages
 
-The option `languages` is used to tell which languages the URI supports. The option accepts an array that contains language codes (such as `AR`). This one is used only when [generating sitemap](#generating-sitemap) of the website to tell search engines about the languages at which the page is available on.
+The option `languages` is used to tell which languages the URI supports. The option accepts an array that contains language codes (such as `AR`). This one is used only when [generating sitemap](#sitemap) of the website to tell search engines about the languages at which the page is available on.
 
 ### Variables Values
 
@@ -357,7 +379,7 @@ The option `vars-values` is used in generating the sitemap of the website. The o
 
 ### Middleware
 
-The option `middleware` is used to specify which middleware the request will go through when a request is made to the given resource. This option accespts middleware name or an array that holds middleware names. Also, this option can have the name of middleware group or an array of middleware groups. For more information about middleware, [here](learn/middleware).
+The option `middleware` is used to specify which middleware the request will go through when a request is made to the given resource. This option accepts middleware name or an array that holds middleware names. Also, this option can have the name of middleware group or an array of middleware groups. For more information about middleware, [here](learn/middleware).
 
 ## Request Method
 
@@ -365,7 +387,7 @@ By default, a route to a resource can be called using any request method. But it
 
 ## Action
 
-The `action` option is used when the route is pointing to a class and the developer whould like to call one action from the class. This option can make your application more MVC-like.
+The `action` option is used when the route is pointing to a class and the developer would like to call one action from the class. This option can make your application more MVC-like.
 
 **Next: [The Class `Response`](learn/class-response)**
 
