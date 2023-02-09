@@ -38,7 +38,7 @@ In addition to given folders, the directory will have a file called `AppConfig.p
 
 Also, you may create your own folders and add files as you like. More details about the folders can be found below.
 
-> <b>Note:</b> It is possible to have different name for the folder `app` by changing the value of the constant `APP_DIR`. For more information, [check here](##setting-custom-application-folder).
+> **Note:** It is possible to have different name for the folder `app` by changing the value of the constant `APP_DIR`. For more information, [check here](##setting-custom-application-folder).
 
 ### The `app/config` Folder
 This folder will hold two classes which are used to configure the application. The first class is `AppConfig` and the second one is `Env`. The class `AppConfig` is used to store application related configurations such as its name, default language, database connections and SMTP connections. The class `Env` is used to initialize environment variables only.
@@ -61,7 +61,7 @@ This folder contains files which adds support for internationalization (i18n). Y
 
 ### The `app/pages` Folder
 
-This folder must contains the classes which represents the pages of the application or the components that a page consist of. Also, it can contain HTML template files which represent views. The routes to classes which exist in this folder can be added using the method <a  href="https://webfiori.com/docs/webfiori/framework/router/Router#page">`Router::page()`</a>.
+This folder must contain the classes which represents the pages of the application or the components that a page consist of. Also, it can contain HTML template files which represent views. The routes to classes which exist in this folder can be added using the method <a  href="https://webfiori.com/docs/webfiori/framework/router/Router#page">`Router::page()`</a>.
 
 ## The `app/ini` Folder
 
@@ -82,12 +82,12 @@ This folder contains core entities of the framework in addition to any libraries
 
 ## The `public` Folder
 
-The public folder is the root directory of the application. Any public resources should be includedinside this folder as it will be the entry point of any request. Public resources include JavaScript files, CSS or any images that the application may use. The folder must have the `assets` folder inside it. The `assets` folder will usesally contain all resource files. Also the `assets` folder will contain themes assets.
+The public folder is the root directory of the application. Any public resources should be included inside this folder as it will be the entry point of any request. Public resources include JavaScript files, CSS or any images that the application may use. The folder must have the `assets` folder inside it. The `assets` folder will usesally contain all resource files. Also, the `assets` folder will contain themes assets.
 
 ## The `themes` Folder
-The folder `themes` holds themes which are bundeled with the framework. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`. The folde also can hold custom made themes.
+The folder `themes` holds themes which are bundled with the framework. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`. The folder also can hold custom-made themes.
 
-> <b>Note:</b> It is possible to have custom-made themes in another place other than the folder `themes`. In this case, custom made themes should use CDN to include thier reasource files.
+> <b>Note:</b> It is possible to have custom-made themes in another place other than the folder `themes`. In this case, custom-made themes should use CDN to include their resource files.
 
 ## Setting Custom Application Folder
 
