@@ -1,12 +1,14 @@
 # Sending HTML Emails
 
+<meta name="description" content="How to create HTML emails and send them.">
+
 In this page:
 * [Introduction](#introduction)
 * [Configuration](#configuration)
 * [Creating and Sending an Email](#creating-and-sending-an-email)
 * [Attaching Files](#attaching-files)
 * [SMTP Setup For Common Servers](#smtp-setup-for-common-servers)
-  * [Google SMTP Server](#google-smtp-server)
+  * [GMail SMTP Server](#gmail-smtp-server)
   * [Outlook SMTP Server](#outlook-smtp-server)
 
 ## Introduction
