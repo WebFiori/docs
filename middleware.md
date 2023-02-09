@@ -12,7 +12,7 @@ In this page:
 
 ## Introduction
 
-Middaleware can be used to filter requests before reaching your application. For example, we might have a middleware which is used to check if the user is autherized to use the application or not. If he is not, then the middleware may redirect the user to login or send a response to tell him that he is not authorized. In addition to that, middleware can be used to modify the response before sending it back. For example, they can be used to add extra headers to the response depending on the content of the response.
+Middleware can be used to filter requests before reaching your application. For example, we might have a middleware which is used to check if the user is authorized to use the application or not. If he is not, then the middleware may redirect the user to log in or send a response to tell him that he is not authorized. In addition to that, middleware can be used to modify the response before sending it back. For example, they can be used to add extra headers to the response depending on the content of the response.
 
 WebFiori framework provides simple straight way for implementing middleware.
 
@@ -104,7 +104,7 @@ class MyMiddleware extends AbstractMiddleware {
 
 ## Assigning Middleware to Routes
 
-It is possible to assign a single middleware to a route or assign a group of middleware to a route. To achive this, the option `middleware` can be used while creating the route. This option accepts an array. The array can hold middleware names or middleware groups names.
+It is possible to assign a single middleware to a route or assign a group of middleware to a route. To achieve this, the option `middleware` can be used while creating the route. This option accepts an array. The array can hold middleware names or middleware groups names.
 
 ``` php
 Router::api([
@@ -155,7 +155,7 @@ class MyMiddleware extends AbstractMiddleware {
 
 ## Priority
 
-Middleware acts as a layer in top of the application. In addition to that, a middleware can be used as a protection layer before reaching another middleware. For this reason, execution order of middleware matters. It is possible to specifiy the priority of the middleware using the method [AbstractMiddleware::setPriority()](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware#setPriority). The higher the priority, the earlier the middleware will be reached. For example, a middleware with priority 100 will be reached before a middleware with priority 99.
+Middleware acts as a layer in top of the application. In addition to that, a middleware can be used as a protection layer before reaching another middleware. For this reason, execution order of middleware matters. It is possible to specify the priority of the middleware using the method [AbstractMiddleware::setPriority()](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware#setPriority). The higher the priority, the earlier the middleware will be reached. For example, a middleware with priority 100 will be reached before a middleware with priority 99.
 
 ``` php 
 <?php
@@ -190,7 +190,7 @@ class MyMiddleware extends AbstractMiddleware {
 
 ```
 
-If two middleware having same priority, the name of the middle is used as indicator of which one will get executed first for incoming requests. For example, a middleware with name `compress-file` will be executed before a one with name `start-sesstion`. Incase of response, the order of execution will be in reverse.
+If two middleware having same priority, the name of the middle is used as indicator of which one will get executed first for incoming requests. For example, a middleware with name `compress-file` will be executed before a one with name `start-sesstion`. In case of response, the order of execution will be in reverse.
 
 ## Command Line Utility
 
