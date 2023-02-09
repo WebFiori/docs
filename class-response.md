@@ -1,7 +1,7 @@
 
 # The Class Response
 
-<meta name="description" description="The class response is used to send back server output to the client.">
+<meta name="description" content="The class response is used to send back server output to the client.">
 
 In this page:
 
@@ -15,11 +15,11 @@ In this page:
 
 ## Introduction
 
-Normally, sending output to HTTP client in php is performed using [`echo`](https://www.php.net/manual/en/function.echo.php) or [`print`](https://www.php.net/manual/en/function.print.php). The framework has its own way for sending output to HTTP clients which can be achived using the class [`Response`](https://webfiori.com/docs/webfiori/http/Response). The main aim of this class is to collect server output and send it back to the client after the server compeletly finished processing client request. In addition to that, it can be used to send custom HTTP headers. 
+Normally, sending output to HTTP client in php is performed using [`echo`](https://www.php.net/manual/en/function.echo.php) or [`print`](https://www.php.net/manual/en/function.print.php). The framework has its own way for sending output to HTTP clients which can be archived using the class [`Response`](https://webfiori.com/docs/webfiori/http/Response). The main aim of this class is to collect server output and send it back to the client after the server completely finished processing client request. In addition to that, it can be used to send custom HTTP headers. 
 
 ## Collecting Server Output
 
-Collecting server output can be achived using the static method [`Response::write()`](https://webfiori.com/docs/webfiori/http/Response#write). From its name, we can infer that it is used to write a string to response body.
+Collecting server output can be archived using the static method [`Response::write()`](https://webfiori.com/docs/webfiori/http/Response#write). From its name, we can infer that it is used to write a string to response body.
 
 > **Note:** In most cases, the developer will not have to collect the output him self. If the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPage) is used for rendering HTML, no need to use it. This also applies to web services if the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager) or [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager) is used to manage your web APIs.
 
@@ -44,7 +44,7 @@ class ClosureRoutes {
 
 ## Sending The Output
 
-It is possible to terminate code execution on server before the whole code is executed. This can be achived by manually invoking the static method [`Response::send()`](https://webfiori.com/docs/webfiori/http/Response#send). This can happen if the developer would like to debug his code and checking the value of specific variable.
+It is possible to terminate code execution on server before the whole code is executed. This can be archived by manually invoking the static method [`Response::send()`](https://webfiori.com/docs/webfiori/http/Response#send). This can happen if the developer would like to debug his code and checking the value of specific variable.
 
 ``` php
 namespace app\ini\routes;
@@ -98,7 +98,7 @@ class ClosureRoutes {
 
 In simple terms, [HTTP Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies) are small piece of text which is set by the server for session management, personalizing content or tracking. Cookies are set by sending HTTP header [`set-cookie`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie). At minimum, a cookie must have a name and value.
 
-Cookies have multiple attributs that must be set on order to have it valide like duration, path and others. Cookies in WebFiori are represented by the class [`HttpCookie`](https://webfiori.com/docs/webfiori/http/HttpCookie)
+Cookies have multiple attributes that must be set on order to have it valid like duration, path and others. Cookies in WebFiori are represented by the class [`HttpCookie`](https://webfiori.com/docs/webfiori/http/HttpCookie)
 
 In order to send a new cookie, an object of type [`HttpCookie`](https://webfiori.com/docs/webfiori/http/HttpCookie) is created and then added to the response using the method [`Response::addCookie(HttpCookie)`](https://webfiori.com/docs/webfiori/http/Response#addCookie) as follows:
 
@@ -125,7 +125,7 @@ class ClosureRoutes {
 
 ## Custom Response Code
 
-By default, the class `Response` will send any output with code `200 - Ok`. But it is possible to send the response using different response code. The method the method [`Response::setCode()`](https://webfiori.com/docs/webfiori/http/Response#setCode) can be used to achive this.
+By default, the class `Response` will send any output with code `200 - Ok`. But it is possible to send the response using different response code. The method [`Response::setCode()`](https://webfiori.com/docs/webfiori/http/Response#setCode) can be used to achieve this.
 
 ``` php
 namespace app\ini\routes;
@@ -147,7 +147,7 @@ class ClosureRoutes {
 
 ## Clearing Output
 
-For some reson or another, the developer may want to clear the collected server output and replace it with another. Also, he might want to clear the headers. Clearing all output can be performed using the method [`Response::clear()`](https://webfiori.com/docs/webfiori/http/Response#clear). To clear response body only, the method [`Response::clearBody()`](https://webfiori.com/docs/webfiori/http/Response#clearBody) can be used. To clear headers only, the method [`Response::clearHeaders()`](https://webfiori.com/docs/webfiori/http/Response#clearHeaders) can be used.
+For some reason or another, the developer may want to clear the collected server output and replace it with another. Also, he might want to clear the headers. Clearing all output can be performed using the method [`Response::clear()`](https://webfiori.com/docs/webfiori/http/Response#clear). To clear response body only, the method [`Response::clearBody()`](https://webfiori.com/docs/webfiori/http/Response#clearBody) can be used. To clear headers only, the method [`Response::clearHeaders()`](https://webfiori.com/docs/webfiori/http/Response#clearHeaders) can be used.
 
 ``` php
 namespace app/ini/routes;
