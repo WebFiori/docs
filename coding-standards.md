@@ -21,12 +21,15 @@ Recommended coding style is driven from PHP's recommended style and PSR, but it 
 ### Must Follow
 * Always use `<?php` instead of `<?` for PHP tags.
 * Namespaces must be all `lower\case`.
-* Class constants and global constants names must be declared in `ALL_CAPS`.\
+* Class constants and global constants names must be declared in `ALL_CAPS`.
+
 ``` php
 define('MY_CONST', 44);
 const CLASS_CONSTANT = 44;
 ```
+
 * Methods names, non-static class attributes must be declared in `camelCase`.
+
 ``` php
 class Hello {
     private $fullName;
@@ -36,20 +39,24 @@ class Hello {
 }
 ```
 * Classed names, static attributes names must be declared in `PascalCase`.
+
 ``` php
 class HelloWorldClass {
     public static $HelloString;
 }
 ```
+
 * An opening braces `{` must be on the same line for functions, method and class declaration.
 * Never use `elseif`. Always use `else if`.
 * Always include access modifiers for class methods, even if they are public.
 * Do not use aliases for imported classes or class constants (e.g. `use webfiori\MyClass as XYZ`).
 * Method names and attributes must be defined as follows, first include access modifier followed by `static` or/then `final`.
+
 ``` php
 public static final function myFunc() {
 }
 ```
+
 * For comparison, always use strict comparison (`===` or `!==`) when comparing `bool` or `null`.
 * Do not use the construct `empty()` to check for `null` values.
 
@@ -60,7 +67,8 @@ public static final function myFunc() {
 
 ## Documentation Style
 The PHPDoc block must be similar to the following style:
-``` 
+
+``` php
 /**
  * SHORT_DESC.
  *
@@ -71,6 +79,7 @@ The PHPDoc block must be similar to the following style:
  * @annotation2 DETAILS
  */
 ```
+
 Where:
 * `SHORT_DESC` is a short description of the class or method. Must be ended by a dot.
 * `LONG_DESC` is a big paragraph that contains more details.
