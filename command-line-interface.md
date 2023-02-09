@@ -18,12 +18,12 @@ In this page:
 * [Coloring Output](#coloring-output)
 
 ## Introduction
-One of the features of the framework is the ability to run it as a command line application using terminal. This can be usefull if the server that the application is deployed in have SSH access. The command line interface of the framework has a limit functionality but the developer can extend it by creating custom commands.
+One of the features of the framework is the ability to run it as a command line application using terminal. This can be useful if the server that the application is deployed in have SSH access. The command line interface of the framework has a limit functionality but the developer can extend it by creating custom commands.
 
 After completing the next set of tutorials, the developer should be able to use the framework using CLI. Also, he should be able to create his own custom commands and run them.
 
 ## Setup
-Depending on the operating system that will be in use, the run way may differ. But there is one thing which is common. The first thing is that we must know where PHP interpeter is installed. After that, the folder that contain the executable must be added to `PATH` environment variable. This situation is applicable to Windows OS.
+Depending on the operating system that will be in use, the execution way may differ. But there is one thing which is common. The first thing is that we must know where PHP interpreter is installed. After that, the folder that contain the executable must be added to `PATH` environment variable. This situation is applicable to Windows OS.
 
 If a WebFiori application based is created and the developer is inside project folder, the following output would be seen when running the command `php webfiori`:
 
@@ -123,7 +123,7 @@ One of the features of the framework is that it allow developers to extend the f
 * Implementing the abstract method [`CLICommand::exec()`](https://webfiori.com/docs/webfiori/cli/CLICommand#exec).
 * Register the command.
 
-The last setp must be performed if the command class is created outside the folder `[APP_DIR]/commands`. If the command is created inside that folder, it will be auto-registered.
+The last setup must be performed if the command class is created outside the folder `[APP_DIR]/commands`. If the command is created inside that folder, it will be auto-registered.
 
 ### Extending The Class "CLICommand"
 
@@ -131,7 +131,7 @@ The first step in creating new command is to create new PHP class and make the c
 
 The name of the command is a string which will be used to call it from the terminal. The arguments represented as an array that contains sub associative arrays. The arguments also can be objects of type [`CommandArgument`](https://webfiori.com/docs/webfiori/cli/CommandArgument). The description of the command is a string that will be shown when the command `help` is executed.
 
-Suppose that a developer would like to implement a command that takes the name of a person from the terminal as an input and display the string "Hi '{name}'". Assuming that the name of the command is `say-hi`. The command that will be created will be in the folder `app/commands`. The following code snippit shows how this command is created.
+Suppose that a developer would like to implement a command that takes the name of a person from the terminal as an input and display the string "Hi '{name}'". Assuming that the name of the command is `say-hi`. The command that will be created will be in the folder `app/commands`. The following code snippet shows how this command is created.
 
 ``` php
 <?php
@@ -185,7 +185,7 @@ When the command `help` is executed, the newly created command will appear at th
 say-hi
         Takes a name as input and say "Hi".
 ```
-When the command is executed, the output in the terminal will be similar to the one shown in next snippit.
+When the command is executed, the output in the terminal will be similar to the one shown in next snippet.
 ```
 $ php webfiori say-hi
 Give me your name:
@@ -196,7 +196,7 @@ Hi Ibrahim BinAlshikh
 
 Usually, a command can have arguments which are passed to it when it is called. Some arguments can be optional and some are not. In addition to that, some arguments might work as an options. If added, they will make the command behave in different way based on its implementation.
 
-Adding support for arguments to a command can be achived in 3 ways:
+Adding support for arguments to a command can be archived in 3 ways:
 * Supply the arguments to the constructor of the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand#__construct).
 * Using the method [`CLICommand::addArgs()`](https://webfiori.com/docs/webfiori/cli/CLICommand#addArgs) to add multiple args at once.
 * Using the method [`CLICommand::addArg()`](https://webfiori.com/docs/webfiori/cli/CLICommand#addArg) to add one argument.
@@ -243,7 +243,7 @@ class SayHiCommand extends CLICommand{
 }
 ```
 
-There are 3 possibilites when executing the command `SayHiCommand`, one is that everything is provided as arguments, the second is only the `--name` argument is provided and the last is to have none. The next output will be shown when running the command with all arguments.
+There are 3 possibilities when executing the command `SayHiCommand`, one is that everything is provided as arguments, the second is only the `--name` argument is provided and the last is to have none. The next output will be shown when running the command with all arguments.
 ```
 $ php webfiori say-hi --name="Ibrahim" --email="example@mydomain.com"
 Hi Ibrahim
@@ -276,14 +276,14 @@ One of the methods which is used to read user input is the method [`CLICommand::
 
 Prompt is used to read any type of user input. The method [`CLICommand::getInput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#getInput) is used to perform that task. The method accepts 3 parameters. The first one is the text that will be shown to the user. The second one is a default value which will be used when the user hit "Enter" without typing anything. The last one is a closure (a function) which can be used to validate user input.
 
-The following code snippit shows how to get user input as prompt.
+The following code snippet shows how to get user input as prompt.
 
 ``` php
 $userInput = $this->getInput('Give me your name:');
 $this->println("Your name is: $userInput");
 ```
 
-The following code snippit shows how to use default values with prompt in addition to using a validation function. The closure must return a boolean value. If it returns `true`, then it means the value is valid. If `false` is returned, it means the given value is invalid and the method will ask the user to enter new value again.
+The following code snippet shows how to use default values with prompt in addition to using a validation function. The closure must return a boolean value. If it returns `true`, then it means the value is valid. If `false` is returned, it means the given value is invalid and the method will ask the user to enter new value again.
 
 In the following case, the default value will be "Orange". 
 
@@ -302,7 +302,7 @@ $this->println("Fruit name: $userInput");
 
 The method [`CLICommand::confirm()`](https://webfiori.com/docs/webfiori/cli/CLICommand#confirm) is used to ask the user question which can have two answers only, yes or no. The method have two parameters. The first one is the text that will be shown in the console and the second is a boolean that represents default value if the user hit "Enter" without specifying an answer. The method will return `true` if the answer was "yes" and `false` if the answer is "no". The default answer will appear in upper case in terminal if specified.
 
-To submit an answer, the user have to type n for "no" or y for "yes" in the console and hit "Enter". Note that if the user submitted any other answer, the method will keep asking till he submit one of the two answers.
+To submit an answer, the user have to type n for "no" or y for "yes" in the console and hit "Enter". Note that if the user submitted any other answer, the method will keep asking till he submits one of the two answers.
 
 The following code sample shows how to use this method.
 
@@ -342,7 +342,7 @@ if ($answer == 'HTML') {
 
 ## Coloring Output
 
-One of the things that programmers like are the colors which appear in any terminal. In addition to making the output looks nice, colors can be used as an indicator for warnings or errors during execution. The framework supports output formatting using colors if the method [`CLICommand::println()`](https://webfiori.com/docs/webfiori/cli/CLICommand#println) or the method [`CLICommand::prints()`](https://webfiori.com/docs/webfiori/cli/CLICommand#prints) is used. In addition to that, it is possible to format a string using ANSI escape sequences using the static method [`CLICommand::formatOutput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#formatOutput). The way to formate the output will be the same for the 3 methods.
+One of the things that programmers like are the colors which appear in any terminal. In addition to making the output looks nice, colors can be used as an indicator for warnings or errors during execution. The framework supports output formatting using colors if the method [`CLICommand::println()`](https://webfiori.com/docs/webfiori/cli/CLICommand#println) or the method [`CLICommand::prints()`](https://webfiori.com/docs/webfiori/cli/CLICommand#prints) is used. In addition to that, it is possible to format a string using ANSI escape sequences using the static method [`CLICommand::formatOutput()`](https://webfiori.com/docs/webfiori/framework/cli/CLICommand#formatOutput). The way to format the output will be the same for the 3 methods.
 
 >> Note: Output formatting is disabled by default. To enabled it, the argument `--ansi` must be provided.
 
@@ -368,7 +368,7 @@ In addition to changing the color of the output, it is possible to set the backg
 * `blink`: Make the output blink.
 * `reverse`: Reverse output colors (make background color become the text color and vice versa).
 
-The following code snippits uses the method `CLICommand::println()` to show the output. 
+The following code snippets uses the method `CLICommand::println()` to show the output. 
 
 ``` php
 $this->println("Normal Text");
