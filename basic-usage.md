@@ -94,7 +94,7 @@ class PagesRoutes {
 }
 ```
 
-If navigated to `http://example.com/say-hi`, The output in the browser will be the string `Hi Visitor. Welcome to my website!`. This can be improved further. Instead of making the page says `Hi Visitor`, it is possible to make it say `Hi Ibrahim` or `Hi Jon`. Achiving this goal can be done by using variables when creating the route. A variable is a part of the path in the URL which can have any value. Its name is enclosed between two curly braces (e.g. `{user-name}`). The code for creating a route with a variable will be similar to the following:
+If navigated to `http://example.com/say-hi`, The output in the browser will be the string `Hi Visitor. Welcome to my website!`. This can be improved further. Instead of making the page says `Hi Visitor`, it is possible to make it say `Hi Ibrahim` or `Hi Jon`. Achieving this goal can be done by using variables when creating the route. A variable is a part of the path in the URL which can have any value. Its name is enclosed between two curly braces (e.g. `{user-name}`). The code for creating a route with a variable will be similar to the following:
 
 ``` php
 namespace app\ini\routes;
@@ -113,7 +113,7 @@ class PagesRoutes {
 }
 ```
 
-Accessing the value of the variable inside the class `SayHi` can be perfomed by using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) as follows:
+Accessing the value of the variable inside the class `SayHi` can be performed by using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue) as follows:
 
 ``` php
 use webfiori\framework\router\Router;
@@ -128,7 +128,7 @@ class SayHi {
 
 ```
 
-Now when navigating to `https://example.com/say-hi/Ibrahim BinAlshikh`, the message `Hi Ibrahim BinAlshikh. Welcome to my website!` will appear. The string `Ibrahim BinAlshikh` can be replaced by anything and it will say "hi" to it.
+Now when navigating to `https://example.com/say-hi/Ibrahim BinAlshikh`, the message `Hi Ibrahim BinAlshikh. Welcome to my website!` will appear. The string `Ibrahim BinAlshikh` can be replaced by anything, and it will say "hi" to it.
 
 ### Routing to PHP Classes
 
