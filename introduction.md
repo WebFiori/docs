@@ -25,7 +25,7 @@ In our opinion, a developer will need the following at minimum level to have a w
 * Web APIs (or services) (backend).
 * A way to create web pages and modify the look and feel easily (frontend).
 
-WebFiori framework fullfil the 3 by providing an optional-to-use generic database layer, a library for creating web services which is fully integrated with the framework and theming for creating unified frontend. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
+WebFiori framework fulfill the 3 by providing an optional-to-use generic database layer, a library for creating web services which is fully integrated with the framework and theming for creating unified frontend. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
 
 ## Features
 The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
@@ -80,7 +80,7 @@ For more information about routing, [check here](learn/routing).
 
 ### Sessions Management
 
-Sessions are used to keep client state when moving between different web pages in the application. The frameworks provides developers with a sessions manager which does not depend on the implementation of PHP's session manager. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
+Sessions are used to keep client state when moving between different web pages in the application. The frameworks provide developers with a sessions manager which does not depend on the implementation of PHP's session manager. For this reason, some of the limitations which exist in PHP's session management system are no longer a problem. For example, it is possible to have more than one session at same time and each session will have its own state.
 
 ``` php
 // Start new session
@@ -95,17 +95,19 @@ SessionsManager::start('another-session', [
 SessionsManager::start('first-session');
 ```
 
-In addition to that, developers can implement thier own way for storing sessions by implementing custom storage engine using the interface [`SessionStorage`](https://webfiori.com/docs/webfiori/framework/session/SessionStorage). More information about sessions managemene [here](learn/sessions-management).
+In addition to that, developers can implement their own way for storing sessions by implementing custom storage engine using the interface [`SessionStorage`](https://webfiori.com/docs/webfiori/framework/session/SessionStorage). More information about sessions management [here](learn/sessions-management).
 
 ### Theming
 
 The framework gives developers the option to use themes. The main use of themes is to have a unified look and feel in all pages of the application. Inside every class that represent a web page, the only thing that developers must do to change the whole UI is to use its name. In addition to changing the whole user interface, themes can act as plugins that provide additional functionality to the application.
 
-```php
+``` php
+namespace app\pages;
+
 use webfiori\framework\Page;
 
 class MyPage extends WebPage {
-   __construct() {
+   public function __construct() {
        $this->setTheme('WebFiori V108');
    }
 }
@@ -120,7 +122,7 @@ There are many template engines out there with many fancy features. The framewor
 ``` html
 <!--This is the template-->
 <div class="container">
- <p>Hello Mr. "\{\{name\}\}"</p>
+ <p>Hello Mr. "{{name}}"</p>
 </div>
 ```
 
@@ -134,13 +136,13 @@ For more information on how to build web pages UI, [check here](learn/ui-package
 
 ### Middleware
 
-Middleware is a way that can be used to filter any request before reaching the actual application. They can be used to start sessions, validate request headers or reject a request. Middleware in WebFiori represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). To have a custom midleware, simply extend this class and implement its abstract methods. A class that represents middleware must be placed in the folder `/middleware` of the application to be auto-registered.
+Middleware is a way that can be used to filter any request before reaching the actual application. They can be used to start sessions, validate request headers or reject a request. Middleware in WebFiori represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). To have a custom middleware, simply extend this class and implement its abstract methods. A class that represents middleware must be placed in the folder `[APP_DIR]/middleware` of the application to be auto-registered.
 
 For more information on middleware, [check here](learn/middleware).
 
 ### Background Tasks
 
-Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to cleanup temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP and have it to execute at specific time with additional configuration. This can be achived using Cron Sub-system. To implement custom background job, extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background process must be placed in the folder `/jobs` of the application to be auto-registered.
+Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to clean up temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP and have it to execute at specific time with additional configuration. This can be archived using Cron Sub-system. To implement custom background job, extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background process must be placed in the folder `[APP_DIR]/jobs` of the application to be auto-registered.
 
 For more information about creating background jobs, [check here](learn/background-tasks).
 
@@ -166,7 +168,7 @@ The framework provide the developers with commands that can be used to speed up 
 
 ### Database Schema and Query Building
 
-Currntly, the framework has support for schema and query building for MySQL and MSSQL databases only but more are planned for the future. Developer does not have to use this feature if he would like to use another database library or use PDO. For more information about this feature, [check here](learn/database).
+Currently, the framework has support for schema and query building for MySQL and MSSQL databases. Developer does not have to use this feature if he would like to use another database library or use PDO. For more information about this feature, [check here](learn/database).
 
 ### Web Services
 
