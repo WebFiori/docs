@@ -65,6 +65,24 @@ public static final function myFunc() {
 * Always specify method parameter's data type.
 * Always specify method's return type.
 
+## Unit Tests Style
+* The name of test classes should always follow this syntax:
+``` php
+class XXXTest {
+
+}
+```
+In this context, the `XXX` should be replaced by entity name that test class represent. (e.g. `GenerateReportTest`). 
+
+* Name of test methods should always follow this syntax:
+``` php
+public function testXXX00() {
+}
+```
+In this context, the `XXX` should be replaced by functionality name that test class represent. (e.g. `public function testGetData00{}`).
+
+* `@test` annotation should be included on top of every test method.
+
 ## Documentation Style
 The PHPDoc block must be similar to the following style:
 
