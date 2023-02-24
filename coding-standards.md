@@ -20,6 +20,7 @@ Recommended coding style is driven from PHP's recommended style and PSR, but it 
 
 ### Must Follow
 * Always use `<?php` instead of `<?` for PHP tags.
+* In case of templates, use the short-hand `echo` command (e.g. `<?= 'A a string' ?>` instead of `<?php echo 'A a string' ?>`).
 * Namespaces must be all `lower\case`.
 * Class constants and global constants names must be declared in `ALL_CAPS`.
 
