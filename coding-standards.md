@@ -60,6 +60,15 @@ public static final function myFunc() {
 
 * For comparison, always use strict comparison (`===` or `!==`) when comparing `bool` or `null`.
 * Do not use the construct `empty()` to check for `null` values.
+* Use 'null coalescing operator' when needing to use a ternary in conjunction with `isset()`
+
+``` php
+//Wrong
+$nextLine = isset($traceEntry['line']) ? $traceEntry['line'] : 'X';
+
+//Accepted
+$nextLine = $traceEntry['line'] ?? 'X';
+```
 
 ### Recommendations
 * Always place PHP code in classes.
