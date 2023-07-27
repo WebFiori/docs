@@ -1,6 +1,6 @@
 # Introduction
 
-<meta name="description" content="What is WebFiori Framework? Why I should be using it? What is the deference between this framework and any other existing one?">
+<meta name="description" content="An introduction to WebFiori Framework and its core features.">
 
 In this page:
 * [What is WebFiori Framework](#what-is-webfiori-framework)
@@ -18,37 +18,36 @@ In this page:
 
 ## What is WebFiori Framework
 
-WebFiori framework is a fully object oriented web application framework which was built in top of PHP language. The main aim of the framework is to give developers minimum features that they need to build a functional web application. Initially, the framework was developed as a generic PHP template that can be used to build static websites. But since then, it evolved into much more than that.
+WebFiori framework is a fully object oriented web application framework which was built in top of PHP language. The main aim of the framework is to give developers minimum tools that they need to have a functional web application ready.
 
-In our opinion, a developer will need the following at minimum level to have a working web application:
-* A database (backend).
-* Web APIs (or services) (backend).
-* A way to create web pages and modify the look and feel easily (frontend).
+In our opinion, as a developer, you will need the following at minimum level to have a working web application:
+* A database (back-end).
+* Web APIs (or services) (back-end).
+* Web pages (front-end).
 
-WebFiori framework fulfill the 3 by providing an optional-to-use generic database layer, a library for creating web services which is fully integrated with the framework and theming for creating unified frontend. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
+WebFiori framework fulfill the 3 by providing database abstraction layer to build and access the database, web services middleware for implementing business logic and a component-based template engine. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that and more is possible with WebFiori framework.
 
 ## Features
-The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
 
 * [Simple Routing Engine](#simple-routing-engine)
 * [Sessions Management](#sessions-management)
 * [Theming](#theming)
-* [Basic Templating Engine](#basic-templating-engine)
+* [Basic Template Engine](#basic-template-engine)
 * [Middleware](#middleware)
 * [Background Tasks](#background-tasks)
-* [Sending HTML Emails](#sending-html-emails)
+* [Sending Email Messages](#sending-email-messages)
 * [Command Line Interface](#command-line-interface)
-* [Database Schema and Query Building](#database-schema-and-query-building)
+* [Database and Query Building](#database-schema-and-query-building)
 * [Web Services](#web-services)
 
 ### Simple Routing Engine
 
-The main aim of routing is to take client request and send it to correct resource. Most traditional frameworks which are fully MVC will have routes which points to controller methods. Routes in WebFiori will point to one of the following:
+The main aim of routing is to take a request route that request to a resource. Most traditional frameworks which are fully MVC will have routes which points to controller methods. Routes in WebFiori will point to one of the following:
 
 * A file (php, html, text, image, etc...)
 * PHP Class
 * PHP function (closure route)
-* Class method (similar to MVC)
+* Class method (MVC)
 
 
 For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or class method like any MVC based framework. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
@@ -115,7 +114,7 @@ class MyPage extends WebPage {
 
 For more information on how to use and create themes, [check here](learn/themes).
 
-### Basic Templating Engine
+### Basic Template Engine
 
 There are many template engines out there with many fancy features. The framework has a very basic template engine which only supports slots. It is possible to write templates using HTML and then fill the slots with values inside PHP.
 
