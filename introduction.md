@@ -121,12 +121,12 @@ There are many template engines out there with many fancy features. The framewor
 ``` html
 <!--This is the template-->
 <div class="container">
- <p>Hello Mr. "{{name}}"</p>
+ <p>Hello Mr. "<?= $name ?>"</p>
 </div>
 ```
 
 ``` php
-$template = HTMLNode::loadComponent('path/to/my/template.html', [
+$template = HTMLNode::fromFile('path/to/my/template.php', [
     'name' => 'Ibrahim Ali'
 ]);
 ```
@@ -141,13 +141,13 @@ For more information on middleware, [check here](learn/middleware).
 
 ### Background Tasks
 
-Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to clean up temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP and have it to execute at specific time with additional configuration. This can be archived using Cron Sub-system. To implement custom background job, extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background process must be placed in the folder `[APP_DIR]/jobs` of the application to be auto-registered.
+Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to clean up temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP and have it to execute at specific time with additional configuration. This can be archived using scheduler Sub-system. To implement custom background tasks, extend the class [`AbstractTask`](https://webfiori.com/docs/webfiori/framework/scheduler/AbstractTask). A class that represents a background process must be placed in the folder `[APP_DIR]/tasks` of the application to be auto-registered.
 
 For more information about creating background jobs, [check here](learn/background-tasks).
 
 ### Sending HTML Emails
 
-Mostly, every web application out there will have to send email notifications for logins or registration. The framework has simplified the process of creating HTML emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) to send nice looking HTML emails.
+Probably every web application out there will have to send email notifications for logins, registration or other actions performed by end users. The framework has simplified the process of creating HTML emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) to send nice looking HTML emails.
 
 ``` php
 $message = new EmailMessage('no-reply');
@@ -155,6 +155,9 @@ $message->setSubject('This is a Test Email');
 $message->addTo('user@example.com','Blog User');
 $paragraph = $message->insert('p');
 $paragraph->text('This is a welcome message.');
+
+$this->insert(HTMLNode::fromFile('email-template.php'))
+
 $message->send();
 ```
 
