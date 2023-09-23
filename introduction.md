@@ -1,6 +1,6 @@
 # Introduction
 
-<meta name="description" content="What is WebFiori Framework? Why I should be using it? What is the deference between this framework and any other existing one?">
+<meta name="description" content="An introduction to WebFiori Framework and its core features.">
 
 In this page:
 * [What is WebFiori Framework](#what-is-webfiori-framework)
@@ -18,40 +18,39 @@ In this page:
 
 ## What is WebFiori Framework
 
-WebFiori framework is a fully object oriented web application framework which was built in top of PHP language. The main aim of the framework is to give developers minimum features that they need to build a functional web application. Initially, the framework was developed as a generic PHP template that can be used to build static websites. But since then, it evolved into much more than that.
+WebFiori framework is a fully object oriented web application framework which was built in top of PHP language. The main aim of the framework is to give developers minimum tools that they need to have a functional web application.
 
-In our opinion, a developer will need the following at minimum level to have a working web application:
-* A database (backend).
-* Web APIs (or services) (backend).
-* A way to create web pages and modify the look and feel easily (frontend).
+In our opinion, as a developer, you will need the following at minimum level to have a working web application:
+* A database (back-end).
+* Web APIs (or services) (back-end).
+* Web pages (front-end).
 
-WebFiori framework fulfill the 3 by providing an optional-to-use generic database layer, a library for creating web services which is fully integrated with the framework and theming for creating unified frontend. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that is possible.
+WebFiori framework fulfill the 3 by providing database abstraction layer to build and access the database, web services middleware for implementing business logic and a component-based template engine. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that and more is possible with WebFiori framework.
 
 ## Features
-The framework comes with many features that can help in the process of building web applications. The main features of the framework are:
 
 * [Simple Routing Engine](#simple-routing-engine)
 * [Sessions Management](#sessions-management)
 * [Theming](#theming)
-* [Basic Templating Engine](#basic-templating-engine)
+* [Basic Template Engine](#basic-template-engine)
 * [Middleware](#middleware)
 * [Background Tasks](#background-tasks)
-* [Sending HTML Emails](#sending-html-emails)
+* [Sending Email Messages](#sending-email-messages)
 * [Command Line Interface](#command-line-interface)
-* [Database Schema and Query Building](#database-schema-and-query-building)
+* [Database and Query Building](#database-schema-and-query-building)
 * [Web Services](#web-services)
 
 ### Simple Routing Engine
 
-The main aim of routing is to take client request and send it to correct resource. Most traditional frameworks which are fully MVC will have routes which points to controller methods. Routes in WebFiori will point to one of the following:
+The main aim of routing is to take a request route that request to a resource. Most traditional frameworks which are fully MVC will have routes which points to controller methods. Routes in WebFiori will point to one of the following:
 
 * A file (php, html, text, image, etc...)
 * PHP Class
 * PHP function (closure route)
-* Class method (similar to MVC)
+* Class method (MVC)
 
 
-For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have some code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or class method like any MVC based framework. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
+For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or class method like any MVC based framework. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
 
 ``` php
 // https://example.com/products/board-games/Chess
@@ -72,6 +71,7 @@ Router::addRoute([
 Router::addRoute([
    'path' => '/api/add-user',
    'route-to' => UsersController::class,
+   'methods' => ['post', 'put'],
    'action' => 'addUser'
 ]);
 ```
@@ -115,19 +115,19 @@ class MyPage extends WebPage {
 
 For more information on how to use and create themes, [check here](learn/themes).
 
-### Basic Templating Engine
+### Basic Template Engine
 
-There are many template engines out there with many fancy features. The framework has a very basic template engine which only supports slots. It is possible to write templates using HTML and then fill the slots with values inside PHP.
+There are many template engines out there with many fancy features. The framework has a basic template engine which supports slots and passing PHP variables. It is possible to write templates using HTML and then fill the slots with values inside PHP.
 
-``` html
+``` php
 <!--This is the template-->
 <div class="container">
- <p>Hello Mr. "{{name}}"</p>
+ <p>Hello Mr. "<?= $name ?>"</p>
 </div>
 ```
 
 ``` php
-$template = HTMLNode::loadComponent('path/to/my/template.html', [
+$template = HTMLNode::fromFile('path/to/my/template.php', [
     'name' => 'Ibrahim Ali'
 ]);
 ```
@@ -142,13 +142,13 @@ For more information on middleware, [check here](learn/middleware).
 
 ### Background Tasks
 
-Usually, the application might need to perform some tasks even if no one is using it. For example, there might be a process to clean up temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP and have it to execute at specific time with additional configuration. This can be archived using Cron Sub-system. To implement custom background job, extend the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). A class that represents a background process must be placed in the folder `[APP_DIR]/jobs` of the application to be auto-registered.
+The application might need to perform tasks even if no one is using it. For example, there might be a process to clean up temporary uploaded files or generate a report and send it by email. It is possible to write such process using PHP and have it to execute at specific time with additional configuration using WebFiori. This can be archived using scheduler Sub-system. To implement custom background tasks, extend the class [`AbstractTask`](https://webfiori.com/docs/webfiori/framework/scheduler/AbstractTask). A class that represents a background process must be placed in the folder `[APP_DIR]/tasks` of the application to be auto-registered.
 
 For more information about creating background jobs, [check here](learn/background-tasks).
 
 ### Sending HTML Emails
 
-Mostly, every web application out there will have to send email notifications for logins or registration. The framework has simplified the process of creating HTML emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) to send nice looking HTML emails.
+Probably every web application out there will have to send email notifications for logins, registration or other actions performed by end users. The framework has simplified the process of creating HTML emails and sending them. The developer only have to configure SMTP connection information once and use the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/EmailMessage) to send nice looking HTML emails.
 
 ``` php
 $message = new EmailMessage('no-reply');
@@ -156,6 +156,9 @@ $message->setSubject('This is a Test Email');
 $message->addTo('user@example.com','Blog User');
 $paragraph = $message->insert('p');
 $paragraph->text('This is a welcome message.');
+
+$this->insert(HTMLNode::fromFile('email-template.php'))
+
 $message->send();
 ```
 
@@ -168,7 +171,7 @@ The framework provide the developers with commands that can be used to speed up 
 
 ### Database Schema and Query Building
 
-Currently, the framework has support for schema and query building for MySQL and MSSQL databases. Developer does not have to use this feature if he would like to use another database library or use PDO. For more information about this feature, [check here](learn/database).
+Currently, the framework has support for schema and query building for MySQL and SQL Server databases. Developer does not have to use this feature if he would like to use another database library or use PDO. For more information about this feature, [check here](learn/database).
 
 ### Web Services
 
