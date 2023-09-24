@@ -17,16 +17,18 @@ The following set of requirements must be met in order for the framework to work
 * PHP >= 7.0
 * mbstring PHP Extension
 * mysqli PHP Extension (to connect to MySQL)
-* sqlsrv PHP Extension (to connect MSSQL Server)
+* [sqlsrv PHP Extension](https://learn.microsoft.com/en-us/iis/application-frameworks/install-and-configure-php-on-iis/install-the-sql-server-driver-for-php) (to connect SQL Server)
 * fileinfo PHP Extension
 * json PHP Extension
-* [MSSQL Server PHP Extension](https://learn.microsoft.com/en-us/sql/connect/php/release-notes-php-sql-driver)
 * [Composer Dependency Manager](https://getcomposer.org/download/)
 
 In addition to that, it would be great to have an IDE that can help in writing code and debugging. We recommend to use [Apache Netbeans IDE](https://netbeans.apache.org/).
 
 ## Setup Local Development Environment In Windows
 For simple testing and development, it is possible to use the built-in server which comes with PHP. For production, it is always recommended to use server application such as Apache or IIS to run PHP.
+
+### Using PHP Without AMP
+PHP binaries for windows can be found [here](https://windows.php.net/download). The binaries include only PHP interpurture without MySQL or Apache.
 
 ### Using WAMP Stack
 WAMP stands for "Windows, Apache, MySQL and PHP" it is a stack which includes all needed applications to start developing PHP applications. There are many WAMP stacks there. In our case, we will be using [Bitnami WAMP](https://bitnami.com/stack/wamp/installer). The download size is around 200MB. To download the latest version, [Check Here](https://bitnami.com/stack/wamp/installer).
