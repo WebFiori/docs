@@ -6,7 +6,7 @@ In this page:
   * [The `app/config` Folder](#the-appconfig-folder)
   * [The `app/apis` Folder](#the-appapis-folder)
   * [The `app/commands` Folder](#the-appcommands-folder)
-  * [The `app/jobs` Folder](#the-appjobs-folder)
+  * [The `app/tasks` Folder](#the-apptasks-folder)
   * [The `app/langs` Folder ](#the-applangs-folder)
   * [The `app/pages` Folder](#the-apppages-folder)
   * [The `app/ini` Folder](#the-appini-folder)
@@ -28,20 +28,18 @@ The folder `app` will contain all your application files. Any PHP source code fi
 * `app/entity` Holds classes which represents system entities.
 * `app/ini`: Holds classes which are used to initialize the application.
 * `app/ini/routes`: Holds classes for initializing routes.
-* `app/jobs`: Holds cron jobs.
+* `app/tasks`: Holds background jobs.
 * `app/langs`: Holds translation files (for i18n support)
 * `app/middleware`: Holds classes which represents a middleware.
 * `app/pages`: Holds anything related to user interface such as web pages, views or UI components.
 
 
-In addition to given folders, the directory will have a file called `AppConfig.php`. This file contains a code for a class that holds configuration information for your application. If the file does not exist or was deleted, the framework will re-create it.
-
-Also, you may create your own folders and add files as you like. More details about the folders can be found below.
+Also, developer may create his own folders and add files as needed. More details about the folders can be found below.
 
 > **Note:** It is possible to have different name for the folder `app` by changing the value of the constant `APP_DIR`. For more information, [check here](##setting-custom-application-folder).
 
 ### The `app/config` Folder
-This folder will hold two classes which are used to configure the application. The first class is `AppConfig` and the second one is `Env`. The class `AppConfig` is used to store application related configurations such as its name, default language, database connections and SMTP connections. The class `Env` is used to initialize environment variables only.
+This folder will hold files which are related to configuring the application. By default, the framework will create a file called `app-config.json` which will act as the main configuration file.
 
 ### The `app/apis` Folder
 
@@ -49,15 +47,15 @@ This folder can have all classes that are related to web services. This folder w
 
 ### The `app/commands` Folder
 
-This folder can have any custom CLI commands which are created by you. A CLI command can be created by extending the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand) and implementing the abstract methods of the class. Any command inside this folder will be auto-registered by the framework.
+This folder can have any custom CLI commands which are created by the developer. A CLI command can be created by extending the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand) and implementing the abstract methods of the class. Any command inside this folder will be auto-registered by the framework.
 
-### The `app/jobs` Folder
+### The `app/tasks` Folder
 
-This folder can hold background jobs. Background jobs contains a code which is set to execute at specific type. They are implemented by extending the class [`AbstractJob`](https://webfiori.com/docs/webfiori/framework/cron/AbstractJob). Any class that represents a background job and is added to this folder, will be auto-registered.
+This folder can hold background jobs. Background jobs contains a code which is set to execute at specific time. They are implemented by extending the class [`AbstractTask`](https://webfiori.com/docs/webfiori/framework/scheduler/AbstractTask). Any class that represents a background job and is added to this folder, will be auto-registered.
 
 ### The `app/langs` Folder 
 
-This folder contains files which adds support for internationalization (i18n). You can create your own language classes or add labels to existing one. A language class must extend the class [`Language`](https://webfiori.com/docs/webfiori/framework/Language).
+This folder contains files which adds support for internationalization (i18n). Developer can create his own language classes or add labels to existing one. A language class must extend the class [`Lang`](https://webfiori.com/docs/webfiori/framework/Lang).
 
 ### The `app/pages` Folder
 
@@ -78,7 +76,7 @@ This folder can have the classes which provides implementation for the class [`A
 
 ## The `vendor` Folder
 
-This folder contains core entities of the framework in addition to any libraries that are installed using composer.
+This folder contains core entities of the framework in addition to any libraries that are installed using [composer](https://getcomposer.org/).
 
 ## The `public` Folder
 
@@ -91,11 +89,11 @@ The folder `themes` holds themes which are bundled with the framework. Each them
 
 ## Setting Custom Application Folder
 
-The developer have the option to set custom name for the folder that holds application code. This allows the developer to follow PSR-4 without having to add application configuration classes in a folder and application related classes in another folder. To set custom name for application folder, the developer have to define the name of application folder at the top of the file `index.php`. 
+The developer have the option to set custom name for the folder that holds application code. This allows the developer to follow PSR-4. To set custom name for application folder, the developer have to define the name of application folder at the top of the file `index.php`. 
 
 When the source code of the file is observed, the `define` can be seen at [the top](https://github.com/WebFiori/app/blob/main/public/index.php#L10) of the file. The developer can specify new name for application folder by specifying a value for the constant `APP_DIR`. As noticed, default value is `app`. When the value of the constant is changed to something else, the framework will attempt to create the same structure as default application structure with all configuration classes.
 
-Note that the process of renaming the folder will change the namespace at which initialization classes belongs to. For example, the class `AppConfig` belongs to the namespace `app\config`. If the value of the constant `APP_DIR` is changed to `coolApp`, the class will be re-created by the framework at the namespace `coolApp\config`.
+Note that the process of renaming the folder will change the folder at which configuration files belongs to. For example, the file `app-config.json` belongs to the folder `app\config`. If the value of the constant `APP_DIR` is changed to `coolApp`, the file will be re-created by the framework at the folder `coolApp\config`.
 
 **Previous: [Installation](learn/installation)**
 
