@@ -89,7 +89,6 @@ WebFiori implements a robust session management system independent of PHP's nati
 * **Enhanced scalability**: WebFiori's session handling can accommodate scenarios requiring multiple concurrent sessions per user, exceeding the capabilities of the default sessions management system offered by PHP.
 * **Streamlined development**: The separation from PHP's session management simplifies development by providing a consistent and well-defined interface for managing user state across web pages within the application.
 
-In essence, WebFiori's independent session management empowers developers to create more scalable and adaptable web applications without the constraints imposed by the underlying PHP framework.
 
 ``` php
 // Start new session
@@ -108,13 +107,11 @@ More information about sessions management [here](learn/sessions-management).
 
 ### Theming
 
-WebFiori's themes system empowers developers to create visually cohesive and functionally robust web applications. This system offers several benefits:
+WebFiori's themes system empowers developers to create visually cohesive web applications. This system offers several benefits:
 
 * **Unified User Experience**: Themes ensure a consistent look and feel across all application pages, maintaining a professional and recognizable experience for users.
 * **Streamlined Design Workflow**: Developers can effortlessly modify the application's entire user interface by simply switching themes within relevant web page classes. This reduces the need for repetitive code.
 * **Functional Enhancement**: Themes extend beyond visual appeal, acting as modular components that can introduce additional functionalities to the application. This allows developers to seamlessly integrate new features without extensive custom coding, promoting code reuse and maintainability.
-
-By leveraging WebFiori's theming system, developers can achieve design consistency, streamline development processes, and efficiently build feature-rich web applications, ultimately delivering a professional and user-friendly experience.
 
 ``` php
 namespace app\pages;
@@ -133,15 +130,16 @@ For more information on how to use and create themes, [check here](learn/themes)
 
 ### Basic Template Engine
 
-WebFiori's template engine prioritizes clarity and ease of use, offering a streamlined approach to web page creation. While it may not boast the extensive feature set of other options, it excels in:
+WebFiori's template engine prioritizes clarity and ease of use, offering a streamlined approach to web page creation. While it may not boast the extensive feature set of other template engines, it excels in:
 
 * **Intuitive Syntax**: The engine leverages familiar HTML syntax, allowing developers to construct templates using established web development practices. This minimizes the learning curve and promotes rapid development.
-* **Seamless Integration with PHP**: WebFiori's template engine seamlessly integrates with PHP code. Developers can effortlessly embed dynamic content within templates by using placeholders.
+* **Seamless Integration with PHP**: WebFiori's template engine seamlessly integrates with PHP code. Developers can effortlessly embed dynamic content within templates by using PHP variables as placeholders.
 
 
 ``` php
 <!--This is the template-->
 <div class="container">
+<!--PHP variable as placeholder-->
  <p>Hello Mr. "<?= $name ?>"</p>
 </div>
 ```
@@ -156,9 +154,9 @@ For more information on how to build web pages, [check here](learn/ui-package).
 
 ### Middleware
 
-WebFiori's middleware system empowers developers to intercept and manipulate incoming requests before they reach the application's core. This unlocks various benefits:
+WebFiori's middleware system gives developers the option to intercept and manipulate incoming requests before they reach the application's core logic. The use of middleware has various benefits that includes:
 
-* **Enhanced Security**: Implement robust request validation and tailor application responses for improved security.
+* **Enhanced Security**: Implement robust request validation and tailor application responses.
 * **Granular Control**: Create custom filters to manage application access and seamlessly integrate session management mechanisms.
 * **Simplified Development**: Leverage the `webfiori/framework/middleware/AbstractMiddleware` class as a base for efficient custom middleware creation.
 
@@ -168,7 +166,7 @@ For more information on middleware, [check here](learn/middleware).
 
 ### Background Tasks
 
-WebFiori's scheduler system empowers developers to automate background tasks, enhancing application efficiency. This functionality ensures seamless execution of essential processes, even in the absence of user interaction. The Key Benefits of the system includes:
+WebFiori's scheduler system allows developers to automate background tasks, enhancing application efficiency. This functionality ensures seamless execution of essential processes, even in the absence of user interaction. The key benefits of the system includes:
 
 * **Automated Workflows**: Schedule repetitive tasks to run at predefined intervals, eliminating manual intervention and fostering operational efficiency.
 * **Enhanced Reliability**: Guarantee the timely execution of crucial processes regardless of user activity, ensuring data integrity and task completion.
@@ -179,7 +177,7 @@ By leveraging the `webfiori/framework/scheduler/AbstractTask` class as a foundat
 For more information about creating background jobs, [check here](learn/background-tasks).
 
 ### Sending HTML Emails
-WebFiori empowers developers to implement seamless and user-centric email communication within their web applications. This functionality simplifies the process of sending professional-looking HTML notifications, ensuring users remain informed and engaged. The main key advantages are:
+WebFiori provides developers with the option to implement seamless and user-centric email communication within their web applications. This functionality simplifies the process of sending professional-looking HTML notifications, ensuring users remain informed and engaged. The main key advantages are:
 
 * **Effortless Configuration**: A single configuration step establishes your SMTP connection details, allowing you to readily send emails throughout your application.
 * **Intuitive Class Integration**: The class`webfiori/framework/EmailMessage` facilitates the creation and transmission of HTML email content.
@@ -205,7 +203,7 @@ For more information about how to use mailing system, [check here](learn/sending
 
 WebFiori equips developers with a suite of built-in commands designed to expedite the development process. These commands can streamline common tasks, saving valuable time and effort.
 
-Furthermore, WebFiori empowers developers to create custom commands tailored to their specific project needs. These custom commands seamlessly integrate into the framework, allowing for efficient execution and enhanced development workflows.
+Furthermore, WebFiori allows for custom commands creation which are tailored to specific project needs. These custom commands seamlessly integrate into the framework, allowing for efficient execution and enhanced development workflows.
 
 By leveraging both pre-built and custom commands, developers using WebFiori can significantly accelerate development cycles, fostering increased productivity and project efficiency.
 
