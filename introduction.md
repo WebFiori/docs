@@ -17,15 +17,16 @@ In this page:
   * [Web Services](#web-services)
 
 ## What is WebFiori Framework
+WebFiori is a developer-friendly framework built using PHP, a popular programming language, mostly for building websites and web applications. It provides the essential tools you need to get started building web applications, like:
 
-WebFiori framework is a fully object oriented web application framework which was built in top of PHP language. The main aim of the framework is to give developers minimum tools that they need to have a functional web application.
+* **Connecting to databases**: Store information like user data, products, or articles.
+* **Building web services** (APIs): These are like mini-applications that handle very specific tasks behind the scenes.
+* **Creating web pages**: These are the visual elements users see and interact with.
 
-In our opinion, as a developer, you will need the following at minimum level to have a working web application:
-* A database (back-end).
-* Web APIs (or services) (back-end).
-* Web pages (front-end).
+Think of WebFiori as a toolbox that has the essential tools you need to get started. Additionally, it can be used for more complex tasks, like sending emails or running tasks in the background.
 
-WebFiori framework fulfill the 3 by providing database abstraction layer to build and access the database, web services middleware for implementing business logic and a component-based template engine. In addition to the given 3, a developer might need to send email notifications or run a background process to perform specific action. All of that and more is possible with WebFiori framework.
+While WebFiori focuses on these core functionalities, it empowers you to build feature-rich web applications without getting lost in complex details.
+
 
 ## Features
 
@@ -42,15 +43,17 @@ WebFiori framework fulfill the 3 by providing database abstraction layer to buil
 
 ### Simple Routing Engine
 
-The main aim of routing is to take a request route that request to a resource. Most traditional frameworks which are fully MVC will have routes which points to controller methods. Routes in WebFiori will point to one of the following:
+Imagine you're building a website, and visitors come in wanting to see different things (like the "About Us" page or a product listing). Routing is like a map that tells the website where to find the right information for each visitor based on their request.
 
-* A file (php, html, text, image, etc...)
-* PHP Class
-* PHP function (closure route)
-* Class method (MVC)
+WebFiori's routing system offers a versatile approach compared to traditional MVC frameworks. Unlike traditional MVC routes that point to controller methods, WebFiori routes can target various resources:
+* **Static Files**: This includes standard resources like images, HTML pages, text files, etc.
+* **PHP Classes**: Routes can directly invoke specific classes for handling requests.
+* **PHP Functions**: Closures can be defined and referenced as routes for quick and efficient handling of specific functionalities.
+* **Class Methods (MVC)**: Traditional MVC structure is still supported, allowing routes to call specific methods within controllers.
 
+WebFiori prioritizes developer freedom by not enforcing the use of specific classes or methods like some MVC frameworks. Developers have the flexibility to choose the most suitable approach for each route based on the desired functionality and code organization.
 
-For example, it is possible to have a route which points to static HTML file or to have a route which points to PHP file that have code to execute. The developer can decide what he would like to use in the file instead of forcing him to use specific class or class method like any MVC based framework. In addition to routing to files, it is possible to have routes which points to PHP code as a function called closure. Also, it is possible to have routes which points to PHP classes.
+In essence, Routing system in WebFiori acts as a powerful and adaptable tool, allowing developers to construct the routes tailored to their specific needs without rigid structural constraints.
 
 ``` php
 // https://example.com/products/board-games/Chess
