@@ -1,11 +1,10 @@
 # Installation
 In this page:
 
-* **System Requirements**
-    * PHP Version
-    * PHP Extensions
-* **Recommended Environment**
-* **Local Development Environment Setup (Windows)**
+* **[System Requirements](#system-requirements)**
+    * [PHP Version](#php-version)
+    * [PHP Extensions](#php-extensions)
+* **[Local Development Environment Setup (Windows)](#local-development-environment-setup-windows)**
     * Obtaining PHP Binaries
     * Choosing a Web Server
 * **Installation Options**
@@ -29,10 +28,7 @@ In this page:
     * fileinfo
     * json
 * **Composer:** Dependency manager
-
-**Recommended Environment:**
-
-* Integrated Development Environment (IDE) or text editor with debugging capabilities (e.g., Apache NetBeans IDE)
+* Integrated Development Environment (IDE) or text editor with debugging capabilities (e.g., [Apache NetBeans IDE](https://netbeans.apache.org), [VS Code](https://code.visualstudio.com/) or [PHPStorm](https://www.jetbrains.com/phpstorm/))
 
 **Local Development Environment Setup (Windows):**
 
