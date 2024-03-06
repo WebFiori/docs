@@ -108,23 +108,26 @@ The following sample code shows how to create such a URL structure using the cla
 ``` php
 namespace app\ini\routes;
 
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
+
 class PagesRoutes {
     public static function create(){
         Router::page([
-            'path' => '/', 
-            'route-to' => '/HomeView.html'
+            RouteOption::PATH => '/',
+            RouteOption::TO => '/HomeView.html'
         ]);
         Router::page([
-            'path' => '/home', 
-            'route-to' => '/HomeView.html'
-        });
-        Router::page([
-            'path' => '/user-login', 
-            'route-to' => \app\pages\LoginView::class
+            RouteOption::PATH => '/home',
+            RouteOption::TO => '/HomeView.html'
         ]);
         Router::page([
-            'path' => '/dashboard', 
-            'route-to' => '/system-views/DashboardView.html'
+            RouteOption::PATH => '/user-login',
+            RouteOption::TO => \app\pages\LoginView::class
+        ]);
+        Router::page([
+            RouteOption::PATH => '/dashboard',
+            RouteOption::TO => '/system-views/DashboardView.html'
         ]);
     }
 }
@@ -156,22 +159,26 @@ A generic route is a route that has some of its path parts unknown. They can be 
 
 The following sample code shows how to create such a URL structure using the class `APIRoutes`. Note that the value of path parameter must be `action`, `service-name` or `service` or the API call will fail.
 
-``` php 
+``` php
+namespace app\ini\routes;
+
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 use ContentServices;
 
 class APIRoutes {
     public static function create(){
         Router::api([
-            'path' => '/web-apis/user/{service}', 
-            'route-to'=>'/UserAPIs.php'
+            RouteOption::PATH => '/web-apis/user/{service}',
+            RouteOption::TO => '/UserAPIs.php'
         ]);
         Router::api([
-            'path' => '/web-apis/article/{service}', 
-            'route-to'=>'/writer/ArticleAPIs.php'
+            RouteOption::PATH => '/web-apis/article/{service}',
+            RouteOption::TO => '/writer/ArticleAPIs.php'
         ]);
         Router::api([
-            'path' => '/web-apis/article-content/{service}', 
-            'route-to' => ContentServices::class
+            RouteOption::PATH => '/web-apis/article-content/{service}',
+            RouteOption::TO => ContentServices::class
         ]);
     }
 }
@@ -182,18 +189,22 @@ A closure route is a route to a user defined code that will be executed when the
 
 The value of the variable can be accessed using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue). All what needed to be done is to pass variable name and the method will return its value. The following code sample shows how it's done.
 
-``` php 
+``` php
+namespace app\ini\routes;
+
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 use webfiori\framework\Response;
  
 class ClosureRoutes {
     public static function create(){
         Router::closure([
-            'path'=>'/say-hello-to/{A_Name}', 
-            'route-to'=>function(){
+            RouteOption::PATH => '/say-hello-to/{A_Name}',
+            RouteOption::TO => function(){
                 $name = Router::getVarValue('A_Name');
                 Response::apped('Hello Mr.'.$name);
             }
-        ]);
+       ]);
     }
 }
 ```
@@ -204,17 +215,22 @@ A custom route is a route that points to a file which exist in a folder that was
 
 Assuming that there exist a folder which has the name `sys-files` and inside this folder,there exist two folders. One has the name `views` which contains web pages and another one has the name `apis` which contains system's web APIs. Assuming that the `views` folder has a view which has the name `HomeView.php` and the folder `apis` has one file which has the name `AuthAPI.php`. The following code shows how to create a route to each file:
 ``` php
+namespace app\ini\routes;
+
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
+
 class ClosureRoutes {
     public static function create(){
         Router::addRoute([
-            'path'=>'/index.php', 
-            'route-to'=>'sys-files/views/HomeView.php'
-        ]);
-        Router::addRoute([
-            'path'=>'/apis/auth/{service}', 
-            'route-to'=>'sys-files/apis/AuthAPI.php',
-            'as-api'=>true
-        ]);
+           RouteOption::PATH => '/index.php',
+           RouteOption::TO => 'sys-files/views/HomeView.php'
+       ]);
+       Router::addRoute([
+           RouteOption::PATH => '/apis/auth/{service}',
+           RouteOption::TO => 'sys-files/apis/AuthAPI.php',
+           RouteOption::API => true
+       ]);
     }
 }
 ```
@@ -224,13 +240,17 @@ class ClosureRoutes {
 It is possible to have a route to a PHP class. When such route is created, the router will try to create an instance of the class at which the route is pointing to.
 
 ``` php
+namespace app\ini\routes;
+
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 use my\super\HomePage;
 
 class ClosureRoutes {
     public static function create(){
         Router::addRoute([
-            'path' => '/rout-to-class', 
-            'route-to' => HomePage::class
+            RouteOption::PATH => '/rout-to-class',
+            RouteOption::TO => HomePage::class
         ]);
     }
 }
@@ -244,10 +264,10 @@ use my\super\FrontController;
 class ClosureRoutes {
     public static function create(){
         Router::addRoute([
-            'path' => '/rout-to-class', 
-            'route-to' => FrontController::class,
-            'action' => 'index'//Assuming the class FrontController has a method called `index`
-        ]);
+           RouteOption::PATH => '/rout-to-class',
+           RouteOption::TO => FrontController::class,
+           RouteOption::ACTION => 'index'
+       ]);
     }
 }
 ```
@@ -269,8 +289,8 @@ A URI parameter is a string which is a part of URI's path which can have many va
 
 ``` php
 Router::closure([
-    'path'=>'/news/{post-title}', 
-    'route-to'=>function(){}
+    RouteOption::PATH => '/news/{post-title}', 
+    RouteOption::TO => function(){}
 ]);
 ```
 
@@ -286,9 +306,9 @@ use webfiori\framework\Response;
 class ClosureRoutes {
     public static function create(){
         Router::closure([
-            'path'=>'/news/{post-title}', 
-            'route-to'=>function(){
-                $name = Router::getVarValue('post-title');
+            RouteOption::PATH => '/news/{post-title}',
+            RouteOption::TO => function(){
+                $name = Router::getParameterValue('post-title');
                 Response::append('You tried to open the post which has the title "'.$name.'"');
             }
         ]);
@@ -303,17 +323,19 @@ use webfiori\framework\Response;
 
 class ClosureRoutes {
     public static function create(){
+
         Router::closure([
-            'path'=>'/news/{post-title?}', 
-            'route-to'=>function(){
-                $name = Router::getVarValue('post-title');
+            RouteOption::PATH => '/news/{post-title?}',
+            RouteOption::TO => function () {
+                $name = Router::getParameterValue('post-title');
                 if ($name === null) {
                     Response::append('No title is provided.');
                 } else {
-                    Response::append('You tried to open the post which has the title "'.$name.'"');
+                    Response::append('You tried to open the post which has the title "' . $name . '".');
                 }
             }
         ]);
+
     }
 }
 ```
@@ -328,24 +350,24 @@ One of the features of the router is the ability to group routes which share sam
 One thing to notice about the routes is that they share the same `users` path part. It is possible to create each route by itself but there is a better way that can be used to group the routes. The following code shows how to group routes.
 ``` php
 Router::group([
-    'path' => '/users', 
-    'case-sensitive' => false,
-    'middleware' => [
+    RouteOption::PATH => '/users', 
+    RouteOption::CASE_SENSITIVE => false,
+    RouteOption::MIDDLEWARE => [
         'sample-middleware','sample-middleware-2'
     ],
-    'methods' => 'get',
-    'routes' => [
+    RouteOption::REQUEST_METHODS => 'get',
+    RouteOptions::SUB_ROUTES => [
         [
-            'path' => '/', 
-            'route-to' => ListUsersPage::class,
+            RouteOption::PATH => '/', 
+            RouteOption::TO => ListUsersPage::class,
         ],
         [
-            'path' => 'view-user/{user-id}', 
-            'route-to' => ViewUserPage::class,
+            RouteOption::PATH => 'view-user/{user-id}', 
+            RouteOption::TO => ViewUserPage::class,
         ]
         [
-            'path' => 'add-user', 
-            'route-to' => AddUserPage::class,
+            RouteOption::PATH => 'add-user', 
+            RouteOption::TO => AddUserPage::class,
         ]
     ]
 ]);
@@ -357,37 +379,37 @@ By grouping routes, the developer can achieve the following:
 
 ## Customizing Routes
 
-Each method which is used to add new route supports options which can be used to customize the route. This section explains each option in more details.
+Each method which is used to add new route supports options which can be used to customize the route. The options are kept as constants in the class `webfiori\framework\router\RouteOption`. This section explains each option in more details.
 
 ### Sitemap
 
-The option `in-sitemap` is a boolean which is used to tell if the URI will be in the sitemap which is generated automatically or not. Default value of this option is `false`
+The option `RouteOption::SITEMAP` is a boolean which is used to tell if the URI will be in the sitemap which is generated automatically or not. Default value of this option is `false`
 
 > Note: To create a sitemap using added routes, the method [`Router::incSiteMapRoute()`](https://webfiori.com/webfiori/framework/router/Router#incSiteMapRoute). The sitemap will be accessible through `http://example/sitemap.xml`.
 
 ### Case Sensitivity
 
-One of the available options is `case-sensitive`. This option is used to make the URI case-sensitive or not. If this one is set to false, then if a request is made to the URI `https://example.com/one/two`, It will be the same as requesting the URI `https://example.com/OnE/tWO`. By default, this one is set to true.
+One of the available options is `RouteOption::CASE_SENSITIVE`. This option is used to make the URI case-sensitive or not. If this one is set to false, then if a request is made to the URI `https://example.com/one/two`, It will be the same as requesting the URI `https://example.com/OnE/tWO`. By default, this one is set to true.
 
 ### Languages
 
-The option `languages` is used to tell which languages the URI supports. The option accepts an array that contains language codes (such as `AR`). This one is used only when [generating sitemap](#sitemap) of the website to tell search engines about the languages at which the page is available on.
+The option `RouteOption::LANGS` is used to tell which languages the URI supports. The option accepts an array that contains language codes (such as `AR`). This one is used only when [generating sitemap](#sitemap) of the website to tell search engines about the languages at which the page is available on.
 
 ### Variables Values
 
-The option `vars-values` is used in generating the sitemap of the website. The option accepts sub-associative arrays. The key of the array represents the name of variable name and the value is a sub array that contains possible variable values.
+The option `RouteOption::VALUES` is used in generating the sitemap of the website. The option accepts sub-associative arrays. The key of the array represents the name of variable name and the value is a sub array that contains possible variable values.
 
 ### Middleware
 
-The option `middleware` is used to specify which middleware the request will go through when a request is made to the given resource. This option accepts middleware name or an array that holds middleware names. Also, this option can have the name of middleware group or an array of middleware groups. For more information about middleware, [here](learn/middleware).
+The option `RouteOption::MIDDLEWARE` is used to specify which middleware the request will go through when a request is made to the given resource. This option accepts middleware name or an array that holds middleware names. Also, this option can have the name of middleware group or an array of middleware groups. For more information about middleware, [here](learn/middleware).
 
 ## Request Method
 
-By default, a route to a resource can be called using any request method. But it is possible to restrict that to specific request method (or methods). The option 'methods' can have a string which represents the method at which the resource can be fetched with (e.g. 'GET') or it can be an array that holds the names of request methods at which the resource can be fetched with.
+By default, a route to a resource can be called using any request method. But it is possible to restrict that to specific request method (or methods). The option `RouteOption::REQUEST_METHODS` can have a string which represents the method at which the resource can be fetched with (e.g. 'GET') or it can be an array that holds the names of request methods at which the resource can be fetched with.
 
 ## Action
 
-The `action` option is used when the route is pointing to a class and the developer would like to call one action from the class. This option can make your application more MVC-like.
+The `RouteOption::ACTION` option is used when the route is pointing to a class and the developer would like to call one action from the class. This option can make your application more MVC-like.
 
 **Next: [The Class `Response`](learn/class-response)**
 
