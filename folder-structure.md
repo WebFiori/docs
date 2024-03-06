@@ -5,20 +5,14 @@ In this page:
 
 * **[Introduction](#introduction)**
 * **[Directory Hierarchy](#directory-hierarchy)**
-* **Custom Application Folder Name**
-    * `APP_DIR` constant
-* **Framework Core and Libraries (`vendor` directory)**
-* **Public Directory (`public` directory)**
-    * `assets` subdirectory
-* **Setting Custom Application Folder**
-* **Themes (`themes` directory)**
+* **[Setting Custom Application Folder]()**
 
 
 ## Introduction
 
 This document outlines a comprehensive approach to organizing your WebFiori application files, promoting both maintainability and adherence to best practices.
 
-# Directory Hierarchy
+## Directory Hierarchy
 
 * **Public Directory (`public`):**
     * This directory serves as the foundation for all incoming requests.
@@ -54,7 +48,7 @@ This document outlines a comprehensive approach to organizing your WebFiori appl
 * Theme-related CSS and JavaScript files are located in `public/assets`.
 * You can also create custom themes, storing their resources outside `public/assets` folder and leveraging a Content Delivery Network (CDN) to include them.
 
-**Customizing the Application Folder Name:**
+## Customizing the Application Folder Name
 
 * The framework allows you to rename the application folder (`app`) to adhere to PSR-4 standards.
 * Define the desired name for the application folder at the top of the `public/index.php` file using the `APP_DIR` constant.
