@@ -1,6 +1,7 @@
 # Installation
 In this page:
 
+* **[Introduction](#introduction)**
 * **[System Requirements](#system-requirements)**
     * [PHP Version](#php-version)
     * [PHP Extensions](#php-extensions)
@@ -9,6 +10,9 @@ In this page:
 * **[Running the Project](#running-the-roject)**
 
 
+## Introduction
+
+This domumentation explains the whole process from installing PHP and composer, to running your first WebFiori application. If you are familiar with how to install PHP on windows or you already have configured your environment, skip to the section "[Creating WebFiori Application](#creating-webFiori-application)".
 
 ## System Requirements
 
@@ -22,9 +26,9 @@ In this page:
 * **Composer:** Dependency manager
 * Integrated Development Environment (IDE) or text editor with debugging capabilities (e.g., [Apache NetBeans IDE](https://netbeans.apache.org), [VS Code](https://code.visualstudio.com/) or [PHPStorm](https://www.jetbrains.com/phpstorm/))
 
-# Local Development Environment Setup (Windows):
+## Local Development Environment Setup (Windows):
 
-## Installing PHP
+### Installing PHP
 
 **1. Download and Extract PHP Binaries:**
 
@@ -56,7 +60,7 @@ In this page:
 
 -- Note: For production environments, a dedicated web server application like [Apache](https://cwiki.apache.org/confluence/display/httpd/PHP), [Nginx](https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/), or [IIS](https://learn.microsoft.com/en-us/iis/application-frameworks/install-and-configure-php-applications-on-iis/using-fastcgi-to-host-php-applications-on-iis) is strongly recommended.
 
-## Installing Composer
+### Installing Composer
 
 **1. Download Composer:**
 
@@ -74,7 +78,7 @@ Visit the official Composer download page: [https://getcomposer.org/download](ht
 - Copy and paste the following code into the editor:
 
 ```
-@echo OFF
+@echo off
 php "%~dp0composer.phar" %*
 ```
 
@@ -87,13 +91,13 @@ php "%~dp0composer.phar" %*
 
 If Composer is installed correctly, the command should display the installed Composer version information. 
 
-# Creating WebFiori Application
+## Creating WebFiori Application
 
 **Method 1: Composer (Recommended)**
 
 1. **Verify Composer Installation:** Ensure that Composer is installed on your system.
-2. **Open Command Prompt:** Navigate to the desired project directory using the command prompt.
-3. **Execute Installation Command:** Run the following command, replacing `my-site` with your preferred project name:
+2. **Open Command Prompt:** Navigate to the desired project directory using the command prompt (use `cd` command).
+3. **Execute Installation Command:** Run the following command, replacing `my-site` with your preferred project folder name:
 
    ```
    composer create-project webfiori/app my-site --prefer-dist
