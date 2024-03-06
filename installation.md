@@ -3,8 +3,6 @@ In this page:
 
 * **[Introduction](#introduction)**
 * **[System Requirements](#system-requirements)**
-    * [PHP Version](#php-version)
-    * [PHP Extensions](#php-extensions)
 * **[Local Development Environment Setup (Windows)](#local-development-environment-setup-windows)**
 * **[Creating WebFiori Application](#creating-webFiori-application)**
 * **[Running the Project](#running-the-roject)**
