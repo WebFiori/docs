@@ -15,7 +15,9 @@ In this page:
 
 ## Introduction
 
-Normally, sending output to HTTP client in php is performed using [`echo`](https://www.php.net/manual/en/function.echo.php) or [`print`](https://www.php.net/manual/en/function.print.php). The framework has its own way for sending output to HTTP clients which can be archived using the class [`Response`](https://webfiori.com/docs/webfiori/http/Response). The main aim of this class is to collect server output and send it back to the client after the server completely finished processing client request. In addition to that, it can be used to send custom HTTP headers. 
+While PHP offers `echo` and `print` for sending output, WebFiori's `webfiori\http\Response` class provides a centralized approach. It gathers server output for streamlined delivery to clients after request processing. Additionally, it allows for sending custom HTTP headers. This empowers developers to construct well-structured and efficient responses within their WebFiori applications. 
+
+> **Note**: This class is part of the library [`webfiori\http`](https://github.com/WebFiori/http).
 
 ## Collecting Server Output
 
@@ -27,12 +29,14 @@ Collecting server output can be archived using the static method [`Response::wri
 namespace app\ini\routes;
 
 use webfiori\http\Response;
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 
 class ClosureRoutes {
     public static function create() {
         Router::closure([
-            'path' => '/closure',
-            'route-to' => function() {
+            RouteOption::PATH => '/closure',
+            RouteOption::TO => function() {
                 Response::write('Hello,<br/>');
                 Response::write('Welcome to my website!<br/>');
                 Response::write('Current Time is: '.date('H:i:s'));
@@ -50,12 +54,14 @@ It is possible to terminate code execution on server before the whole code is ex
 namespace app\ini\routes;
 
 use webfiori\http\Response;
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 
 class ClosureRoutes {
     public static function create() {
         Router::closure([
-            'path' => '/closure',
-            'route-to' => function() {
+            RouteOption::PATH => '/closure',
+            RouteOption::TO => function() {
                 $myVar = 'Good;
                 Response::write($myVar);
                 $myVar = 'Hello';
@@ -79,12 +85,14 @@ The developer can use the method [`Response::addHeader()`](https://webfiori.com/
 namespace app\ini\routes;
 
 use webfiori\http\Response;
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 
 class ClosureRoutes {
     public static function create() {
         Router::closure([
-            'path' => '/closure',
-            'route-to' => function() {
+            RouteOption::PATH => '/closure',
+            RouteOption::TO => function() {
                 $jsonData = '{"username":"WarriorVx", "email":"my-email@example.com", "age":33}';
                 Response::write($jsonData);
                 Response::addHeader('content-type', 'application/json');
@@ -107,12 +115,14 @@ namespace app\ini\routes;
 
 use webfiori\http\Response;
 use webfiori\http\HttpCookie;
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 
 class ClosureRoutes {
     public static function create() {
         Router::closure([
-            'path' => '/closure',
-            'route-to' => function() {
+            RouteOption::PATH => '/closure',
+            RouteOption::TO => function() {
                 $cookie = new HttpCookie();
                 $cookie->setName('hello-cookie');
                 $cookie->setValue('hello-world');
@@ -131,12 +141,14 @@ By default, the class `Response` will send any output with code `200 - Ok`. But 
 namespace app\ini\routes;
 
 use webfiori\http\Response;
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 
 class ClosureRoutes {
     public static function create() {
         Router::closure([
-            'path' => '/closure',
-            'route-to' => function() {
+            RouteOption::PATH => '/closure',
+            RouteOption::TO => function() {
                 Response::write('Resource Was Not Found!');
                 Response::setCode(404);
             }
@@ -153,6 +165,8 @@ For some reason or another, the developer may want to clear the collected server
 namespace app/ini/routes;
 
 use webfiori\http\Response;
+use webfiori\framework\router\Router;
+use webfiori\framework\router\RouteOption;
 
 class ClosureRoutes {
     /**
@@ -161,8 +175,8 @@ class ClosureRoutes {
      */
     public static function create() {
         Router::closure([
-            'path' => '/closure',
-            'route-to' => function() {
+            RouteOption::PATH => '/closure',
+            RouteOption::TO => function() {
                 Response::append('Resource Was Not Found!');
                 Response::setCode(404);
                 
