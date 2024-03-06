@@ -29,24 +29,28 @@ In this page:
 
 ## Introduction
 
-One thing that website owners care about is to have a friendly URLs that can be remembered easily. In addition to that, having a well-defined URL structure can help in SEO. For example, instead of having something like `http://example.com/view-something?something={a-something}`, it is better to have something like `http://example.com/view-something/{a-something}`. In this example, something can be an image, user profile, a file or a simple HTML web page. Routing can help in achieving such URL structure without having to create each individual resource.
+Memorable URLs and a well-defined structure are crucial for user experience and SEO. Instead of cryptic URLs like `http://example.com/view-something?something={a-something}`, user-friendly URLs like `http://example.com/view-something/{a-something}` are easier to remember and navigate. This clarity benefits both users and search engines.
+
+Routing, a web development technique, maps user requests (URLs) to the appropriate resources. It allows creating user-friendly, SEO-friendly URLs without manually creating individual files, streamlining development and enhancing website visibility.
+
 
 ## The Definition of Routing
 
-One essential part of the framework is routing. Routing in simple terms is sending user request to its correct destination. The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core classes which are responsible for performing this task. It can be used to create routes and send requests to correct resources.
+Routing, a core function within WebFiori, directs user requests to their intended destinations. The `webfiori\framework\router\Router` class facilitates this process, enabling developers to define custom URL structures that map to specific resources. 
 
-After finishing the following set of topics, the developer should be able to understand how routing sub-system works and create his own custom URIs structure.
+By mastering the topics in this documentation, developers can effectively harness WebFiori's routing system for enhanced navigation and user experience.
+
 
 ## Life Cycle of a Request
 
-Every web server must have some kind of configuration file. In Apache server, the configuration files have the name [`.htaccess`](https://httpd.apache.org/docs/current/howto/htaccess.html) and in IIS has the name `web.config`. Usually, the configuration files will get executed before the actual code.
+Web servers leverage configuration files, like `.htaccess` in Apache and `web.config` in IIS, to define pre-execution behavior. WebFiori utilizes a custom `.htaccess` to rewrite requested URLs and redirect them to the `index.php` file within the `public` directory. 
 
-WebFiori Framework uses a custom `.htaccess` file that has a rule to re-write the requested URL and redirect every request to the root the file `index.php`. The file can be found inside the directory `public`. If the content of the `.htaccess` file is viewed, the re-write rule will look like the following:
 ```
 ReWriteRule ^(.*)$ index.php [L,QSA]
 ```
 
-Also, the framework has its own custom `web.config` file that has a rule which is used to send requests to the file `index.php`. If the content of the file `web.config` is viewed, the redirect rule will look like the following:
+Similarly, a custom `web.config` file achieves the same redirection.
+
 ``` xml
 <rule name="Bloom The Seed" stopProcessing="true">
     <match url="^(.*)$" ignoreCase="false" />
@@ -58,25 +62,31 @@ Also, the framework has its own custom `web.config` file that has a rule which i
 </rule>
 ```
 
-Once the request reaches the file `index.php`, initialization process of the application will start. After the initialization is completed without any errors, the final stage is to route the request to its final destination.
+Upon reaching `index.php`, the application initializes. Following successful initialization, the final step involves routing the request to its designated destination and sending back the response.
 
-> <b>Note:</b> [`mod_rewrite`](https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html) must be enabled on Apache to use Re-Write Rules. For IIS, [URL ReWrite](https://www.iis.net/downloads/microsoft/url-rewrite) must be installed.
+**Routing Orchestration**
 
-The routing process is completed by the class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router). The whole magic of routing is completed by sending the requested URL as a parameter to the method [`Router::route()`](https://webfiori.com/docs/webfiori/framework/router/Router#route). If a resource was found at which the given URL is pointing to, the request will be sent to it. If no route is found, a 404 error is generated.
+The `webfiori\framework\router\Router` class plays a pivotal role in WebFiori's routing mechanism. It takes the requested URL as input using the `Router::route()` method. If a corresponding resource is found, the request is directed there. Otherwise, a 404 error is generated.
+
+**Note:**
+
+* Apache needs [`mod_rewrite`](https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html) for rewrite rules.
+* IIS requires installing the [URL Rewrite Module](https://www.iis.net/downloads/microsoft/url-rewrite).
+
 
 ## The Class `Router`
 
-The class [`Router`](https://webfiori.com/docs/webfiori/framework/router/Router) is one of the core framework classes. The main aim of this class is to create routes to resources and direct client request to them.
+The `Router` class sits at the heart of WebFiori, responsible for establishing routes and directing incoming client requests to their designated resources. These resources can encompass various elements, from static files like text, images, and web pages to dynamic reports generated by processing and displaying data in a user-friendly format.
 
-A resource can be a file such as a text file, an image or web page or a complex report that was generated dynamically by gathering data and representing it in a good-looking way.
+The Router empowers developers to create four primary types of routes:
 
-In general, there are 4 types of routes that can be created using this class:
 * Page Route.
 * API Route.
 * Closure Route.
 * Custom Route.
 
-For each type of route, there is a specific static method that can be used to create it. The 4 methods that corresponds to each type are:
+Each route type in WebFiori has a corresponding static method within the `Router` class for efficient creation:
+
 * [Router::page()](https://webfiori.com/docs/webfiori/framework/router/Router#page)
 * [Router::api()](https://webfiori.com/docs/webfiori/framework/router/Router#api)
 * [Router::closure()](https://webfiori.com/docs/webfiori/framework/router/Router#closure)
@@ -84,7 +94,7 @@ For each type of route, there is a specific static method that can be used to cr
 
 
 ## Types of Routes
-In general, the idea of creating route for each type of routes will be the same. The only difference will be the location of the resource that the route will point to in addition to [middleware](learn/middleware) group that the route will be assigned to.
+In general, the idea of creating route for each type of routes will be the same. The only difference will be the location of the resource that the route will point to in addition to [middleware](learn/middleware) group that the route will be assigned to by default.
 
 ### Page Route
 
@@ -185,9 +195,9 @@ class APIRoutes {
 ```
 ### Closure Route
 
-A closure route is a route to a user defined code that will be executed when the resource is requested. In other terms, it is a function that will be called when a request is made. It is simply an Anonymous Function. Suppose that a developer would like to create a route to a function that will output `Hello Mr.{A_Name}` When it's called. The URL that will be requested will have the form `https://example.com/say-hello-to/{A_Name}`. As noticed,a generic path variable in the URL is added which will hold the name that the function will say hello to.
+A closure route is a route to a user defined code that will be executed when the resource is requested. In other terms, it is a function that will be called when a request is made. It is simply an Anonymous Function. Suppose that a developer would like to create a route to a function that will output `Hello Mr.{A_Name}` When it's called. The URL that will be requested will have the form `https://example.com/say-hello-to/{A_Name}`. As noticed,a generic path parameter in the URL is added which will hold the name that the function will say hello to.
 
-The value of the variable can be accessed using the method [`Router::getVarValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getVarValue). All what needed to be done is to pass variable name and the method will return its value. The following code sample shows how it's done.
+The value of the parameter can be accessed using the method [`Router::getParameterValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getParameterValue). All what needed to be done is to pass parameter name and the method will return its value. The following code sample shows how it's done.
 
 ``` php
 namespace app\ini\routes;
@@ -211,7 +221,7 @@ class ClosureRoutes {
 
 ### Custom Route
 
-A custom route is a route that points to a file which exist in a folder that was created by the developer outside the folder `apis` or `pages`. The folder must exist inside the framework scope in order to create a route to it.
+A custom route is a route that points to a file which exist in a folder that was created by the developer outside the folder `apis` or `pages`. The folder must exist inside application scope in order to create a route to it.
 
 Assuming that there exist a folder which has the name `sys-files` and inside this folder,there exist two folders. One has the name `views` which contains web pages and another one has the name `apis` which contains system's web APIs. Assuming that the `views` folder has a view which has the name `HomeView.php` and the folder `apis` has one file which has the name `AuthAPI.php`. The following code shows how to create a route to each file:
 ``` php
