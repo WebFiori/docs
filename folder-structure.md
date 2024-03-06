@@ -2,98 +2,65 @@
 <meta name="description" content="Learn about the folders at which the framework uses to keep your code and the content of each folder.">
 
 In this page:
-* [The `app` Folder](#the-app-folder)
-  * [The `app/config` Folder](#the-appconfig-folder)
-  * [The `app/apis` Folder](#the-appapis-folder)
-  * [The `app/commands` Folder](#the-appcommands-folder)
-  * [The `app/tasks` Folder](#the-apptasks-folder)
-  * [The `app/langs` Folder ](#the-applangs-folder)
-  * [The `app/pages` Folder](#the-apppages-folder)
-  * [The `app/ini` Folder](#the-appini-folder)
-  * [The `app/ini/routes` Folder](#the-appiniroutes-folder)
-  * [The `app/middleware` Folder](#the-appmiddleware-folder)
-* [The `vendor` Folder](#the-vendor-folder)
-* [The `public` Folder](#the-public-folder)
-* [The `themes` Folder](#the-themes-folder)
-* [Setting Custom Application Folder](#setting-custom-application-folder)
 
-## The `app` Folder
-
-The folder `app` will contain all your application files. Any PHP source code files must exist inside this folder. This folder can have extra sub-folders for maintaining source code of the application. The folders are:
-
-* `app/apis`: Holds web services and services managers (Web APIs).
-* `app/commands`: Holds custom-made CLI commands.
-* `app/config`: Hold application configuration classes.
-* `app/database`: Holds classes which are related to database and database access.
-* `app/entity` Holds classes which represents system entities.
-* `app/ini`: Holds classes which are used to initialize the application.
-* `app/ini/routes`: Holds classes for initializing routes.
-* `app/tasks`: Holds background jobs.
-* `app/langs`: Holds translation files (for i18n support)
-* `app/middleware`: Holds classes which represents a middleware.
-* `app/pages`: Holds anything related to user interface such as web pages, views or UI components.
+* **[Introduction](#introduction)**
+* **[Directory Hierarchy](#directory-hierarchy)**
+* **Custom Application Folder Name**
+    * `APP_DIR` constant
+* **Framework Core and Libraries (`vendor` directory)**
+* **Public Directory (`public` directory)**
+    * `assets` subdirectory
+* **Setting Custom Application Folder**
+* **Themes (`themes` directory)**
 
 
-Also, developer may create his own folders and add files as needed. More details about the folders can be found below.
+## Introduction
 
-> **Note:** It is possible to have different name for the folder `app` by changing the value of the constant `APP_DIR`. For more information, [check here](##setting-custom-application-folder).
+This document outlines a comprehensive approach to organizing your WebFiori application files, promoting both maintainability and adherence to best practices.
 
-### The `app/config` Folder
-This folder will hold files which are related to configuring the application. By default, the framework will create a file called `app-config.json` which will act as the main configuration file.
+# Directory Hierarchy
 
-### The `app/apis` Folder
+* **Public Directory (`public`):**
+    * This directory serves as the foundation for all incoming requests.
+    * It accommodates publicly accessible resources like JavaScript, CSS, and images.
+    * **Subfolder:**
+        * `assets`: Houses all static assets utilized by the application, including theme resources.
 
-This folder can have all classes that are related to web services. This folder will mostly holde web services controllers and web services classes. A web service controller is a class that extends the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager) or the class [`ExtendedWebServices`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). A web service is a class that extends the class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService).
+* **Application Directory (`app`, customizable)**
+    * By default, this directory is named `app`, but you have the flexibility to personalize it using the `APP_DIR` constant.
+    * It serves as the central hub for your application's code and configuration files.
 
-### The `app/commands` Folder
+**Subdirectories within the Application Directory**
 
-This folder can have any custom CLI commands which are created by the developer. A CLI command can be created by extending the class [`CLICommand`](https://webfiori.com/docs/webfiori/cli/CLICommand) and implementing the abstract methods of the class. Any command inside this folder will be auto-registered by the framework.
+* **`apis`:** This directory houses web services controllers and service managers (also known as Web APIs).
+* **`commands`:** This directory accommodates custom-made command-line interface (CLI) commands.
+* **`config`:** This directory is responsible for storing application configuration files.
+* **`database`:** This directory encompasses classes related to database access and interaction.
+* **`entity`:** This directory houses classes representing the core entities of your system.
+* **`ini`:** This directory accommodates initialization classes for various aspects of the application, including privileges, background jobs, CLI commands, autoloading directories, and middleware.
+    * **`routes`:** This subdirectory houses classes responsible for defining different types of routes within your application.
+* **`langs`:** This directory stores translation files for internationalization (i18n) support. You can create custom language classes here or extend existing ones.
+* **`middleware`:** This directory houses classes implementing middleware functionality. Middleware provides a layer to filter requests before routing occurs.
+* **`pages`:** This directory houses classes representing application pages and their components. This directory may also contain HTML template files (views).
+* **`tasks`:** This directory houses background jobs, which are code snippets scheduled to execute at specific times.
 
-### The `app/tasks` Folder
+**Framework Core and Libraries (`vendor`)**
 
-This folder can hold background jobs. Background jobs contains a code which is set to execute at specific time. They are implemented by extending the class [`AbstractTask`](https://webfiori.com/docs/webfiori/framework/scheduler/AbstractTask). Any class that represents a background job and is added to this folder, will be auto-registered.
+* This directory houses the core framework files and any third-party libraries installed using Composer.
 
-### The `app/langs` Folder 
+**Theming (`themes`):**
 
-This folder contains files which adds support for internationalization (i18n). Developer can create his own language classes or add labels to existing one. A language class must extend the class [`Lang`](https://webfiori.com/docs/webfiori/framework/Lang).
+* This directory houses pre-built themes bundled with the framework, each in its own subfolder.
+* Theme-related CSS and JavaScript files are located in `public/assets`.
+* You can also create custom themes, storing their resources outside `public/assets` folder and leveraging a Content Delivery Network (CDN) to include them.
 
-### The `app/pages` Folder
+**Customizing the Application Folder Name:**
 
-This folder must contain the classes which represents the pages of the application or the components that a page consist of. Also, it can contain HTML template files which represent views. The routes to classes which exist in this folder can be added using the method <a  href="https://webfiori.com/docs/webfiori/framework/router/Router#page">`Router::page()`</a>.
+* The framework allows you to rename the application folder (`app`) to adhere to PSR-4 standards.
+* Define the desired name for the application folder at the top of the `public/index.php` file using the `APP_DIR` constant.
+* Changing this value will cause the framework to recreate the default folder structure with your chosen name. For example, changing `APP_DIR` to `coolApp` will re-create configuration files at `coolApp/config`.
 
-## The `app/ini` Folder
-
-This folder contains initialization classes. Classes in this folder are used to initialize system privileges, custom jobs, custom CLI commands, custom autoload directories, middleware and global constants.
-
-
-### The `app/ini/routes` Folder
-
-This folder contains classes which are used to create different types of routes to any resources exist in the application. The folder already has 4 classes. Each class has one static method. The code in each static method should be used to initialize routes.
-
-## The `app/middleware` Folder
-
-This folder can have the classes which provides implementation for the class [`AbstractMiddleware`](https://webfiori.com/docs/webfiori/framework/middleware/AbstractMiddleware). The classes in this folder represents every middleware that will be created. A middleware is a class which is used to provide a layer in top of the application for filtering requests before actual routing happens.
-
-## The `vendor` Folder
-
-This folder contains core entities of the framework in addition to any libraries that are installed using [composer](https://getcomposer.org/).
-
-## The `public` Folder
-
-The public folder is the root directory of the application. Any public resources should be included inside this folder as it will be the entry point of any request. Public resources include JavaScript files, CSS or any images that the application may use. The folder must have the `assets` folder inside it. The `assets` folder will usesally contain all resource files. Also, the `assets` folder will contain themes assets.
-
-## The `themes` Folder
-The folder `themes` holds themes which are bundled with the framework. Each theme is contained in its sub-folder. CSS files and JavaScript files of each theme must exist inside the folder `public/assets`. The folder also can hold custom-made themes.
-
-> <b>Note:</b> It is possible to have custom-made themes in another place other than the folder `themes`. In this case, custom-made themes should use CDN to include their resource files.
-
-## Setting Custom Application Folder
-
-The developer have the option to set custom name for the folder that holds application code. This allows the developer to follow PSR-4. To set custom name for application folder, the developer have to define the name of application folder at the top of the file `index.php`. 
-
-When the source code of the file is observed, the `define` can be seen at [the top](https://github.com/WebFiori/app/blob/main/public/index.php#L10) of the file. The developer can specify new name for application folder by specifying a value for the constant `APP_DIR`. As noticed, default value is `app`. When the value of the constant is changed to something else, the framework will attempt to create the same structure as default application structure with all configuration classes.
-
-Note that the process of renaming the folder will change the folder at which configuration files belongs to. For example, the file `app-config.json` belongs to the folder `app\config`. If the value of the constant `APP_DIR` is changed to `coolApp`, the file will be re-created by the framework at the folder `coolApp\config`.
+By adhering to this structure, you can establish a well-organized and maintainable application, fostering efficient collaboration and project scalability.
 
 **Previous: [Installation](learn/installation)**
 
