@@ -5,7 +5,7 @@
 In this page:
 
 * [Introduction](#introduction)
-* [Main Classes](#main-classes)
+* [WebFiori's Object-Oriented Approach to UI Construction](#webFioris-bject-oriented-approach-to-ui-construction)
   * [The Class `HTMLNode`](#the-class-htmlnode`)
   * [The Class `HTMLDoc`](#the-class-htmldoc`)
 * [Using The Library](#using-the-library)
@@ -23,17 +23,21 @@ In this page:
 
 ## Introduction
 
-One of the essential parts of any web application is to have an easy way to create the front end at which the users of the application will use. The front end of any web application will mostly consist of HTML, CSS and JavaScript. WebFiori frameworks gives the developers a package that consist of a set of classes that can be used to build the DOM of a web page using PHP language without having to write HTML code. 
+Effective user interaction hinges on a well-crafted front-end, traditionally comprising HTML, CSS, and JavaScript. WebFiori streamlines this process by offering a comprehensive suite of PHP classes. These classes empower developers to build a web page's Document Object Model (DOM) directly within the PHP environment, eliminating the need for manual HTML coding. This fosters an efficient and streamlined approach to front-end development within WebFiori applications. Additionally, WebFiori framework allows the use of basic HTML for the ones who would like to keep the traditional approach of using HTML.
+
+All of this and more was made possible through the user interface library of WebFiori Framework.
 
 > **Note:** This library can be included using composer by including this entry in the `require` part of the `composer.json` file: `"webfiori/ui":"*"`.
 
-## Main Classes
+## WebFiori's Object-Oriented Approach to UI Construction
 
-All the classes which are related to the library can be found in the namespace [`webfiori\ui`](https://webfiori.com/docs/webfiori/ui).
+WebFiori embraces an object-oriented paradigm for crafting user interfaces. Its UI library provides a spectrum of classes, each meticulously designed to map to a specific HTML element. These classes derive functionality from the fundamental [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) class, empowering the creation of any HTML or XML tag structure. This extensible architecture grants developers the flexibility to extend the class [`HTMLNode`] and construct custom elements, fostering the development of highly customized and dynamic user interfaces that perfectly align with application requirements.
+
+All the classes which are related to user interface creation can be found in the namespace [`webfiori\ui`](https://webfiori.com/docs/webfiori/ui).
 
 ### The Class `HTMLNode`
 
-The library consist of many classes which represents different types of HTML elements. All classes are children of the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode). This class basically can be used to represent any HTML or XML tag. The developer can extend this class and create his own custom HTML elements.
+The library consist of many classes which represents different types of HTML elements. All classes are sub-classes of the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode). This class basically can be used to represent any HTML or XML tag. The developer can extend this class and create his own custom elements.
 
 ### The class `HTMLDoc`
 
