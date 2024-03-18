@@ -231,7 +231,7 @@ One of the features of the library that it provides a basic templating engine wh
 
 ### Loading Template File
 
-Loading HTML files can be achived using the static method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). Assuming that there exist the following HTML code and a developer would like to load it into `HTMLNode` instance.
+Loading HTML files can be achived using the static method [`HTMLNode::fromFile()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#fromFile). Assuming that there exist the following HTML code and a developer would like to load it into `HTMLNode` instance.
 
 ``` html
 <section>
@@ -245,7 +245,7 @@ Loading HTML files can be achived using the static method [`HTMLNode::loadCompon
 The following PHP code can be used to load the file.
 
 ``` php
-$component = HTMLNode::loadComponent('path/to/template/my-html-file.html');
+$component = HTMLNode::fromFile('path/to/template/my-html-file.html');
 
 //Now the developer can modify the component as needed.
 $component->setClassName('main-section')
@@ -298,12 +298,12 @@ Assuming that there exist the following HTML document which has slots:
     </body>
 </html>
 ```
-In order to fill slots with values, the developer have to use the second argument of the method [`HTMLNode::loadComponent()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#loadComponent). The second argument is an associative array that can have slots values.
+In order to fill slots with values, the developer have to use the second argument of the method [`HTMLNode::fromFile()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#fromFile). The second argument is an associative array that can have slots values.
 
 The following code shows how to load the document into  [`HTMLDoc`](https://webfiori.com/docs/webfiori/ui/HTMLDoc) instance and fill the solts with values. 
 
 ``` php
-$doc = HTMLNode::loadComponent('template.html', [
+$doc = HTMLNode::fromFile('template.html', [
     'page-title' => 'Welcome to My Website',
     'site-name' => 'Awesome Website',
     'visitor' => 'Ibrahim',
