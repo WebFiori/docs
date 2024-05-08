@@ -5,7 +5,7 @@
 
 ## Introduction
 
-The framework comes with a class which is only used to initialize environment variables. They can be accessed anywhere within the scope of the application. The class [Env](https://github.com/WebFiori/app/blob/main/app/config/Env.php), which will always exist inside application's folder, is used to initialize the values of environment variables. The developer can modify the values of variables in the class as needed to configure some of the settings of the framework. Also, the developer can modify the content of the class and create his own environment variables.
+The framework have global constants which acts as environment variables and are used to configure some of the settings. They can be accessed anywhere within the scope of the application. Developer can modify the values of variables in application configuration.
 
 ## Variables
 
