@@ -14,9 +14,11 @@ In this page:
 ## Introduction
 Email messages are considered as one of the most effective communication ways, and at some point, any website or web application will have to use them. WebFiori Framework has all needed tools to allow the application to be able to send HTML emails. Email messages are used in many ways. For example, they are used to activate user account, reset password, send news letters, etc...
 
+> Note: This feature uses the library `webfiori\mail`. Please refer to the [documentation](https://github.com/WebFiori/mail) of the library for more information.
+
 ## Configuration
 
-Before sending any email, first the developer have to add SMTP account information that will be used to send emails. The account can be added in two ways. Either by using the command `php webfiori add` or by opening the class [`AppConfig`](https://github.com/WebFiori/app/blob/main/app/AppConfig.php) and adding the connection manually. The prefered way for adding SMTP connection information is the first one as it will validate connection information before storing them.
+Before sending any email, first the developer have to add SMTP account information that will be used to send emails. The account can be added in two ways. Either by using the command `php webfiori add` or by opening application configuration and adding the connection manually. The prefered way for adding SMTP connection information is the first one as it will validate connection information before storing them.
 
 For every SMTP account, the following items must be specified:
 
@@ -65,7 +67,7 @@ The email will be sent in HTML format. To customize the content of the generated
 
 ## Attaching Files
 
-One of the features of the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) is the support for adding attachments to the message. In order to add attachments, the developer must use the class [`File`](https://webfiori.com/docs/webfiori/framework/File). This class is used to read and write files or send them back as a response. In order to add a file as an attachment, it must be first opened and then added to the message using the method [`EmailMessage::attach()`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage#attach).
+One of the features of the class [`EmailMessage`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage) is the support for adding attachments to the message. In order to add attachments, the developer must use the class [`File`](https://webfiori.com/docs/webfiori/file/File). This class is used to read and write files or send them back as a response. In order to add a file as an attachment, it must be first opened and then added to the message using the method [`EmailMessage::attach()`](https://webfiori.com/docs/webfiori/framework/mail/EmailMessage#attach).
 
 Assuming that we have a file which has the name "My CV.docx" in the root directory of the framework, The file can be attached to the email as follows:
 ``` php
