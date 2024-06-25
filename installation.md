@@ -97,9 +97,11 @@ If Composer is installed correctly, the command should display the installed Com
 2. **Open Command Prompt:** Navigate to the desired project directory using the command prompt (use `cd` command).
 3. **Execute Installation Command:** Run the following command, replacing `my-site` with your preferred project folder name:
 
-   ```
+``` bash
+   
    composer create-project webfiori/app my-site --prefer-dist
-   ```
+   
+```
 
 **Method 2: Manual Installation**
 
@@ -115,9 +117,11 @@ If Composer is installed correctly, the command should display the installed Com
 1. **Open Command Prompt:** Navigate to your project root directory (e.g., `my-site`) using the command prompt.
 2. **Start Server:** Run the following command:
 
-   ``` bash
+``` bash
+   
    php -S localhost:8080 -t public
-   ```
+   
+```
 
 This launches the server on port 8080. The application can be accessed in your web browser at `localhost:8080`.
 
