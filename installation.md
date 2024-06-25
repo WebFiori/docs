@@ -75,7 +75,7 @@ Visit the official Composer download page: [https://getcomposer.org/download](ht
 - Open a text editor like Notepad.
 - Copy and paste the following code into the editor:
 
-```
+``` bash
 @echo off
 php "%~dp0composer.phar" %*
 ```
@@ -115,7 +115,7 @@ If Composer is installed correctly, the command should display the installed Com
 1. **Open Command Prompt:** Navigate to your project root directory (e.g., `my-site`) using the command prompt.
 2. **Start Server:** Run the following command:
 
-   ```
+   ``` bash
    php -S localhost:8080 -t public
    ```
 
