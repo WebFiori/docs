@@ -5,7 +5,7 @@ In this page:
 
 * **[Introduction](#introduction)**
 * **[Directory Hierarchy](#directory-hierarchy)**
-* **[Setting Custom Application Folder]()**
+* **[Setting Custom Application Folder](#setting-custom-application-folder)**
 
 
 ## Introduction
