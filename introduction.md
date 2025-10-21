@@ -56,6 +56,14 @@ WebFiori prioritizes developer freedom by not enforcing the use of specific clas
 In essence, Routing system in WebFiori acts as a powerful and adaptable tool, allowing developers to construct the routes tailored to their specific needs without rigid structural constraints.
 
 ``` php
+//Assuming application folder name is "App"
+namespace App\Init\Routes;
+
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+
+class PagesRoutes{
+    public static function init() {
 // https://example.com/products/board-games/Chess
 Router::page([
    RouteOption::PATH => 'products/{category}/{sub-category}',
@@ -77,6 +85,8 @@ Router::addRoute([
    RouteOption::REQUEST_METHODS => ['post', 'put'],
    RouteOption::ACTION => 'addUser'
 ]);
+    }
+}
 ```
 
 For more information about routing, [check here](learn/routing).
@@ -91,6 +101,8 @@ WebFiori implements a robust session management system independent of PHP's nati
 
 
 ``` php
+use WebFiori\Framework\Session\SessionsManager;
+
 // Start new session
 SessionsManager::start('first-session');
 
@@ -114,13 +126,15 @@ WebFiori's themes system empowers developers to create visually cohesive web app
 * **Functional Enhancement**: Themes extend beyond visual appeal, acting as modular components that can introduce additional functionalities to the application. This allows developers to seamlessly integrate new features without extensive custom coding, promoting code reuse and maintainability.
 
 ``` php
-namespace app\pages;
+//Assuming application folder name is "App"
+namespace App\Pages;
 
 use WebFiori\Framework\Ui\WebPage;
 use themes\myTheme\MyThemeCore;
 
 class MyPage extends WebPage {
    public function __construct() {
+       parent::__construct();
        $this->setTheme(MyThemeCore::class);
    }
 }
@@ -137,6 +151,7 @@ WebFiori's template engine prioritizes clarity and ease of use, offering a strea
 
 
 ``` php
+
 <!--This is the template-->
 <div class="container">
 <!--PHP variable as placeholder-->
@@ -145,7 +160,9 @@ WebFiori's template engine prioritizes clarity and ease of use, offering a strea
 ```
 
 ``` php
-$template = HTMLNode::fromFile('path/to/my/template.php', [
+use WebFiori\Ui\HTMLNode;
+
+$template = HTMLNode::fromFile(APP_PATH.'Pages/Components/Hello.php', [
     'name' => 'Ibrahim Ali'
 ]);
 ```
@@ -185,13 +202,17 @@ WebFiori provides developers with the option to implement seamless and user-cent
 
 
 ``` php
+
+use WebFiori\Framework\EmailMessage;
+use WebFiori\Ui\HTMLNode;
+
 $message = new EmailMessage('no-reply');
 $message->setSubject('This is a Test Email');
 $message->addTo('user@example.com','Blog User');
 $paragraph = $message->insert('p');
 $paragraph->text('This is a welcome message.');
 
-$this->insert(HTMLNode::fromFile('email-template.php'))
+$message->insert(HTMLNode::fromFile('email-template.php'));
 
 $message->send();
 ```
