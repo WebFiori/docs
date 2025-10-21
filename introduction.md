@@ -2,49 +2,28 @@
 
 <meta name="description" content="An introduction to WebFiori Framework and its core features.">
 
-## Requirements
-
-* **PHP**: 8.1 or higher
-* **Composer**: For dependency management
-* **Web Server**: Apache, Nginx, or built-in PHP server
-
-## Quick Start
-
-```php
-// 1. Install via Composer
-composer create-project webfiori/app my-app
-
-// 2. Create a simple page
-namespace App\Pages;
-use WebFiori\Framework\Ui\WebPage;
-
-class HomePage extends WebPage {
-    public function __construct() {
-        parent::__construct();
-        $this->insert('h1')->text('Hello WebFiori!');
-    }
-}
-
-// 3. Add a route
-Router::page([
-    RouteOption::PATH => '/',
-    RouteOption::TO => HomePage::class
-]);
-```
-
 In this page:
 * [What is WebFiori Framework](#what-is-webfiori-framework)
+  * [Core Philosophy](#core-philosophy)
+  * [Real-World Use Cases](#real-world-use-cases)
+  * [Performance Benefits](#performance-benefits)
+  * [Key Capabilities](#key-capabilities)
+  * [Why Choose WebFiori?](#why-choose-webfiori)
 * [Features](#features)
   * [Simple Routing Engine](#simple-routing-engine)
   * [Sessions Management](#sessions-management)
   * [Theming](#theming)
-  * [Basic Templating Engine](#basic-templating-engine)
+  * [Basic Template Engine](#basic-template-engine)
   * [Middleware](#middleware)
   * [Background Tasks](#background-tasks)
   * [Sending HTML Emails](#sending-html-emails)
   * [Command Line Interface](#command-line-interface)
   * [Database Schema and Query Building](#database-schema-and-query-building)
   * [Web Services](#web-services)
+* [Requirements](#requirements)
+* [Quick Start](#quick-start)
+* [Framework Architecture](#framework-architecture)
+* [Getting Help](#getting-help)
 
 ## What is WebFiori Framework
 
@@ -54,15 +33,38 @@ WebFiori is a modern, developer-friendly PHP framework designed for building rob
 
 * **Developer Freedom**: No rigid MVC constraints - choose your preferred architecture
 * **Minimal Learning Curve**: Familiar syntax and intuitive APIs
-* **Performance First**: Lightweight core 
-* **Security Built-in**: Input validation, and secure session handling
+* **Performance First**: Lightweight core with optimized autoloading and efficient routing
+* **Security Built-in**: CSRF protection, input validation, and secure session handling
+
+### Real-World Use Cases
+
+* **E-commerce Platforms**: Product catalogs, shopping carts, payment processing
+* **Content Management**: Blogs, news sites, documentation portals
+* **Business Applications**: CRM systems, inventory management, reporting dashboards
+* **API Services**: Mobile app backends, microservices, data integration
+* **Educational Platforms**: Learning management systems, online courses
+
+### Performance Benefits
+
+* **Optimized Autoloading**: Fast class loading with PSR-4 compliance
+* **Efficient Routing**: Direct method invocation without heavy middleware chains
+* **Caching Support**: Built-in caching mechanisms for improved response times
 
 ### Key Capabilities
 
-* **Database Operations**: Store and manage data using MySQL or MSSQL
-* **API Development**: Build RESTful web services and microservices  
-* **Dynamic Web Pages**: Create user interfaces within PHP using OOP abstraction
-* **Background Processing**: Handle time-intensive tasks asynchronously 
+* **Database Operations**: Store and manage user data, products, content, etc... with MySQL/MSSQL support
+* **API Development**: Build RESTful web services and microservices with built-in JSON handling
+* **Dynamic Web Pages**: Create interactive user interfaces using object-oriented HTML generation
+* **Background Processing**: Handle email sending, data processing, and scheduled tasks asynchronously
+* **Email Communication**: Send HTML emails with attachments and template support
+
+### Why Choose WebFiori?
+
+**Compared to other frameworks**, WebFiori offers:
+* **Flexibility**: No forced architectural patterns - use what fits your project
+* **Simplicity**: Less boilerplate code, more focus on business logic
+* **Completeness**: Built-in solutions for common web development needs
+* **Modern PHP**: Takes advantage of PHP 8.1+ features and performance improvements 
 
 
 WebFiori empowers developers to build everything from simple websites to complex applications without unnecessary complexity.
@@ -83,17 +85,33 @@ WebFiori empowers developers to build everything from simple websites to complex
 
 ### Simple Routing Engine
 
-Imagine you're building a website, and visitors come in wanting to see different things (like the "About Us" page or a product listing). Routing is like a map that tells the website where to find the right information for each visitor based on their request.
+WebFiori's routing system offers unprecedented flexibility compared to traditional MVC frameworks. Instead of forcing routes to point only to controller methods, WebFiori routes can target multiple resource types:
 
-WebFiori's routing system offers a versatile approach compared to traditional MVC frameworks. Unlike traditional MVC routes that point to controller methods, WebFiori routes can target various resources:
-* **Static Files**: This includes standard resources like images, HTML pages, text files, etc.
-* **PHP Classes**: Routes can directly invoke specific classes for handling requests.
-* **PHP Functions**: Closures can be defined and referenced as routes for quick and efficient handling of specific functionalities.
-* **Class Methods (MVC)**: The traditional MVC, allowing routes to call specific methods within controllers.
+**Route Target Options:**
+* **Static Files**: Images, HTML pages, CSS, JavaScript, documents
+* **PHP Classes**: Direct class instantiation for object-oriented handling
+* **Closures**: Inline functions for quick prototyping and simple logic
+* **MVC Controllers**: Traditional controller methods when preferred
 
-WebFiori prioritizes developer freedom by not enforcing the use of specific classes or methods like some MVC frameworks. Developers have the flexibility to choose the most suitable approach for each route based on the desired functionality and code organization.
+```php
+// API endpoint
+Router::addRoute([
+    RouteOption::PATH => '/api/users/{id}',
+    RouteOption::TO => UserController::class,
+    RouteOption::ACTION => 'getUser',
+    RouteOption::REQUEST_METHODS => ['GET']
+]);
 
-In essence, Routing system in WebFiori acts as a powerful and adaptable tool, allowing developers to construct the routes tailored to their specific needs without rigid structural constraints.
+// File download
+Router::addRoute([
+    RouteOption::PATH => '/download/{file}',
+    RouteOption::TO => function($file) {
+        return Response::sendFile("uploads/$file");
+    }
+]);
+```
+
+This flexibility allows developers to choose the most appropriate approach for each route without architectural constraints.
 
 ``` php
 //Assuming application folder name is "App"
@@ -133,11 +151,27 @@ For more information about routing, [check here](learn/routing).
 
 ### Sessions Management
 
-WebFiori implements a robust session management system independent of PHP's native session handling. This approach offers several advantages:
+WebFiori implements a robust session management system that surpasses PHP's native session handling with enterprise-grade features:
 
-* **Improved flexibility**: Developers are not bound by the limitations inherent to PHP's session management.
-* **Enhanced scalability**: WebFiori's session handling can accommodate scenarios requiring multiple concurrent sessions per user, exceeding the capabilities of the default sessions management system offered by PHP.
-* **Streamlined development**: The separation from PHP's session management simplifies development by providing a consistent and well-defined interface for managing user state across web pages within the application.
+**Advanced Capabilities:**
+* **Multiple Concurrent Sessions**: Support multiple active sessions per user
+* **Custom Storage Engines**: File-based, database, or custom storage implementations
+* **Enhanced Security**: Automatic session regeneration and hijacking protection
+* **Flexible Duration Control**: Per-session timeout configuration
+
+**Production Benefits:**
+* **Scalability**: Handle high-traffic applications with distributed session storage
+* **Security**: Built-in protection against session fixation and hijacking
+* **Debugging**: Comprehensive session monitoring and logging capabilities
+
+```php
+// E-commerce example: separate sessions for cart and user preferences
+SessionsManager::start('shopping-cart', ['duration' => 60]); // 1 hour
+SessionsManager::set('items', $cartItems);
+
+SessionsManager::start('user-preferences', ['duration' => 1440]); // 24 hours
+SessionsManager::set('theme', 'dark-mode');
+```
 
 
 ``` php
@@ -285,6 +319,36 @@ Web services play a crucial role in establishing communication channels between 
 WebFiori leverages the library [WebFiori HTTP](https://github.com/webfiori/http) to empower developers with robust web service functionalities. Implementing these services is straightforward, requiring developers to extend the pre-defined `WebFiori\Http\AbstractWebService` class. This approach promotes efficient development and fosters the creation of well-structured web services.
 
 For more information on web services, [check here](/learn/web-services).
+
+## Requirements
+
+* **PHP**: 8.1 or higher
+* **Composer**: For dependency management
+* **Web Server**: Apache, Nginx, or built-in PHP server
+
+## Quick Start
+
+```php
+// 1. Install via Composer
+composer create-project webfiori/app my-app
+
+// 2. Create a simple page
+namespace App\Pages;
+use WebFiori\Framework\Ui\WebPage;
+
+class HomePage extends WebPage {
+    public function __construct() {
+        parent::__construct();
+        $this->insert('h1')->text('Hello WebFiori!');
+    }
+}
+
+// 3. Add a route
+Router::page([
+    RouteOption::PATH => '/',
+    RouteOption::TO => HomePage::class
+]);
+``
 
 ## Framework Architecture
 
