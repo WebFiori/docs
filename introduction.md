@@ -116,7 +116,7 @@ WebFiori's themes system empowers developers to create visually cohesive web app
 ``` php
 namespace app\pages;
 
-use webfiori\framework\Page;
+use WebFiori\Framework\Ui\WebPage;
 use themes\myTheme\MyThemeCore;
 
 class MyPage extends WebPage {
@@ -158,7 +158,7 @@ WebFiori's middleware system gives developers the option to intercept and manipu
 
 * **Enhanced Security**: Implement robust request validation and tailor application responses.
 * **Granular Control**: Create custom filters to manage application access and seamlessly integrate session management mechanisms.
-* **Simplified Development**: Leverage the `webfiori/framework/middleware/AbstractMiddleware` class as a base for efficient custom middleware creation.
+* **Simplified Development**: Leverage the `WebFiori\Framework\Middleware\AbstractMiddleware` class as a base for efficient custom middleware creation.
 
 By placing custom middleware in the folder `[APP_DIR]/middleware` of the application, WebFiori automatically registers and integrates all middleware in that folder.
 
@@ -172,7 +172,7 @@ WebFiori's scheduler system allows developers to automate background tasks, enha
 * **Enhanced Reliability**: Guarantee the timely execution of crucial processes regardless of user activity, ensuring data integrity and task completion.
 * **Improved User Experience**: Offload time-consuming computations and resource-intensive operations to the background, maintaining smooth application performance and responsiveness.
 
-By leveraging the `webfiori/framework/scheduler/AbstractTask` class as a foundation, developers can effortlessly create custom background tasks. Simply place your implemented task class within the designated `[APP_DIR]/tasks` folder, allowing WebFiori to automatically discover and register it for seamless integration.
+By leveraging the `WebFiori\Framework\Scheduler\AbstractTask` class as a foundation, developers can effortlessly create custom background tasks. Simply place your implemented task class within the designated `[APP_DIR]/tasks` folder, allowing WebFiori to automatically discover and register it for seamless integration.
 
 For more information about creating background jobs, [check here](learn/background-tasks).
 
@@ -180,7 +180,7 @@ For more information about creating background jobs, [check here](learn/backgrou
 WebFiori provides developers with the option to implement seamless and user-centric email communication within their web applications. This functionality simplifies the process of sending professional-looking HTML notifications, ensuring users remain informed and engaged. The main key advantages are:
 
 * **Effortless Configuration**: A single configuration step establishes your SMTP connection details, allowing you to readily send emails throughout your application.
-* **Intuitive Class Integration**: The class`webfiori/framework/EmailMessage` facilitates the creation and transmission of HTML email content.
+* **Intuitive Class Integration**: The class `WebFiori\Framework\EmailMessage` facilitates the creation and transmission of HTML email content.
 * **Focus on User Experience**: WebFiori prioritizes developer experience by promoting the use of familiar HTML syntax for crafting compelling email content. This reduces the learning curve and empowers developers to focus on creating valuable user interactions without getting overwhelmed by intricate configuration details.
 
 
@@ -221,7 +221,7 @@ For more information about this feature, [check here](learn/database).
 
 Web services play a crucial role in establishing communication channels between various application components, including front-end and back-end logic. While commonly utilized to connect web pages with the back-end, they can be integrated with diverse other front-end systems which are hosted in the web.
 
-WebFiori leverages the library [WebFiori HTTP](https://github.com/webfiori/http) to empower developers with robust web service functionalities. Implementing these services is straightforward, requiring developers to extend the pre-defined `webfiori\http\AbstractWebService` class. This approach promotes efficient development and fosters the creation of well-structured web services.
+WebFiori leverages the library [WebFiori HTTP](https://github.com/webfiori/http) to empower developers with robust web service functionalities. Implementing these services is straightforward, requiring developers to extend the pre-defined `WebFiori\Http\AbstractWebService` class. This approach promotes efficient development and fosters the creation of well-structured web services.
 
 For more information on web services, [check here](/learn/web-services).
 
