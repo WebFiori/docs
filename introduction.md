@@ -2,6 +2,36 @@
 
 <meta name="description" content="An introduction to WebFiori Framework and its core features.">
 
+## Requirements
+
+* **PHP**: 8.1 or higher
+* **Composer**: For dependency management
+* **Web Server**: Apache, Nginx, or built-in PHP server
+
+## Quick Start
+
+```php
+// 1. Install via Composer
+composer create-project webfiori/app my-app
+
+// 2. Create a simple page
+namespace App\Pages;
+use WebFiori\Framework\Ui\WebPage;
+
+class HomePage extends WebPage {
+    public function __construct() {
+        parent::__construct();
+        $this->insert('h1')->text('Hello WebFiori!');
+    }
+}
+
+// 3. Add a route
+Router::page([
+    RouteOption::PATH => '/',
+    RouteOption::TO => HomePage::class
+]);
+```
+
 In this page:
 * [What is WebFiori Framework](#what-is-webfiori-framework)
 * [Features](#features)
@@ -17,15 +47,25 @@ In this page:
   * [Web Services](#web-services)
 
 ## What is WebFiori Framework
-WebFiori is a developer-friendly framework built using PHP, a popular programming language, mostly for building websites and web applications. It provides the essential tools you need to get started building web applications, like:
 
-* **Connecting to databases**: Store information like user data, products, or articles.
-* **Building web services** (APIs): These are like mini-applications that handle very specific tasks behind the scenes.
-* **Creating web pages**: These are the visual elements users see and interact with.
+WebFiori is a modern, developer-friendly PHP framework designed for building robust web applications and APIs. Built with PHP 8.1+ compatibility, it provides essential tools while maintaining simplicity and flexibility.
 
-Think of WebFiori as a toolbox that has the essential tools you need to get started. Additionally, it can be used for more complex tasks, like sending emails or running tasks in the background.
+### Core Philosophy
 
-While WebFiori focuses on these core functionalities, it empowers you to build feature-rich web applications without getting lost in complex details.
+* **Developer Freedom**: No rigid MVC constraints - choose your preferred architecture
+* **Minimal Learning Curve**: Familiar syntax and intuitive APIs
+* **Performance First**: Lightweight core 
+* **Security Built-in**: Input validation, and secure session handling
+
+### Key Capabilities
+
+* **Database Operations**: Store and manage data using MySQL or MSSQL
+* **API Development**: Build RESTful web services and microservices  
+* **Dynamic Web Pages**: Create user interfaces within PHP using OOP abstraction
+* **Background Processing**: Handle time-intensive tasks asynchronously 
+
+
+WebFiori empowers developers to build everything from simple websites to complex applications without unnecessary complexity.
 
 
 ## Features
@@ -64,27 +104,27 @@ use WebFiori\Framework\Router\RouteOption;
 
 class PagesRoutes{
     public static function init() {
-// https://example.com/products/board-games/Chess
-Router::page([
-   RouteOption::PATH => 'products/{category}/{sub-category}',
-   RouteOption::TO => 'ViewProductsPage.php'
-]);
-// https://example.com/
-Router::page([
-   RouteOption::PATH => '/',
-   RouteOption::TO => 'Home.html'
-]);
-Router::addRoute([
-   RouteOption::PATH => '/class-route',
-   RouteOption::TO => MyPHPClass::class
-]);
-//Optional to use MVC
-Router::addRoute([
-   RouteOption::PATH => '/api/add-user',
-   RouteOption::TO => UsersController::class,
-   RouteOption::REQUEST_METHODS => ['post', 'put'],
-   RouteOption::ACTION => 'addUser'
-]);
+        // https://example.com/products/board-games/Chess
+        Router::page([
+            RouteOption::PATH => 'products/{category}/{sub-category}',
+            RouteOption::TO => 'ViewProductsPage.php'
+        ]);
+        // https://example.com/
+        Router::page([
+            RouteOption::PATH => '/',
+            RouteOption::TO => 'Home.html'
+        ]);
+        Router::addRoute([
+            RouteOption::PATH => '/class-route',
+            RouteOption::TO => MyPHPClass::class
+        ]);
+        //Optional to use MVC
+        Router::addRoute([
+            RouteOption::PATH => '/api/add-user',
+            RouteOption::TO => UsersController::class,
+            RouteOption::REQUEST_METHODS => ['post', 'put'],
+            RouteOption::ACTION => 'addUser'
+        ]);
     }
 }
 ```
@@ -245,5 +285,18 @@ Web services play a crucial role in establishing communication channels between 
 WebFiori leverages the library [WebFiori HTTP](https://github.com/webfiori/http) to empower developers with robust web service functionalities. Implementing these services is straightforward, requiring developers to extend the pre-defined `WebFiori\Http\AbstractWebService` class. This approach promotes efficient development and fosters the creation of well-structured web services.
 
 For more information on web services, [check here](/learn/web-services).
+
+## Framework Architecture
+
+WebFiori follows a modular architecture that promotes:
+
+* **Component Independence**: Use only what you need
+* **Extensibility**: Easy integration with third-party libraries
+* **Testing Support**: Support for unit and integration testing 
+
+## Getting Help
+
+* **Documentation**: Comprehensive guides and API reference
+* **GitHub**: [Source code and issue tracking](https://github.com/WebFiori/framework)
 
 **Next: [Installation](learn/installation)**
