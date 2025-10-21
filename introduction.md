@@ -103,10 +103,11 @@ Router::addRoute([
 ]);
 
 // File download
-Router::addRoute([
+Router::closure([
     RouteOption::PATH => '/download/{file}',
     RouteOption::TO => function($file) {
-        return Response::sendFile("uploads/$file");
+        $file = new File("uploads/$file");
+        $file->view();
     }
 ]);
 ```
@@ -251,7 +252,7 @@ WebFiori's middleware system gives developers the option to intercept and manipu
 * **Granular Control**: Create custom filters to manage application access and seamlessly integrate session management mechanisms.
 * **Simplified Development**: Leverage the `WebFiori\Framework\Middleware\AbstractMiddleware` class as a base for efficient custom middleware creation.
 
-By placing custom middleware in the folder `[APP_DIR]/middleware` of the application, WebFiori automatically registers and integrates all middleware in that folder.
+By placing custom middleware in the folder `[APP_DIR]/Middleware` of the application, WebFiori automatically registers and integrates all middleware in that folder.
 
 For more information on middleware, [check here](learn/middleware).
 
