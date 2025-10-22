@@ -8,15 +8,16 @@ In this page:
 * [Life Cycle of a Request](#life-cycle-of-a-request)
 * [The Class Router](#the-class-router)
 * [Types of Routes](#types-of-routes)
-  * [Page Route](#view-route)
+  * [Page Route](#page-route)
   * [API Route](#api-route)
   * [Closure Route](#closure-route)
   * [Custom Route](#custom-route)
   * [Class Route](#class-route)
   * [Redirect Route](#redirect-route)
-* [Generic Routes](#generic-routes)
-  * [URI Variable](#uri-variable)
-  * [Using URI Variable](#using-uri-variable)
+* [Route Parameters](#route-parameters)
+  * [URI Parameters](#uri-parameters)
+  * [Using URI Parameters](#using-uri-parameters)
+  * [Optional URI Parameters](#optional-uri-parameters)
 * [Grouping Routes](#grouping-routes)
 * [Customizing Routes](#customizing-routes)
   * [Sitemap](#sitemap)
@@ -36,7 +37,7 @@ Routing, a web development technique, maps user requests (URLs) to the appropria
 
 ## The Definition of Routing
 
-Routing, a core function within WebFiori, directs user requests to their intended destinations. The `webfiori\framework\router\Router` class facilitates this process, enabling developers to define custom URL structures that map to specific resources. 
+Routing, a core function within WebFiori, directs user requests to their intended destinations. The `WebFiori\Framework\Router\Router` class facilitates this process, enabling developers to define custom URL structures that map to specific resources. 
 
 By mastering the topics in this documentation, developers can effectively harness WebFiori's routing system for enhanced navigation and user experience.
 
@@ -98,15 +99,15 @@ In general, the idea of creating route for each type of routes will be the same.
 
 ### Page Route
 
-This type is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `[APP_DIR]/pages` of the application will contain all pages. The method [Router::page()](https://webfiori.com/docs/webfiori/framework/router/Router#page) is used to create such route.
+This type is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `[APP_DIR]/Pages` of the application will contain all pages. The method [Router::page()](https://webfiori.com/docs/webfiori/framework/router/Router#page) is used to create such route.
 
-In order to make it easy for developers, they can use the class `[APP_DIR]/ini/routes/PagesRoutes` to create routes to all pages. The developer can modify the body of the method `PagesRoutes::create()` to add new routes as needed.
+In order to make it easy for developers, they can use the class `[APP_DIR]/Init/Routes/PagesRoutes` to create routes to all pages. The developer can modify the body of the method `PagesRoutes::create()` to add new routes as needed.
 
-Assuming that there exist 3 pages inside the folder `[APP_DIR]/pages` as follows:
+Assuming that there exist 3 pages inside the folder `[APP_DIR]/Pages` as follows:
 
-* `[APP_DIR]/pages/HomeView.html`
-* `[APP_DIR]/pages/LoginView.php`
-* `[APP_DIR]/pages/system-views/DashboardView.php`
+* `[APP_DIR]/Pages/HomeView.html`
+* `[APP_DIR]/Pages/LoginView.php`
+* `[APP_DIR]/Pages/system-views/DashboardView.php`
 
 Also, assuming that the base URL of the website is `https://example.com/`. Assuming that the developer would like from the user to see the pages as follows:
 * `https://example.com/` should point to the view `HomeView.html`
@@ -114,12 +115,12 @@ Also, assuming that the base URL of the website is `https://example.com/`. Assum
 * `https://example.com/user-login` should point to the class `LoginView.php`
 * `https://example.com/dashboard` should point to the view `DashboardView.html`
 
-The following sample code shows how to create such a URL structure using the class [`ViewRoutes`](https://webfiori.com/docs/app/ini/routes/ViewRoutes).
+The following sample code shows how to create such a URL structure using the class [`PagesRoutes`](https://webfiori.com/docs/app/ini/routes/PagesRoutes).
 ``` php
-namespace app\ini\routes;
+namespace App\Init\Routes;
 
-use webfiori\framework\router\Router;
-use webfiori\framework\router\RouteOption;
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
 
 class PagesRoutes {
     public static function create(){
@@ -133,7 +134,7 @@ class PagesRoutes {
         ]);
         Router::page([
             RouteOption::PATH => '/user-login',
-            RouteOption::TO => \app\pages\LoginView::class
+            RouteOption::TO => \App\Pages\LoginView::class
         ]);
         Router::page([
             RouteOption::PATH => '/dashboard',
@@ -147,12 +148,12 @@ class PagesRoutes {
   
 ### API Route
 
-An API route is a route that will point to a PHP class that exist in the folder `[APP_DIR]/apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, the developer have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`. More information about web services can be found [here](learn/web-services).
+An API route is a route that will point to a PHP class that exist in the folder `[APP_DIR]/Apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/webfiori/framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, the developer have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`. More information about web services can be found [here](learn/web-services).
 
 Suppose that there exist 3 services classes as follows:
-* `[APP_DIR]/apis/UserServicesManager.php`
-* `[APP_DIR]/apis/ArticleServicesManager.php`
-* `[APP_DIR]/apis/ContentServicesManager.php`
+* `[APP_DIR]/Apis/UserServicesManager.php`
+* `[APP_DIR]/Apis/ArticleServicesManager.php`
+* `[APP_DIR]/Apis/ContentServicesManager.php`
 
 Assuming that the base URL of the website is `https://example.com/`, Assuming that the developer would like to have the URLs of the APIs (or services) to be like that:
 * `https://example.com/web-apis/user/add-user` should point to `UserServicesManager.php`
@@ -167,16 +168,15 @@ One thing to note about creating APIs is that API name (or service name) must be
 
 A generic route is a route that has some of its path parts unknown. They can be used to serve dynamic content passed as path parameter. A path parameter is a value that is enclosed between `{}` while creating the route. For example, the first 3 APIs can have one URL in the form `https://example.com/web-apis/user/{service-name}` or `https://example.com/web-apis/user/{service}`.
 
-The following sample code shows how to create such a URL structure using the class `APIRoutes`. Note that the value of path parameter must be `action`, `service-name` or `service` or the API call will fail.
+The following sample code shows how to create such a URL structure using the class `APIsRoutes`. Note that the value of path parameter must be `action`, `service-name` or `service` or the API call will fail.
 
 ``` php
-namespace app\ini\routes;
+namespace App\Init\Routes;
 
-use webfiori\framework\router\Router;
-use webfiori\framework\router\RouteOption;
-use ContentServices;
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
 
-class APIRoutes {
+class APIsRoutes {
     public static function create(){
         Router::api([
             RouteOption::PATH => '/web-apis/user/{service}',
@@ -188,7 +188,7 @@ class APIRoutes {
         ]);
         Router::api([
             RouteOption::PATH => '/web-apis/article-content/{service}',
-            RouteOption::TO => ContentServices::class
+            RouteOption::TO => \App\Apis\ContentServices::class
         ]);
     }
 }
@@ -200,19 +200,19 @@ A closure route is a route to a user defined code that will be executed when the
 The value of the parameter can be accessed using the method [`Router::getParameterValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getParameterValue). All what needed to be done is to pass parameter name and the method will return its value. The following code sample shows how it's done.
 
 ``` php
-namespace app\ini\routes;
+namespace App\Init\Routes;
 
-use webfiori\framework\router\Router;
-use webfiori\framework\router\RouteOption;
-use webfiori\framework\Response;
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+use WebFiori\Http\Response;
  
 class ClosureRoutes {
     public static function create(){
         Router::closure([
             RouteOption::PATH => '/say-hello-to/{A_Name}',
             RouteOption::TO => function(){
-                $name = Router::getVarValue('A_Name');
-                Response::apped('Hello Mr.'.$name);
+                $name = Router::getParameterValue('A_Name');
+                Response::append('Hello Mr.'.$name);
             }
        ]);
     }
@@ -225,12 +225,12 @@ A custom route is a route that points to a file which exist in a folder that was
 
 Assuming that there exist a folder which has the name `sys-files` and inside this folder,there exist two folders. One has the name `views` which contains web pages and another one has the name `apis` which contains system's web APIs. Assuming that the `views` folder has a view which has the name `HomeView.php` and the folder `apis` has one file which has the name `AuthAPI.php`. The following code shows how to create a route to each file:
 ``` php
-namespace app\ini\routes;
+namespace App\Init\Routes;
 
-use webfiori\framework\router\Router;
-use webfiori\framework\router\RouteOption;
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
 
-class ClosureRoutes {
+class OtherRoutes {
     public static function create(){
         Router::addRoute([
            RouteOption::PATH => '/index.php',
@@ -250,17 +250,16 @@ class ClosureRoutes {
 It is possible to have a route to a PHP class. When such route is created, the router will try to create an instance of the class at which the route is pointing to.
 
 ``` php
-namespace app\ini\routes;
+namespace App\Init\Routes;
 
-use webfiori\framework\router\Router;
-use webfiori\framework\router\RouteOption;
-use my\super\HomePage;
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
 
-class ClosureRoutes {
+class OtherRoutes {
     public static function create(){
         Router::addRoute([
-            RouteOption::PATH => '/rout-to-class',
-            RouteOption::TO => HomePage::class
+            RouteOption::PATH => '/route-to-class',
+            RouteOption::TO => \App\Pages\HomePage::class
         ]);
     }
 }
@@ -269,13 +268,16 @@ class ClosureRoutes {
 Also, it is possible to have the route point to specific method in the class by using the option `action`. This is useful when using MVC in building the application and want from the route to point to specific controller method.
 
 ``` php
-use my\super\FrontController;
+namespace App\Init\Routes;
 
-class ClosureRoutes {
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+
+class OtherRoutes {
     public static function create(){
         Router::addRoute([
-           RouteOption::PATH => '/rout-to-class',
-           RouteOption::TO => FrontController::class,
+           RouteOption::PATH => '/route-to-class',
+           RouteOption::TO => \App\Controllers\FrontController::class,
            RouteOption::ACTION => 'index'
        ]);
     }
@@ -311,7 +313,11 @@ URI parameters can be also used to replace query string parameters to make URIs 
 In order to add a parameter to a route, the developer have to enclose the name of the parameter between two curly braces `{}`. To access the value of the parameter, the method [`Router::getParameterValue()`](https://webfiori.com/docs/webfiori/framework/router/Router#getParameterValue) is used. The following sample code shows how to use URI parameters in creating generic routes.
 
 ``` php
-use webfiori\framework\Response;
+namespace App\Init\Routes;
+
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+use WebFiori\Http\Response;
 
 class ClosureRoutes {
     public static function create(){
@@ -329,7 +335,11 @@ class ClosureRoutes {
 
 It is possible to have URI parameters as optional. In this case, the route will be resolved even if no value is provided in the path. To mark a parameter as optional, a question mark can be added to the end of parameter name as follows: `{var?}`.
 ``` php
-use webfiori\framework\Response;
+namespace App\Init\Routes;
+
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+use WebFiori\Http\Response;
 
 class ClosureRoutes {
     public static function create(){
@@ -359,28 +369,37 @@ One of the features of the router is the ability to group routes which share sam
 
 One thing to notice about the routes is that they share the same `users` path part. It is possible to create each route by itself but there is a better way that can be used to group the routes. The following code shows how to group routes.
 ``` php
-Router::group([
-    RouteOption::PATH => '/users', 
-    RouteOption::CASE_SENSITIVE => false,
-    RouteOption::MIDDLEWARE => [
-        'sample-middleware','sample-middleware-2'
-    ],
-    RouteOption::REQUEST_METHODS => 'get',
-    RouteOptions::SUB_ROUTES => [
-        [
-            RouteOption::PATH => '/', 
-            RouteOption::TO => ListUsersPage::class,
-        ],
-        [
-            RouteOption::PATH => 'view-user/{user-id}', 
-            RouteOption::TO => ViewUserPage::class,
-        ]
-        [
-            RouteOption::PATH => 'add-user', 
-            RouteOption::TO => AddUserPage::class,
-        ]
-    ]
-]);
+namespace App\Init\Routes;
+
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+
+class PagesRoutes {
+    public static function create(){
+        Router::group([
+            RouteOption::PATH => '/users', 
+            RouteOption::CASE_SENSITIVE => false,
+            RouteOption::MIDDLEWARE => [
+                'sample-middleware','sample-middleware-2'
+            ],
+            RouteOption::REQUEST_METHODS => 'get',
+            RouteOption::SUB_ROUTES => [
+                [
+                    RouteOption::PATH => '/', 
+                    RouteOption::TO => \App\Pages\ListUsersPage::class,
+                ],
+                [
+                    RouteOption::PATH => 'view-user/{user-id}', 
+                    RouteOption::TO => \App\Pages\ViewUserPage::class,
+                ],
+                [
+                    RouteOption::PATH => 'add-user', 
+                    RouteOption::TO => \App\Pages\AddUserPage::class,
+                ]
+            ]
+        ]);
+    }
+}
 ```
 By grouping routes, the developer can achieve the following:
 * Compact code

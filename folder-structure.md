@@ -14,47 +14,80 @@ This document outlines a comprehensive approach to organizing your WebFiori appl
 
 ## Directory Hierarchy
 
-* **Public Directory (`public`):**
-    * This directory serves as the foundation for all incoming requests.
-    * It accommodates publicly accessible resources like JavaScript, CSS, and images.
-    * **Subfolder:**
-        * `assets`: Houses all static assets utilized by the application, including theme resources.
+```
+webfiori-project/
+├── public/                   # Web-accessible directory
+│   ├── index.php             # Application entry point
+│   └── assets/               # Static assets (CSS, JS, images)
+├── App/                      # Application source code (customizable name)
+│   ├── Apis/                 # Web services controllers and API managers
+│   ├── Commands/             # Custom CLI commands
+│   ├── Config/               # Application configuration files
+│   ├── Database/             # Database access and interaction classes
+│   ├── Entity/               # Core system entity classes
+│   ├── Init/                 # Initialization classes
+│   │   └── Routes/           # Route definition classes
+│   ├── Langs/                # Translation files for i18n
+│   ├── Middleware/           # Request filtering middleware
+│   ├── Pages/                # Page classes and HTML templates
+│   ├── Storage/              # Application data (not web-accessible)
+│   │   ├── Uploads/          # User uploads and generated content
+│   │   ├── Sessions/         # Session data files
+│   │   ├── Logs/             # Application log files
+│   │   └── Cache/            # Cached data and temporary files
+│   └── Tasks/                # Background jobs and scheduled tasks
+├── tests/                    # Unit and integration tests
+└── vendor/                   # Framework core and Composer dependencies
+```
 
-* **Application Directory (`app`, customizable)**
-    * By default, this directory is named `app`, but you have the flexibility to personalize it using the `APP_DIR` constant.
-    * It serves as the central hub for your application's code and configuration files.
+* **Public Directory (`public`):**
+    * Entry point for all web requests and publicly accessible resources.
+    * Contains JavaScript, CSS, images, and other static assets.
+    * **Subfolder:**
+        * `Assets`: Static assets including theme resources and media files.
+
+* **Application Directory (`App`, customizable)**
+    * Main application source code directory (name can be customized via `APP_DIR` constant).
+    * Contains all business logic, configuration, and application-specific code.
 
 **Subdirectories within the Application Directory**
 
-* **`apis`:** This directory houses web services controllers and service managers (also known as Web APIs).
-* **`commands`:** This directory accommodates custom-made command-line interface (CLI) commands.
-* **`config`:** This directory is responsible for storing application configuration files.
-* **`database`:** This directory encompasses classes related to database access and interaction.
-* **`entity`:** This directory houses classes representing the core entities of your system.
-* **`ini`:** This directory accommodates initialization classes for various aspects of the application, including privileges, background jobs, CLI commands, autoloading directories, and middleware.
-    * **`routes`:** This subdirectory houses classes responsible for defining different types of routes within your application.
-* **`langs`:** This directory stores translation files for internationalization (i18n) support. You can create custom language classes here or extend existing ones.
-* **`middleware`:** This directory houses classes implementing middleware functionality. Middleware provides a layer to filter requests before routing occurs.
-* **`pages`:** This directory houses classes representing application pages and their components. This directory may also contain HTML template files (views).
-* **`tasks`:** This directory houses background jobs, which are code snippets scheduled to execute at specific times.
+* **`Apis`:** REST API controllers and web service endpoints.
+* **`Commands`:** Custom CLI commands for application management.
+* **`Config`:** Application configuration and settings files.
+* **`Database`:** Database models, queries, and connection classes.
+* **`Entity`:** Domain entities and business objects.
+* **`Init`:** Application initialization and bootstrap classes.
+    * **`Routes`:** URL routing definitions and route handlers.
+* **`Langs`:** Language files for internationalization and localization.
+* **`Middleware`:** HTTP middleware for request/response processing.
+* **`Pages`:** Page controllers, views, and HTML templates.
+* **`Tasks`:** Background jobs and scheduled task definitions.
+* **`Storage`:** Private application data (not web-accessible).
+    * **`Uploads`:** User-uploaded files and generated content.
+    * **`Sessions`:** Session storage files.
+    * **`Logs`:** Application logs and error tracking.
+    * **`Cache`:** Temporary cached data for performance.
+
+**Testing (`tests`)**
+
+* Unit tests, integration tests, and test utilities for code quality assurance.
 
 **Framework Core and Libraries (`vendor`)**
 
 * This directory houses the core framework files and any third-party libraries installed using Composer.
 
-**Theming (`themes`):**
+**Security Note:**
 
-* This directory houses pre-built themes bundled with the framework, each in its own subfolder.
-* Theme-related CSS and JavaScript files are located in `public/assets`.
-* You can also create custom themes, storing their resources outside `public/assets` folder and leveraging a Content Delivery Network (CDN) to include them.
+* Only the `public` directory should be web-accessible (App Root). All other directories (`App`, `tests`, `vendor`) should be protected from direct web access, ensuring application security and preventing unauthorized access to sensitive files.
 
-## Customizing the Application Folder Name
+## Setting Custom Application Folder
 
-* The framework allows you to rename the application folder (`app`) to adhere to PSR-4 standards.
-* Define the desired name for the application folder at the top of the `public/index.php` file using the `APP_DIR` constant.
-* Changing this value will cause the framework to recreate the default folder structure with your chosen name. For example, changing `APP_DIR` to `coolApp` will re-create configuration files at `coolApp/config`.
+* Customize the application folder name (default: `App`) to match your project's naming conventions or PSR-4 requirements.
+* Configure the folder name by modifying the `APP_DIR` constant at the top of `public/index.php`.
+* When changed, the framework automatically recreates the folder structure with your chosen name. For example, setting `APP_DIR` to `MyProject` creates configuration files at `MyProject/Config`.
 
-By adhering to this structure, you can establish a well-organized and maintainable application, fostering efficient collaboration and project scalability.
+This organized structure promotes maintainable code, efficient collaboration, and scalable application development.
 
 **Previous: [Installation](learn/installation)**
 
