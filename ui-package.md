@@ -5,9 +5,9 @@
 In this page:
 
 * [Introduction](#introduction)
-* [WebFiori's Object-Oriented Approach to UI Construction](#webFioris-bject-oriented-approach-to-ui-construction)
-  * [The Class `HTMLNode`](#the-class-htmlnode`)
-  * [The Class `HTMLDoc`](#the-class-htmldoc`)
+* [WebFiori's Object-Oriented Approach to UI Construction](#webfioris-object-oriented-approach-to-ui-construction)
+  * [The Class `HTMLNode`](#the-class-htmlnode)
+  * [The Class `HTMLDoc`](#the-class-htmldoc)
 * [Using The Library](#using-the-library)
   * [Basic Usage](#basic-usage)
   * [Building More Complex DOM](#building-more-complex-dom)
@@ -31,15 +31,15 @@ All of this and more was made possible through the user interface library of Web
 
 ## WebFiori's Object-Oriented Approach to UI Construction
 
-WebFiori embraces an object-oriented paradigm for crafting user interfaces. Its UI library provides a spectrum of classes, each meticulously designed to map to a specific HTML element. These classes derive functionality from the fundamental [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) class, empowering the creation of any HTML or XML tag structure. This extensible architecture grants developers the flexibility to extend the class [`HTMLNode`] and construct custom elements, fostering the development of highly customized and dynamic user interfaces that perfectly align with application requirements.
+WebFiori embraces an object-oriented paradigm for crafting user interfaces. Its UI library provides a spectrum of classes, each meticulously designed to map to a specific HTML element. These classes derive functionality from the fundamental [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) class, empowering the creation of any HTML or XML tag structure. This extensible architecture grants developers the flexibility to extend the class `HTMLNode` and construct custom elements, fostering the development of highly customized and dynamic user interfaces that perfectly align with application requirements.
 
-All the classes which are related to user interface creation can be found in the namespace [`webfiori\ui`](https://webfiori.com/docs/webfiori/ui).
+All the classes which are related to user interface creation can be found in the namespace [`WebFiori\Ui`](https://webfiori.com/docs/webfiori/ui).
 
 ### The Class `HTMLNode`
 
 The library consist of many classes which represents different types of HTML elements. All classes are sub-classes of the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode). This class basically can be used to represent any HTML or XML tag. The developer can extend this class and create his own custom elements.
 
-### The class `HTMLDoc`
+### The Class `HTMLDoc`
 
 This class represents a virtual HTML document. It can be used to build the DOM of the web page and modify it directly inside PHP. 
 
@@ -51,6 +51,8 @@ This class represents a virtual HTML document. It can be used to build the DOM o
 The very basic use case is to have HTML document with a text in its body. The developer can simply create an instance of the class [`HTMLDoc`](https://webfiori.com/docs/webfiori/ui/HTMLDoc) and add a text to its body:
 
 ``` php
+use WebFiori\Ui\HTMLDoc;
+
 $doc = new HTMLDoc();
 $doc->getBody()->text('Hello World!');
 ```
@@ -71,9 +73,10 @@ The structure of HTML document that be rendered will be similar to the following
 </html>
 ```
 ### Building More Complex DOM
-To add more elements to the body of the document, the class [`HMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) can be used. It simply can be used to create any type of HTML element. The developer can extend this class to create his own custom UI components. The library has already a set of pre-made components which are used in the next code sample. A list of the classes which represents the components can be found [here](https://webfiori.com/docs/webfiori/ui). The following code shows how to create a basic login form.
+To add more elements to the body of the document, the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) can be used. It simply can be used to create any type of HTML element. The developer can extend this class to create his own custom UI components. The library has already a set of pre-made components which are used in the next code sample. A list of the classes which represents the components can be found [here](https://webfiori.com/docs/webfiori/ui). The following code shows how to create a basic login form.
 
 ``` php
+use WebFiori\Ui\HTMLDoc;
 
 //Create new instance of "HTMLDoc".
 $doc = new HTMLDoc();
@@ -84,7 +87,7 @@ $body->text('Login to System')->hr();
 $form = $body->form(['method' => 'post', 'action' => 'https://example.com/login']);
 $form->label('Username:')->br();
 $form->input('text', ['placeholder'=>'You can use your email address.', 'style' => 'width:250px'])->br();
-$form->label('Password:')->br()
+$form->label('Password:')->br();
 $form->input('password', ['placeholder' => 'Type in your password here.', 'style' => 'width:250px'])->br();
 $form->input('submit', ['value' => 'Login']);
 ```
@@ -104,20 +107,20 @@ The given PHP would be rendered to the following HTML code.
         Login to System
         <hr>
         <form method = "post" action = "https://example.com/login">
+            <label>
+                Username:
+            </label>
+            <br>
+            <input type = "text" placeholder = "You can use your email address." style = "width:250px;">
+            <br>
+            <label>
+                Password:
+            </label>
+            <br>
+            <input type = "password" placeholder = "Type in your password here." style = "width:250px;">
+            <br>
+            <input type = "submit" value = "Login">
         </form>
-        <label>
-            Username:
-        </label>
-        <br>
-        <input type = "text" placeholder = "You can use your email address." style = "width:250px;">
-        <br>
-        <label>
-            Password:
-        </label>
-        <br>
-        <input type = "password" placeholder = "Type in your password here." style = "width:250px;">
-        <br>
-        <input type = "submit" value = "Login">
     </body>
 </html>
 ```
@@ -127,6 +130,9 @@ The given PHP would be rendered to the following HTML code.
 It is possible to add children to [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) instance using the method [`HTMLNode::addChild()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#addChild). Same method is also availble in the class [`HTMLDoc::addChild()`](https://webfiori.com/docs/webfiori/ui/HTMLDoc#addChild). The method accepts a string that represents the name of the node that will be added or an instance of the class `HTMLNode`
 
 ``` php
+use WebFiori\Ui\HTMLDoc;
+use WebFiori\Ui\HTMLNode;
+
 $doc = new HTMLDoc();
 
 $superChild = new HTMLNode('section', ['id' => 'main-sec']);
@@ -168,6 +174,8 @@ The output of the code would be something similar to the following:
 Each DOM node can have a set of attributes such as `style` or `class`. The class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) has a generic method which can be used to set any attribute value which is the method [`HTMLNode::setAttribute()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttribute). The method accepts two parameters, the first one is the value of the attribute and the second one is its value.
 
 ``` php 
+use WebFiori\Ui\HTMLNode;
+
 $node = new HTMLNode();
 $node->setAttribute('class','red-button');
 ```
@@ -177,6 +185,8 @@ $node->setAttribute('class','red-button');
 It is possible to have attributes without values (such as the attribute `disabled` or `itemscope`).
 
 ``` php
+use WebFiori\Ui\HTMLNode;
+
 $node = new HTMLNode();
 $node->setAttribute('class','red-button')
      ->setAttribute('itemscope')
@@ -195,6 +205,8 @@ This would render to the following HTML.
 If developer would like to set the values for more than one attribute at one shot, he can use the method [`HTMLNode::setAttributes()`](https://webfiori.com/docs/webfiori/ui/HTMLNode#setAttributes). The method accespts an array that contains the values of the attributes.
 
 ``` php
+use WebFiori\Ui\HTMLNode;
+
 $node = new HTMLNode();
 $node->setAttributes([
     'class' => 'red-button',
@@ -245,6 +257,8 @@ Loading HTML files can be achived using the static method [`HTMLNode::fromFile()
 The following PHP code can be used to load the file.
 
 ``` php
+use WebFiori\Ui\HTMLNode;
+
 $component = HTMLNode::fromFile('path/to/template/my-html-file.html');
 
 //Now the developer can modify the component as needed.
@@ -303,6 +317,8 @@ In order to fill slots with values, the developer have to use the second argumen
 The following code shows how to load the document into  [`HTMLDoc`](https://webfiori.com/docs/webfiori/ui/HTMLDoc) instance and fill the solts with values. 
 
 ``` php
+use WebFiori\Ui\HTMLNode;
+
 $doc = HTMLNode::fromFile('template.html', [
     'page-title' => 'Welcome to My Website',
     'site-name' => 'Awesome Website',

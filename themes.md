@@ -20,34 +20,35 @@ Themes in WebFiori Framework are used to create different custom user interfaces
 
 ## Using Themes
 
-Each page in the application must be represented by the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPag) for themes to work. For more information about web pages, [check here](learn/web-pages). After that, all what needed about the theme is the class that represent it. A theme can be applied to a page using the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme). For example, if theme class is `wf\themes\WebFioriTheme`, then the theme can be applied as follows:
+Each page in the application must be represented by the class [`WebPage`](https://webfiori.com/docs/WebFiori/Framework/Ui/WebPage) for themes to work. For more information about web pages, [check here](learn/web-pages). After that, all what needed about the theme is the class that represent it. A theme can be applied to a page using the method [`WebPage::setTheme()`](https://webfiori.com/docs/WebFiori/Framework/Ui/WebPage#setTheme). For example, if theme class is `themes\webfiori\WebFioriTheme`, then the theme can be applied as follows:
 
 ``` php
-namespace app\pages;
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
+use WebFiori\Framework\Ui\WebPage;
 
 class MyWebPage extends WebPage {
     public function __construct() {
-        $this->setTheme(wf\themes\WebFioriTheme::class);
+        parent::__construct();
+        $this->setTheme(themes\webfiori\WebFioriTheme::class);
         
         // Add page content here
     }
 }
 ```
-Note that if the method [`WebPage::setTheme()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#setTheme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in application configuration (the class [`AppConfig`](https://webfiori.com/docs/app/config/AppConfig)).
+Note that if the method [`WebPage::setTheme()`](https://webfiori.com/docs/WebFiori/Framework/Ui/WebPage#setTheme) is called without supplying any parameters and no theme was loaded before, it will load the default theme which is set in application configuration.
 
 
 ## Creating Custom Theme
 
-There are two ways to implement themes, one is the manuall way and another one which is using command line interface.
+There are two ways to implement themes, one is the manual way and another one which is using command line interface.
 
 ### Manually Creating a Theme
 In general, theme creation process consist of the following:
 
 * Creating theme folder.
 * Creating theme assets folder inside the folder `public/assets`.
-* Creating new PHP class inside theme directory that extends the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme).
+* Creating new PHP class inside theme directory that extends the class [`Theme`](https://webfiori.com/docs/WebFiori/Framework/Theme).
 * Implementing the abstract methods of the class.
 
 Following next set of steps shows how to implement a basic theme.
@@ -97,17 +98,17 @@ At this step, we will create one CSS file. The file will be added in the folder 
 At this step, we will start by writing the code which will make the theme functional. At minimum level, we need to do the following for our theme:
 * Set the name of the theme.
 * Set the names of theme resource directories (CSS, JS and Images).
-* Implementing the abstract methods of the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme).
+* Implementing the abstract methods of the class [`Theme`](https://webfiori.com/docs/WebFiori/Framework/Theme).
 
-The name of the theme is needed because it acts like an identifier for it and can be used to load it. The name can be set by passing it to the `parent` constructor or by using the method [`Theme::setName()`](https://webfiori.com/docs/webfiori/framework/Theme#setName). Setting the names of theme resources folders will help in loading all JavaScript and CSS files automatically. For JavaScript files, there exist the method [`Theme::setJsDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setJsDirName), for CSS files, there exist the method [`Theme::setCssDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setCssDirName) and for images, there exist the method [`Theme::setImagesDirName()`](https://webfiori.com/docs/webfiori/framework/Theme#setImagesDirName). The last step is simply to define the actual structure of the page when the theme is loaded. 
+The name of the theme is needed because it acts like an identifier for it and can be used to load it. The name can be set by passing it to the `parent` constructor or by using the method [`Theme::setName()`](https://webfiori.com/docs/WebFiori/Framework/Theme#setName). Setting the names of theme resources folders will help in loading all JavaScript and CSS files automatically. For JavaScript files, there exist the method [`Theme::setJsDirName()`](https://webfiori.com/docs/WebFiori/Framework/Theme#setJsDirName), for CSS files, there exist the method [`Theme::setCssDirName()`](https://webfiori.com/docs/WebFiori/Framework/Theme#setCssDirName) and for images, there exist the method [`Theme::setImagesDirName()`](https://webfiori.com/docs/WebFiori/Framework/Theme#setImagesDirName). The last step is simply to define the actual structure of the page when the theme is loaded. 
 
-Let's assume that the name of the class that represents the theme is `CustomTheme`. The file that will contain the code of the theme will be `themes/customTheme/CustomTheme.php`.
+Let's assume that the name of the class that represents the theme is `CustomTheme`. The file that will contain the code of the theme will be `Themes/CustomTheme/CustomTheme.php`.
 
 ``` php
 <?php
-namespace themes\customTheme;
+namespace Themes\CustomTheme;
 
-use webfiori\framework\Theme;
+use WebFiori\Framework\Theme;
 
 class CustomTheme extends Theme {
     public function __construct() {
@@ -122,27 +123,27 @@ class CustomTheme extends Theme {
 
 > Note: If the names of your resources folders are `css`, `js` and `images`, you don't have to set them as they will be the default values.
 
-After that, we will start the actual theme implementation. In this step, we have to implement 4 abstract methods which exist in the class [`Theme`](https://webfiori.com/docs/webfiori/framework/Theme). The 4 abstract methods are:
-* [`Theme::getHeadNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getHeadNode)
-* [`Theme::getHeaderNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getHeaderNode)
-* [`Theme::getAsideNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getAsideNode)
-* [`Theme::getFooterNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getFooterNode)
+After that, we will start the actual theme implementation. In this step, we have to implement 4 abstract methods which exist in the class [`Theme`](https://webfiori.com/docs/WebFiori/Framework/Theme). The 4 abstract methods are:
+* [`Theme::getHeadNode()`](https://webfiori.com/docs/WebFiori/Framework/Theme#getHeadNode)
+* [`Theme::getHeaderNode()`](https://webfiori.com/docs/WebFiori/Framework/Theme#getHeaderNode)
+* [`Theme::getAsideNode()`](https://webfiori.com/docs/WebFiori/Framework/Theme#getAsideNode)
+* [`Theme::getFooterNode()`](https://webfiori.com/docs/WebFiori/Framework/Theme#getFooterNode)
 
-Each method of the mentioned must return an instance of [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) except for the method [`Theme::getHeadNode()`](https://webfiori.com/docs/webfiori/framework/Theme#getHeadNode). It must return an instance of [`HeadNode`](https://webfiori.com/docs/webfiori/ui/HeadNode). 
+Each method of the mentioned must return an instance of [`HTMLNode`](https://webfiori.com/docs/WebFiori/Ui/HTMLNode) except for the method [`Theme::getHeadNode()`](https://webfiori.com/docs/WebFiori/Framework/Theme#getHeadNode). It must return an instance of [`HeadNode`](https://webfiori.com/docs/WebFiori/Ui/HeadNode). **Important:** All methods must include proper return type declarations to match the parent class signatures. 
 The fist method is used to define the tags which will be exist in the `<head>` tag. Usually, the tag will have meta tags, CSS and JS files included. The remaining 3 are used to define the layout of different parts of the page. In general, the page will have 3 main sections:
 * Header section which usually contain main navigation menu.
 * Aside section which usually contain extra navigation links or ads.
 * Footer section which usually contains social media links.
 
-For our theme, we will allow each method of the 3 to return a `<div>` element with a text that descripes which part of the page it represents. First, we need to import the class [`HTMLNode`](https://webfiori.com/docs/webfiori/ui/HTMLNode) and the class [`HeadNode`](https://webfiori.com/docs/webfiori/ui/HeadNode) since we are going to use them.
+For our theme, we will allow each method of the 3 to return a `<div>` element with a text that describes which part of the page it represents. First, we need to import the class [`HTMLNode`](https://webfiori.com/docs/WebFiori/Ui/HTMLNode) and the class [`HeadNode`](https://webfiori.com/docs/WebFiori/Ui/HeadNode) since we are going to use them.
 
 ``` php 
 <?php
-namespace themes\customTheme;
+namespace Themes\CustomTheme;
 
-use webfiori\framework\Theme;
-use webfiori\ui\HTMLNode;
-use webfiori\ui\HeadNode;
+use WebFiori\Framework\Theme;
+use WebFiori\UI\HTMLNode;
+use WebFiori\UI\HeadNode;
 
 class CustomTheme extends Theme {
     public function __construct() {
@@ -153,24 +154,24 @@ class CustomTheme extends Theme {
         $this->setImagesDirName('images');
     }
 
-    public function getAsideNode() {
+    public function getAsideNode() : HTMLNode {
         $aside = new HTMLNode();
         $aside->text('Aside Section');
         return $aside;
     }
 
-    public function getFooterNode() {
+    public function getFooterNode() : HTMLNode {
         $footer = new HTMLNode();
         $footer->text('Footer Section');
         return $footer;
     }
 
-    public function getHeadNode() {
+    public function getHeadNode() : HeadNode {
         $head = new HeadNode();
         return $head;
     }
 
-    public function getHeaderNode() {
+    public function getHeaderNode() : HTMLNode {
         $header = new HTMLNode();
         $header->text('Header Section');
         return $header;
@@ -182,13 +183,14 @@ Once this step is finished, our basic theme is ready. What we can do now is to t
 ``` php 
 <?php
 
-namespace app\pages;
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
-use themes\customTheme\CustomTheme;
+use WebFiori\Framework\Ui\WebPage;
+use Themes\CustomTheme\CustomTheme;
 
 class ExamplePage extends WebPage {
     public function __construct() {
+        parent::__construct();
         $this->setTheme(CustomTheme::class);
         
         $this->setTitle('Hello Page');
@@ -201,9 +203,11 @@ class ExamplePage extends WebPage {
 
 Instead of going through all theme creation steps manually, it is recommended to use command line interface to create themes using the command `create` of the framework. This command will create a basic theme skeleton where the developer can use to build his theme. 
 
+
 #### Steps
-* Run the command `php webfiori create --w=theme`.
-* Provide theme class information (name, namespace and path)
+* Run the command `php webfiori create --c=theme`.
+* Provide theme class information when prompted (name and namespace).
+* Fix any namespace casing issues in the generated files if needed.
 
 Running this command will create 5 classes:
 * Main theme class.
@@ -212,19 +216,23 @@ Running this command will create 5 classes:
 * A class with the name `AsideSection` which represents side section of the page.
 * A class with the name `FooterSection` which represents footer section of the page.
 
-The following shell output shows actuall run for creating a theme.
+**Important:** After generating the theme files, you may need to:
+1. Fix namespace casing issues (change `WebFiori\UI\` to `WebFiori\Ui\`)
+2. Create the corresponding assets directory structure in `public/assets/[ThemeName]/`
+3. Add CSS, JS, and image files as needed
+
+The following shell output shows actual run for creating a theme.
 
 ``` 
-php webfiori create --w=theme
+php webfiori create --c=theme
 
 Enter a name for the new class:
 SuperTheme
-Enter an optional namespace for the class: Enter = "themes"
-myOrganization\theme1
-Where would you like to store the class? (must be a directory inside 'C:\Server\apache2\htdocs\app') Enter = "myOrganization\theme1"
+Enter an optional namespace for the class: Enter = "Themes"
+Themes\SuperTheme
 
-Creating theme at "C:\Server\apache2\htdocs\app\myOrganization\theme1"...
-Success: Created.
+Creating theme at "/path/to/app/Themes"...
+Info: New class was created at "/path/to/app/Themes".
 
 ```
 
