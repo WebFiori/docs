@@ -351,6 +351,10 @@ The following image shows all command execution steps.
 
 <img src="assets/images/init-db-session-storage.png" alt="Run query for session storage." style="height:auto;max-width:100%;border:1px solid;">
 
-**Next: [The Library WebFiori JSON](learn/webfiori-json)**
+## Related Articles
 
-**Previous: [Command Line Interface](learn/command-line-interface)**
+* [Middleware](learn/middleware) - Implement authentication middleware using sessions
+* [Web Services](learn/web-services) - Manage user sessions in API endpoints
+* [Database Management](learn/database) - Store session data in database
+* [The Library WebFiori JSON](learn/webfiori-json) - Store JSON data in sessions
+* [Command Line Interface](learn/command-line-interface) - Configure session storage via CLI

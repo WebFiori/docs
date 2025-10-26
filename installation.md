@@ -134,8 +134,11 @@ The application source code folder name can be modified by adjusting the `APP_DI
 - The built-in web server method is intended solely for testing purposes. Production environments require a dedicated web server application.
 
 
-**Previous: [Introduction](learn/introduction)**
+## Related Articles
 
-**Next: [Folder Structure](learn/folder-structure)**
+* [Introduction](learn/introduction) - Learn about WebFiori framework
+* [Folder Structure](learn/folder-structure) - Understand the project layout
+* [Basic Usage](learn/basic-usage) - Start building your first application
+* [Command Line Interface](learn/command-line-interface) - Use CLI tools for development
 
 

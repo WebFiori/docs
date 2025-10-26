@@ -363,6 +363,10 @@ class GenerateAttendanceReportJob extends AbstractTask {
 }
 ```
 
-**Next: [Internationalization](learn/i18n)**
+## Related Articles
 
-**Previous: [Middleware](learn/middleware)**
+* [Middleware](learn/middleware) - Handle long-running processes
+* [Command Line Interface](learn/command-line-interface) - Create and manage tasks via CLI
+* [Database Management](learn/database) - Process database operations asynchronously
+* [Sending Emails](learn/sending-emails) - Send emails in background tasks
+* [Web Services](learn/web-services) - Trigger background tasks from APIs

@@ -196,6 +196,10 @@ class ExamplePage extends WebPage {
     }
 }
 ```
-**Next: [UI Package](learn/ui-package)**
+## Related Articles
 
-**Previous: [The Class 'Response'](learn/class-response)**
+* [UI Package](learn/ui-package) - Build dynamic UI components for pages
+* [Themes](learn/themes) - Apply themes to web pages
+* [Routing](learn/routing) - Create routes for web pages
+* [The Class Response](learn/class-response) - Send page responses
+* [Basic Usage](learn/basic-usage) - Learn fundamental page concepts

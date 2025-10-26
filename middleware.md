@@ -290,6 +290,10 @@ The framework comes with a command which can be used to create middleware skelet
 
 <img alt="Create middleware using CLI." src="assets/images/middleware-cli.gif">
 
-**Next: [Background Tasks](learn/background-tasks)**
+## Related Articles
 
-**Previous: [Web Services](learn/web-services)**
+* [Routing](learn/routing) - Learn how to assign middleware to routes
+* [Web Services](learn/web-services) - Protect API endpoints with middleware
+* [Sessions Management](learn/sessions-management) - Use sessions in authentication middleware
+* [Background Tasks](learn/background-tasks) - Handle long-running processes
+* [The Class Response](learn/class-response) - Modify responses in middleware

@@ -582,6 +582,9 @@ echo $j->toJSONxString();
 </json:object>
 ```
 
-**Next: [Database Management](learn/database)**
+## Related Articles
 
-**Previous: [Sessions Management](learn/sessions-management)**
+* [Web Services](learn/web-services) - Use JSON for API responses
+* [Database Management](learn/database) - Convert database results to JSON
+* [The Class Response](learn/class-response) - Send JSON responses
+* [Sessions Management](learn/sessions-management) - Store JSON data in sessions

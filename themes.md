@@ -237,7 +237,11 @@ Info: New class was created at "/path/to/app/Themes".
 ```
 
 
-**Next: [Uploading Files](learn/uploading-files)**
+## Related Articles
 
-**Previous: [UI Package](learn/ui-package)**
+* [UI Package](learn/ui-package) - Build UI components for themes
+* [Web Pages](learn/web-pages) - Apply themes to web pages
+* [Uploading Files](learn/uploading-files) - Handle theme assets
+* [Routing](learn/routing) - Serve themed pages through routes
+* [The Class Response](learn/class-response) - Send themed responses
 

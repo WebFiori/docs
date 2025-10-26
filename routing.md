@@ -597,7 +597,11 @@ class CompleteRoutes {
 }
 ```
 
-**Next: [The Class `Response`](learn/class-response)**
+## Related Articles
 
-**Previous: [Basic Usage](learn/basic-usage)**
+* [Basic Usage](learn/basic-usage) - Learn the fundamentals before diving into routing
+* [The Class Response](learn/class-response) - Handle HTTP responses in your routes
+* [Middleware](learn/middleware) - Add middleware to your routes for authentication and filtering
+* [Web Services](learn/web-services) - Create API endpoints using routing
+* [Web Pages](learn/web-pages) - Build web pages with routing
 

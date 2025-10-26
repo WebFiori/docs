@@ -116,6 +116,10 @@ $filesInput->setName('files-input[]');
 The method [`Uploader::upload()`](https://webfiori.com/docs/WebFiori/Framework/Uploader#upload) will return an associative array that contains upload status of uploaded files. In addition to getting files information as an associative array, it is possible to get uploaded files information as objects. The method [`Uploader::uploadAsFileObj()`](https://webfiori.com/docs/WebFiori/Framework/Uploader#uploadAsFileObj) will upload the files and return an array that contains objects of type [`UploadedFile`](https://webfiori.com/docs/WebFiori/Framework/UploadedFile). Also, it is possible to get uploaded files information even after the upload process is finished using the method [`Uploader::getFiles()`](https://webfiori.com/docs/WebFiori/Framework/Uploader#getFiles).
 
 
-**Next: [Sending Emails](learn/sending-emails)**
+## Related Articles
 
-**Previous: [Themes](learn/themes)**
+* [Themes](learn/themes) - Handle theme asset uploads
+* [Sending Emails](learn/sending-emails) - Attach uploaded files to emails
+* [Web Services](learn/web-services) - Create file upload APIs
+* [Routing](learn/routing) - Handle file upload routes
+* [The Class Response](learn/class-response) - Send file upload responses

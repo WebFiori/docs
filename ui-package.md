@@ -370,8 +370,12 @@ Available components are:
 * [`TableRow`](https://webfiori.com/docs/webfiori/ui/TableRow)
 * [`UnrderedList`](https://webfiori.com/docs/webfiori/ui/UnrderedList)
 
-**Next: [Themes](learn/themes)**
+## Related Articles
 
-**Previous: [The Class `Response`](learn/class-response)**
+* [The Class Response](learn/class-response) - Send HTML responses
+* [Web Pages](learn/web-pages) - Build dynamic web pages with UI components
+* [Themes](learn/themes) - Create reusable UI themes
+* [Sending Emails](learn/sending-emails) - Create HTML email templates
+* [Routing](learn/routing) - Serve UI components through routes
 
 

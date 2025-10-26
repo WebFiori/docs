@@ -181,6 +181,10 @@ class PagesRoutes {
 ```
 
 
-**Next: [Routing](learn/routing)**
+## Related Articles
 
-**Previous: [Folder Structure](learn/folder-structure)**
+* [Folder Structure](learn/folder-structure) - Understand the framework organization
+* [Routing](learn/routing) - Learn how to create routes
+* [Web Pages](learn/web-pages) - Build dynamic web pages
+* [Web Services](learn/web-services) - Create API endpoints
+* [The Class Response](learn/class-response) - Handle HTTP responses

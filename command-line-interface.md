@@ -409,6 +409,10 @@ $this->info('Useful extra info.');
 <img src="assets/images/cli04.png" alt="Terminal Output" style="height:auto;max-width:100%;border:1px solid;">
 
 
-**Next: [Sessions Management](learn/sessions-management)**
+## Related Articles
 
-**Previous: [Sending Emails](learn/sending-emails)**
+* [Installation](learn/installation) - Use CLI during installation
+* [Sessions Management](learn/sessions-management) - Configure sessions via CLI
+* [Database Management](learn/database) - Manage database connections via CLI
+* [Sending Emails](learn/sending-emails) - Configure SMTP settings via CLI
+* [Background Tasks](learn/background-tasks) - Create and manage tasks via CLI

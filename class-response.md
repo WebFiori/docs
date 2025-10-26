@@ -326,6 +326,10 @@ class ClosureRoutes {
 ```
 
 
-**Next: [UI Package](learn/ui-package)**
+## Related Articles
 
-**Previous: [Routing](learn/routing)**
+* [Routing](learn/routing) - Use Response class in route handlers
+* [Web Services](learn/web-services) - Send API responses
+* [Web Pages](learn/web-pages) - Handle page responses
+* [Middleware](learn/middleware) - Modify responses in middleware
+* [UI Package](learn/ui-package) - Send HTML responses

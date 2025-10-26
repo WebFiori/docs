@@ -166,3 +166,10 @@ Where:
 * `@annotation1` and `@annotation2` are simple PHPDoc annotations such as `@return` or `@param`.
 
 Notice that each part of the doc block must be followed by an empty space. This helps in improving readability.
+
+## Related Articles
+
+* [Introduction](learn/introduction) - Learn about WebFiori framework principles
+* [Global Constants](learn/env-vars) - Follow naming conventions for constants
+* [Basic Usage](learn/basic-usage) - Apply coding standards in practice
+* [Folder Structure](learn/folder-structure) - Understand code organization standards

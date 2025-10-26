@@ -456,6 +456,10 @@ The command `php webfiori update-table` is used to modify the structure of the t
 
 <img src="assets/images/add-table-col-command.gif" alt="Initialize database table command.">
 
-**Next: [The Library WebFiori JSON](learn/webfiori-json)**
+## Related Articles
 
-**Previous: [Web Services](learn/web-services)**
+* [Web Services](learn/web-services) - Use database in API endpoints
+* [Command Line Interface](learn/command-line-interface) - Manage database via CLI
+* [The Library WebFiori JSON](learn/webfiori-json) - Convert database results to JSON
+* [Sessions Management](learn/sessions-management) - Store session data in database
+* [Background Tasks](learn/background-tasks) - Process database operations asynchronously

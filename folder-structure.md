@@ -89,6 +89,10 @@ webfiori-project/
 
 This organized structure promotes maintainable code, efficient collaboration, and scalable application development.
 
-**Previous: [Installation](learn/installation)**
+## Related Articles
 
-**Next: [Basic Usage](learn/basic-usage)**
+* [Installation](learn/installation) - Set up your WebFiori project
+* [Basic Usage](learn/basic-usage) - Learn how to use the framework structure
+* [Routing](learn/routing) - Understand where routes are defined
+* [Web Pages](learn/web-pages) - Learn about the Pages directory
+* [Web Services](learn/web-services) - Understand the APIs directory

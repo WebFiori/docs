@@ -328,6 +328,10 @@ When connecting to Gmail SMTP server, it is noticed that in some cases it fail e
 
 In order to connect to Outlook SMTP, the developer must first generate an app password and use it as login password when adding the SMTP account. For more information on app passwords, check [here](https://support.microsoft.com/en-us/account-billing/using-app-passwords-with-apps-that-don-t-support-two-step-verification-5896ed9b-4263-e681-128a-a6f2979a7944).
 
-**Next: [Command Line Interface](learn/command-line-interface)**
+## Related Articles
 
-**Previous: [Uploading Files](learn/uploading-files)**
+* [Command Line Interface](learn/command-line-interface) - Configure SMTP settings via CLI
+* [Background Tasks](learn/background-tasks) - Send emails asynchronously
+* [UI Package](learn/ui-package) - Create HTML email templates
+* [Uploading Files](learn/uploading-files) - Attach uploaded files to emails
+* [Web Services](learn/web-services) - Send emails through API endpoints

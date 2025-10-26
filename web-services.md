@@ -236,6 +236,10 @@ It is also possible to can set a value for the parameter `min` or `max` using sa
 
 The library is fully integrated with WebFiori Framework. In order to call a service, the developer have to create a route to a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager). For more information about how to create routes to web services, [check here](learn/routing#api-route)
 
-**Next: [Middleware](learn/middleware)**
+## Related Articles
 
-**Previous: [Database Management](learn/database)**
+* [Database Management](learn/database) - Use database in web services
+* [Middleware](learn/middleware) - Protect API endpoints with middleware
+* [Routing](learn/routing) - Create API routes
+* [The Library WebFiori JSON](learn/webfiori-json) - Format API responses as JSON
+* [The Class Response](learn/class-response) - Send API responses
