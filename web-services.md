@@ -33,35 +33,35 @@ WebFiori framework provides the very basic level of utilities at which it can be
 
 ### The Class `RequestParameter`
 
-The class [`RequestParameter`](https://webfiori.com/docs/webfiori/http/RequestParameter) simply represents a `GET`, `POST` body parameter. Also, this class represents the name of object property if request content type is `application/json`.
+The class [`RequestParameter`](https://webfiori.com/docs/WebFiori/Http/RequestParameter) simply represents a `GET`, `POST` body parameter. Also, this class represents the name of object property if request content type is `application/json`.
 
 ### The Class `AbstractWebService`
 
-The class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService) represents the actual web service. The class has two abstract methods that must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService#isAuthorized) and the second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/webfiori/restEasy/AbstractWebService#processRequest). The developer must extend this class to implement the code that will get executed when the service is called.
+The class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService) represents the actual web service. The class has two abstract methods that must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#isAuthorized) and the second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#processRequest). The developer must extend this class to implement the code that will get executed when the service is called.
 
 ### The Class `WebServicesManager`
 
-The class [`WebServicesManager`](https://webfiori.com/docs/webfiori/restEasy/WebServicesManager) is used to manage a set of related web services. For example, the developer might have 4 services for performing CRUD operations on a resource. The 4 services must be added to an instance of this class. When creating a route, the route should point to a class which is a child of this class.
+The class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager) is used to manage a set of related web services. For example, the developer might have 4 services for performing CRUD operations on a resource. The 4 services must be added to an instance of this class. When creating a route, the route should point to a class which is a child of this class.
 
 ## Creating a Simple Web Service
 
 Assuming that a developer wants to implement a service that sends back a random number, then he must follow the following steps to have that service:
 
-* Create new class that extends the class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService). 
+* Create new class that extends the class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService). 
 * Specify a name for the web service.
 * Specify request methods of the service.
 * Add parameters to the service (optionally).
-* Implement the abstract methods of the class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService).
-* Add the service to an instance of the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager).
+* Implement the abstract methods of the class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService).
+* Add the service to an instance of the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager).
 
 > **Note:** If the service is created inside WebFiori framework, then there is a need for a final step which is to create a route to services manager.
 
 ### Extending The Class `AbstractWebService`
 
-The class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService) will basically represent a web service (or API end point) that will be get executed when called. The [constructure](https://webfiori.com/docs/webfiori/http/AbstractWebService#__construct) of the class accepts one parameter which is the name of the service. Each service must have a unique name as it will be used to call it. Assuming that the name of the service that will be create is `get-random-number`.
+The class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService) will basically represent a web service (or API end point) that will be get executed when called. The [constructor](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#__construct) of the class accepts one parameter which is the name of the service. Each service must have a unique name as it will be used to call it. Assuming that the name of the service that will be create is `get-random-number`.
 
 ``` php
-use webfiori\http\AbstractWebService;
+use WebFiori\Http\AbstractWebService;
 
 class GetRandomService extends AbstractWebService {
     public function __construct() {
@@ -72,63 +72,90 @@ class GetRandomService extends AbstractWebService {
 
 ### Specify Request Method of The Service
 
-For every new service, the developer must specify allowed request methods at which the service can be called with. Request method can be something like `GET`, `POST` or `PUT`. To set allowed request method(s), the method [`AbstractWebService::addRequestMethod()`](https://webfiori.com/docs/webfiori/http/AbstractWebService#addRequestMethod) can be used. It is possible to have more than one request method for a service.
+For every new service, the developer must specify allowed request methods at which the service can be called with. Request method can be something like `GET`, `POST` or `PUT`. To set allowed request method(s), the method [`AbstractWebService::addRequestMethod()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#addRequestMethod) can be used. It is possible to have more than one request method for a service.
 
 ``` php
-use webfiori\http\AbstractWebService;
+use WebFiori\Http\AbstractWebService;
+use WebFiori\Http\RequestMethod;
 
 class GetRandomService extends AbstractWebService {
     public function __construct() {
         parent::__construct('get-random-number');
-        $this->addRequestMethod('get');
-        $this->addRequestMethod('post');
+        $this->addRequestMethod(RequestMethod::GET);
+        $this->addRequestMethod(RequestMethod::POST);
     }
 }
 ```
 
 ### Adding Request Parameters
 
-Request parameters are represented by the class [`RequestParameter`](https://webfiori.com/docs/webfiori/http/RequestParameter). To add request parameter to a service, the method [`AbstractWebService::addParameter()`](https://webfiori.com/docs/webfiori/http/AbstractWebService#addParameter). Each parameter must have a name and a type. The two can be specified in the [constructor](https://webfiori.com/docs/webfiori/http/RequestParameter#__construct) of the class.
+Request parameters are represented by the class [`RequestParameter`](https://webfiori.com/docs/WebFiori/Http/RequestParameter). To add request parameter to a service, the method [`AbstractWebService::addParameter()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#addParameter) can be used. Each parameter must have a name and a type. The two can be specified in the [constructor](https://webfiori.com/docs/WebFiori/Http/RequestParameter#__construct) of the class.
+
+Alternatively, multiple parameters can be added at once using the method [`AbstractWebService::addParameters()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#addParameters) which accepts an associative array where keys are parameter names and values are arrays of parameter options.
 
 Assuming that the developer will create the API in a way it can accepts two values and the random number will be between the two. 
 
 ``` php
-use webfiori\http\AbstractWebService;
-use webfiori\http\RequestParameter;
+use WebFiori\Http\AbstractWebService;
+use WebFiori\Http\RequestParameter;
+use WebFiori\Http\RequestMethod;
+use WebFiori\Http\ParamOption;
+use WebFiori\Http\ParamType;
 
 class GetRandomService extends AbstractWebService {
     public function __construct() {
         parent::__construct('get-random-number');
-        $this->addRequestMethod('get');
-        $this->addRequestMethod('post');
+        $this->addRequestMethod(RequestMethod::GET);
+        $this->addRequestMethod(RequestMethod::POST);
         
-        $this->addParameter(new RequestParameter('min', 'integer', true));
-        $this->addParameter(new RequestParameter('max', 'integer', true));
+        // Using array syntax to add multiple parameters
+        $this->addParameters([
+            'min' => [
+                ParamOption::TYPE => ParamType::INT,
+                ParamOption::OPTIONAL => true
+            ],
+            'max' => [
+                ParamOption::TYPE => ParamType::INT,
+                ParamOption::OPTIONAL => true
+            ]
+        ]);
     }
 }
 ```
 
 ### Implementing The Abstract Methods of the Class `AbstractWebService`
 
-The class [`AbstractWebService`](https://webfiori.com/docs/webfiori/http/AbstractWebService) has two abstract methods at which they must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/webfiori/http/AbstractWebService#isAuthorized). This method is used to check if the one who is calling the service is allowed to call it or not. The second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/webfiori/http/AbstractWebService#processRequest). This method is simply used to process client's request and send back a response.
+The class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService) has two abstract methods at which they must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#isAuthorized). This method is used to check if the one who is calling the service is allowed to call it or not. The second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#processRequest). This method is simply used to process client's request and send back a response.
 
 ``` php
-use webfiori\http\AbstractWebService;
-use webfiori\http\RequestParameter;
+use WebFiori\Http\AbstractWebService;
+use WebFiori\Http\RequestMethod;
+use WebFiori\Http\ParamOption;
+use WebFiori\Http\ParamType;
 
 class GetRandomService extends AbstractWebService {
     public function __construct() {
         parent::__construct('get-random-number');
-        $this->addRequestMethod('get');
-        $this->addRequestMethod('post');
+        $this->addRequestMethod(RequestMethod::GET);
+        $this->addRequestMethod(RequestMethod::POST);
         
-        $this->addParameter(new RequestParameter('min', 'integer', true));
-        $this->addParameter(new RequestParameter('max', 'integer', true));
+        // Using array syntax to add multiple parameters
+        $this->addParameters([
+            'min' => [
+                ParamOption::TYPE => ParamType::INT,
+                ParamOption::OPTIONAL => true
+            ],
+            'max' => [
+                ParamOption::TYPE => ParamType::INT,
+                ParamOption::OPTIONAL => true
+            ]
+        ]);
     }
 
     public function isAuthorized() {
         //Possibly, check if client is authorized to call the API or not.
         //If he is not authorized, return false.
+        return true;
     }
 
     public function processRequest() {
@@ -143,18 +170,16 @@ class GetRandomService extends AbstractWebService {
         }
         $this->sendResponse($random);
     }
-
 }
 ```
 
 ### Adding The Service to The Class `WebServicesManager`
 
-The final step is to add the service to a services manager. The main aim of services manager is to group related services in one place. Also, it is used to manage the incoming requests and send them to correct service. It is always recommended to have a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager) and use it to group the services. To add a service to a services manager, the method 
-[`WebServicesManager::addService()`](https://webfiori.com/docs/webfiori/http/WebServicesManager#addService) can be used.
+The final step is to add the service to a services manager. The main aim of services manager is to group related services in one place. Also, it is used to manage the incoming requests and send them to correct service. It is always recommended to have a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager) and use it to group the services. To add a service to a services manager, the method 
+[`WebServicesManager::addService()`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager#addService) can be used.
 
 ``` php
-use webfiori\http\WebServicesManager;
-use GetRandomService;
+use WebFiori\Http\WebServicesManager;
 
 class RandomGenerator extends WebServicesManager {
     public function __construct() {
@@ -162,16 +187,14 @@ class RandomGenerator extends WebServicesManager {
         $this->addService(new GetRandomService());
     }
 }
-
 ```
 
 ### Processing The Request
 
-In background, processing the request is performed by the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager), to be specific, the method [`WebServicesManager::process()`](https://webfiori.com/docs/webfiori/http/WebServicesManager#process). For the service that was created, the developer need to create an instance of the class `RandomGenerator`. After that, he have to call the method [`WebServicesManager::process()`](https://webfiori.com/docs/webfiori/http/WebServicesManager#process)
+In background, processing the request is performed by the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager), to be specific, the method [`WebServicesManager::process()`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager#process). For the service that was created, the developer need to create an instance of the class `RandomGenerator`. After that, he have to call the method [`WebServicesManager::process()`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager#process)
 
 ``` php
-use webfiori\http\WebServicesManager;
-use GetRandomService;
+use WebFiori\Http\WebServicesManager;
 
 class RandomGenerator extends WebServicesManager {
     public function __construct() {
@@ -211,8 +234,8 @@ It is also possible to can set a value for the parameter `min` or `max` using sa
 
 ### Calling The Service using WebFiori Framework
 
-The library is fully integrated with WebFiori Framework. In order to call a service, the developer have to create a route to a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/webfiori/http/WebServicesManager). For more information about how to create routes to web services, [check here](learn/routing#api-route)
+The library is fully integrated with WebFiori Framework. In order to call a service, the developer have to create a route to a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager). For more information about how to create routes to web services, [check here](learn/routing#api-route)
 
-**Next: [Midddleware](learn/middleware)**
+**Next: [Middleware](learn/middleware)**
 
 **Previous: [Database Management](learn/database)**
