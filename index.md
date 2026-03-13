@@ -30,6 +30,7 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Uploading Files](learn/uploading-files) - File upload management
 
 ## Advanced Topics
+* [MVC Architecture](learn/mvc) - API Controllers, Repositories, and Entities
 * [Sending Emails](learn/sending-emails) - Email functionality
 * [Background Tasks](learn/background-tasks) - Asynchronous processing
 * [Command Line Interface](learn/command-line-interface) - CLI tools

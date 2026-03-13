@@ -458,6 +458,7 @@ The command `php webfiori update-table` is used to modify the structure of the t
 
 ## Related Articles
 
+* [MVC Architecture](learn/mvc) - Build APIs with Controllers, Repositories, and Entities
 * [Migrations and Seeders](learn/migrations) - Manage schema changes and seed data
 * [Web Services](learn/web-services) - Use database in API endpoints
 * [Command Line Interface](learn/command-line-interface) - Manage database via CLI

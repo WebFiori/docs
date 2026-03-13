@@ -238,6 +238,7 @@ The library is fully integrated with WebFiori Framework. In order to call a serv
 
 ## Related Articles
 
+* [MVC Architecture](learn/mvc) - Build APIs with Controllers, Repositories, and Entities
 * [Database Management](learn/database) - Use database in web services
 * [Middleware](learn/middleware) - Protect API endpoints with middleware
 * [Routing](learn/routing) - Create API routes
