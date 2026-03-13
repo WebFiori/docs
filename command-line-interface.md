@@ -414,5 +414,6 @@ $this->info('Useful extra info.');
 * [Installation](learn/installation) - Use CLI during installation
 * [Sessions Management](learn/sessions-management) - Configure sessions via CLI
 * [Database Management](learn/database) - Manage database connections via CLI
+* [Migrations and Seeders](learn/migrations) - Run migrations and seeders via CLI
 * [Sending Emails](learn/sending-emails) - Configure SMTP settings via CLI
 * [Background Tasks](learn/background-tasks) - Create and manage tasks via CLI
