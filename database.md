@@ -8,17 +8,22 @@ In this page:
 * [Initializing your Database](#initializing-your-database)
   * [Adding Connection Information](#adding-connection-information)
   * [Creating Database Tables](#creating-database-tables)
+  * [Using Blueprints](#using-blueprints)
+  * [Using PHP 8 Attributes](#using-php-8-attributes)
   * [Creating Database Class](#creating-database-class)
 * [Database Queries](#database-queries)
   * [Insert Record](#insert-record)
   * [Update Record](#update-record)
   * [Delete Record](#delete-record)
   * [Select](#select)
+  * [Raw SQL Queries](#raw-sql-queries)
   * [Joins](#joins)
   * [Unions](#unions)
+* [Transactions](#transactions)
 * [Working With Result Set](#working-with-result-set)
   * [Retrieving Records](#retrieving-records)
   * [Mapping Records to Objects](#mapping-records-to-objects)
+* [Performance Monitoring](#performance-monitoring)
 * [Command Line Utilities](#command-line-utilities)
   * [Adding Connection](#adding-connection)
   * [Creating Database Table](#creating-database-table)
@@ -132,6 +137,82 @@ class ContactsTable extends MySQLTable {
 ```
 
 This table will be used to store basic information about contacts. It will act as an interface between the application and the actual database table.
+
+### Using Blueprints
+
+For quick table creation without defining a separate class, use the `createBlueprint()` method:
+
+``` php
+$db = new Database($connection);
+
+$db->createBlueprint('users')->addColumns([
+    'id' => [
+        ColOption::TYPE => DataType::INT,
+        ColOption::PRIMARY => true,
+        ColOption::AUTO_INCREMENT => true
+    ],
+    'username' => [
+        ColOption::TYPE => DataType::VARCHAR,
+        ColOption::SIZE => 50
+    ],
+    'email' => [
+        ColOption::TYPE => DataType::VARCHAR,
+        ColOption::SIZE => 150
+    ]
+]);
+
+// Create the table
+$db->table('users')->createTable()->execute();
+```
+
+This approach is useful for simple tables or when you don't need a reusable table class.
+
+### Using PHP 8 Attributes
+
+You can define tables using PHP 8 attributes for a cleaner, more declarative approach:
+
+``` php
+namespace App\Infrastructure\Schema;
+
+use WebFiori\Database\Attributes\Column;
+use WebFiori\Database\Attributes\Table;
+use WebFiori\Database\DataType;
+
+#[Table(name: 'users')]
+#[Column(name: 'id', type: DataType::INT, primary: true, autoIncrement: true)]
+#[Column(name: 'username', type: DataType::VARCHAR, size: 50)]
+#[Column(name: 'email', type: DataType::VARCHAR, size: 150)]
+class UserTable {
+}
+```
+
+Then build the table using `AttributeTableBuilder`:
+
+``` php
+use WebFiori\Database\Attributes\AttributeTableBuilder;
+
+$table = AttributeTableBuilder::build(UserTable::class, 'mysql');
+$db->addTable($table);
+$db->table('users')->createTable()->execute();
+```
+
+You can also define foreign keys using attributes:
+
+``` php
+use WebFiori\Database\Attributes\Column;
+use WebFiori\Database\Attributes\ForeignKey;
+use WebFiori\Database\Attributes\Table;
+use WebFiori\Database\DataType;
+
+#[Table(name: 'posts')]
+#[Column(name: 'id', type: DataType::INT, primary: true, autoIncrement: true)]
+#[Column(name: 'title', type: DataType::VARCHAR, size: 200)]
+class PostTable {
+    #[Column(name: 'author-id', type: DataType::INT)]
+    #[ForeignKey(table: 'users', column: 'id')]
+    public int $authorId;
+}
+```
 
 ### Creating Database Class
 
@@ -277,6 +358,39 @@ $db->table('contacts')->select()->where('age', 15, '>')
 
 // select * from `contacts` where `age` > 15 and `name` = 'Ibrahim'
 ```
+
+### Raw SQL Queries
+
+For complex queries or database-specific features, use the `raw()` method to execute raw SQL:
+
+``` php
+$db = new TestingDatabase();
+
+// Simple raw query
+$result = $db->raw("SELECT * FROM contacts WHERE age > 25")->execute();
+
+// With parameters (prevents SQL injection)
+$result = $db->raw(
+    "SELECT * FROM contacts WHERE age > ? AND name LIKE ?",
+    [25, '%Ibrahim%']
+)->execute();
+
+// Insert with raw SQL
+$db->raw(
+    "INSERT INTO contacts (name, email) VALUES (?, ?)",
+    ['John Doe', 'john@example.com']
+)->execute();
+
+// Complex queries
+$result = $db->raw("
+    SELECT c.name, COUNT(o.id) as order_count
+    FROM contacts c
+    LEFT JOIN orders o ON c.id = o.contact_id
+    GROUP BY c.id
+    HAVING order_count > ?
+", [5])->execute();
+```
+
 ### Joins
 
 The library supports different types of joins including inner join, left join, right join, and full outer join. The method [`AbstractQuery::join()`](https://webfiori.com/docs/WebFiori/Database/AbstractQuery#join) is used to add joins to a query.
@@ -332,6 +446,66 @@ $query1->union($query2)->execute();
 // (select `name`, `email` from `contacts` where `age` > 25) 
 // union 
 // (select `name`, `email` from `subscribers` where `active` = 1)
+```
+
+## Transactions
+
+Transactions ensure that a group of database operations either all succeed or all fail together. Use the `transaction()` method for atomic operations:
+
+``` php
+$db = new TestingDatabase();
+
+$db->transaction(function (Database $db) {
+    // Deduct from sender
+    $sender = $db->table('accounts')->select()->where('id', 1)->execute()->fetch();
+    $db->table('accounts')
+       ->update(['balance' => $sender['balance'] - 100])
+       ->where('id', 1)
+       ->execute();
+    
+    // Add to receiver
+    $receiver = $db->table('accounts')->select()->where('id', 2)->execute()->fetch();
+    $db->table('accounts')
+       ->update(['balance' => $receiver['balance'] + 100])
+       ->where('id', 2)
+       ->execute();
+    
+    // Log the transaction
+    $db->table('transfers')->insert([
+        'from_account' => 1,
+        'to_account' => 2,
+        'amount' => 100
+    ])->execute();
+});
+```
+
+Key features:
+- **Automatic commit**: If the callback completes without exceptions, changes are committed
+- **Automatic rollback**: If an exception is thrown, all changes are rolled back
+- **Nested transactions**: Supported via savepoints
+
+Example with error handling:
+
+``` php
+try {
+    $db->transaction(function (Database $db) {
+        $balance = $db->table('accounts')
+                      ->select(['balance'])
+                      ->where('id', 1)
+                      ->execute()
+                      ->fetch()['balance'];
+        
+        if ($balance < 500) {
+            throw new Exception('Insufficient funds');
+        }
+        
+        // Proceed with transfer...
+    });
+    echo "Transfer successful";
+} catch (Exception $e) {
+    echo "Transfer failed: " . $e->getMessage();
+    // All changes have been rolled back automatically
+}
 ```
 
 ## Working With Result Set
@@ -427,6 +601,76 @@ foreach($result as $row) {
 }
 ```
 
+## Performance Monitoring
+
+The database library includes built-in performance monitoring to help identify slow queries and optimize database operations.
+
+### Enabling Performance Monitoring
+
+``` php
+use WebFiori\Database\Performance\PerformanceOption;
+
+$db = new TestingDatabase();
+
+$db->setPerformanceConfig([
+    PerformanceOption::ENABLED => true,
+    PerformanceOption::SLOW_QUERY_THRESHOLD => 100,  // ms
+    PerformanceOption::WARNING_THRESHOLD => 50,      // ms
+    PerformanceOption::SAMPLING_RATE => 1.0,         // 100% of queries
+    PerformanceOption::MAX_SAMPLES => 1000
+]);
+```
+
+### Analyzing Performance
+
+``` php
+use WebFiori\Database\Performance\PerformanceAnalyzer;
+
+// Execute some queries...
+$db->table('users')->select()->execute();
+$db->table('orders')->select()->where('status', 'pending')->execute();
+
+// Get performance metrics
+$analyzer = $db->getPerformanceMonitor()->getAnalyzer();
+
+echo "Total queries: " . $analyzer->getQueryCount() . "\n";
+echo "Total time: " . $analyzer->getTotalTime() . " ms\n";
+echo "Average time: " . $analyzer->getAverageTime() . " ms\n";
+echo "Slow queries: " . $analyzer->getSlowQueryCount() . "\n";
+echo "Efficiency: " . $analyzer->getEfficiency() . "%\n";
+```
+
+### Identifying Slow Queries
+
+``` php
+$slowQueries = $analyzer->getSlowQueries();
+
+foreach ($slowQueries as $metric) {
+    echo "Query: " . $metric->getQuery() . "\n";
+    echo "Time: " . $metric->getExecutionTimeMs() . " ms\n";
+    echo "Rows: " . $metric->getRowsAffected() . "\n";
+}
+```
+
+### Performance Score
+
+The analyzer provides a performance score:
+
+``` php
+$score = $analyzer->getScore();
+
+switch ($score) {
+    case PerformanceAnalyzer::SCORE_EXCELLENT:
+        echo "Excellent performance!";
+        break;
+    case PerformanceAnalyzer::SCORE_GOOD:
+        echo "Good performance";
+        break;
+    case PerformanceAnalyzer::SCORE_NEEDS_IMPROVEMENT:
+        echo "Consider optimizing slow queries";
+        break;
+}
+```
 
 ## Command Line Utilities
 
