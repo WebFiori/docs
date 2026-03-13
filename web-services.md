@@ -6,18 +6,21 @@ In this page:
 
 * [Introduction](#introduction)
 * [Main Classes](#main-classes)
-  * [The Class `RequestParameter`](#the-class-requestparameter)
-  * [The Class `AbstractWebService`](#the-class-abstractwebservice)
-  * [The Class `WebServicesManager`](#the-class-webservicesmanager)
-* [Creating a Simple Web Service](#creating-a-simple-web-service)
-  * [Extending The Class `AbstractWebService`](#extending-the-class-abstractwebservice)
-  * [Specify Request Method of The Service](#specify-request-method-of-the-service)
-  * [Adding Request Parameters](#adding-request-parameters)
-  * [Implementing The Abstract Methods of the Class `AbstractWebService`](#implementing-the-abstract-methods-of-the-class-abstractwebservice)
-  * [Adding The Service to The Class `WebServicesManager`](#adding-the-service-to-the-class-webservicesmanager)
-  * [Processing The Request](#processing-the-request)
-  * [Calling The Service](#calling-the-service)
-  * [Calling The Service using WebFiori Framework](#calling-the-service-using-webfiori-framework)
+* [Creating Services with Annotations](#creating-services-with-annotations)
+  * [Basic Annotation-Based Service](#basic-annotation-based-service)
+  * [Request Parameters](#request-parameters)
+  * [Object Mapping](#object-mapping)
+* [Authentication and Authorization](#authentication-and-authorization)
+  * [Using RequiresAuth and AllowAnonymous](#using-requiresauth-and-allowanonymous)
+  * [Accessing Auth Headers](#accessing-auth-headers)
+  * [Security Context](#security-context)
+* [Creating Services Traditionally](#creating-services-traditionally)
+  * [Extending AbstractWebService](#extending-abstractwebservice)
+  * [Adding to WebServicesManager](#adding-to-webservicesmanager)
+* [Response Handling](#response-handling)
+* [OpenAPI Documentation](#openapi-documentation)
+* [Testing Web Services](#testing-web-services)
+* [Calling Services](#calling-services)
 
 ## Introduction
 
@@ -30,74 +33,244 @@ WebFiori framework provides the very basic level of utilities at which it can be
 
 ## Main Classes
 
+| Class | Description |
+|-------|-------------|
+| `WebService` | Modern service class with annotation support |
+| `AbstractWebService` | Traditional base class for services |
+| `WebServicesManager` | Manages and routes requests to services |
+| `RequestParameter` | Represents a request parameter |
+| `SecurityContext` | Manages authentication state |
+| `APITestCase` | PHPUnit helper for testing APIs |
 
-### The Class `RequestParameter`
+## Creating Services with Annotations
 
-The class [`RequestParameter`](https://webfiori.com/docs/WebFiori/Http/RequestParameter) simply represents a `GET`, `POST` body parameter. Also, this class represents the name of object property if request content type is `application/json`.
+The recommended approach for creating web services uses PHP 8 attributes for clean, declarative API definitions.
 
-### The Class `AbstractWebService`
-
-The class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService) represents the actual web service. The class has two abstract methods that must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#isAuthorized) and the second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#processRequest). The developer must extend this class to implement the code that will get executed when the service is called.
-
-### The Class `WebServicesManager`
-
-The class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager) is used to manage a set of related web services. For example, the developer might have 4 services for performing CRUD operations on a resource. The 4 services must be added to an instance of this class. When creating a route, the route should point to a class which is a child of this class.
-
-## Creating a Simple Web Service
-
-Assuming that a developer wants to implement a service that sends back a random number, then he must follow the following steps to have that service:
-
-* Create new class that extends the class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService). 
-* Specify a name for the web service.
-* Specify request methods of the service.
-* Add parameters to the service (optionally).
-* Implement the abstract methods of the class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService).
-* Add the service to an instance of the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager).
-
-> **Note:** If the service is created inside WebFiori framework, then there is a need for a final step which is to create a route to services manager.
-
-### Extending The Class `AbstractWebService`
-
-The class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService) will basically represent a web service (or API end point) that will be get executed when called. The [constructor](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#__construct) of the class accepts one parameter which is the name of the service. Each service must have a unique name as it will be used to call it. Assuming that the name of the service that will be create is `get-random-number`.
+### Basic Annotation-Based Service
 
 ``` php
-use WebFiori\Http\AbstractWebService;
+namespace App\Apis;
 
-class GetRandomService extends AbstractWebService {
-    public function __construct() {
-        parent::__construct('get-random-number');
+use WebFiori\Http\Annotations\AllowAnonymous;
+use WebFiori\Http\Annotations\GetMapping;
+use WebFiori\Http\Annotations\ResponseBody;
+use WebFiori\Http\Annotations\RestController;
+use WebFiori\Http\WebService;
+
+#[RestController('users', 'User management API')]
+class UserService extends WebService {
+    
+    #[GetMapping]
+    #[ResponseBody]
+    #[AllowAnonymous]
+    public function getUsers(): array {
+        return [
+            'users' => [
+                ['id' => 1, 'name' => 'John'],
+                ['id' => 2, 'name' => 'Jane']
+            ]
+        ];
     }
 }
 ```
 
-### Specify Request Method of The Service
+Key annotations:
 
-For every new service, the developer must specify allowed request methods at which the service can be called with. Request method can be something like `GET`, `POST` or `PUT`. To set allowed request method(s), the method [`AbstractWebService::addRequestMethod()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#addRequestMethod) can be used. It is possible to have more than one request method for a service.
+| Annotation | Target | Description |
+|------------|--------|-------------|
+| `#[RestController]` | Class | Defines service name and description |
+| `#[GetMapping]` | Method | Maps to GET requests |
+| `#[PostMapping]` | Method | Maps to POST requests |
+| `#[PutMapping]` | Method | Maps to PUT requests |
+| `#[DeleteMapping]` | Method | Maps to DELETE requests |
+| `#[ResponseBody]` | Method | Auto-converts return value to JSON |
+| `#[AllowAnonymous]` | Method | Skips authentication check |
+| `#[RequiresAuth]` | Method | Requires authentication |
+
+### Request Parameters
+
+Define parameters using the `#[RequestParam]` annotation:
 
 ``` php
-use WebFiori\Http\AbstractWebService;
-use WebFiori\Http\RequestMethod;
+use WebFiori\Http\Annotations\GetMapping;
+use WebFiori\Http\Annotations\RequestParam;
+use WebFiori\Http\Annotations\ResponseBody;
+use WebFiori\Http\Annotations\RestController;
+use WebFiori\Http\WebService;
 
-class GetRandomService extends AbstractWebService {
-    public function __construct() {
-        parent::__construct('get-random-number');
-        $this->addRequestMethod(RequestMethod::GET);
-        $this->addRequestMethod(RequestMethod::POST);
+#[RestController('products', 'Product API')]
+class ProductService extends WebService {
+    
+    #[GetMapping]
+    #[ResponseBody]
+    #[RequestParam(name: 'id', type: 'int')]
+    #[RequestParam(name: 'include_details', type: 'bool', optional: true, default: false)]
+    public function getProduct(): array {
+        $id = $this->getParamVal('id');
+        $includeDetails = $this->getParamVal('include_details');
+        
+        return [
+            'product' => [
+                'id' => $id,
+                'name' => 'Sample Product',
+                'details' => $includeDetails ? ['weight' => '1kg'] : null
+            ]
+        ];
     }
 }
 ```
 
-### Adding Request Parameters
+Parameter options:
 
-Request parameters are represented by the class [`RequestParameter`](https://webfiori.com/docs/WebFiori/Http/RequestParameter). To add request parameter to a service, the method [`AbstractWebService::addParameter()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#addParameter) can be used. Each parameter must have a name and a type. The two can be specified in the [constructor](https://webfiori.com/docs/WebFiori/Http/RequestParameter#__construct) of the class.
+| Option | Type | Description |
+|--------|------|-------------|
+| `name` | string | Parameter name (required) |
+| `type` | string | Data type: `string`, `int`, `float`, `bool`, `email`, `url`, `array` |
+| `optional` | bool | Whether parameter is optional (default: false) |
+| `default` | mixed | Default value if not provided |
+| `description` | string | Parameter description for documentation |
 
-Alternatively, multiple parameters can be added at once using the method [`AbstractWebService::addParameters()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#addParameters) which accepts an associative array where keys are parameter names and values are arrays of parameter options.
+### Object Mapping
 
-Assuming that the developer will create the API in a way it can accepts two values and the random number will be between the two. 
+The `#[MapEntity]` annotation automatically maps request parameters to an object:
+
+``` php
+use WebFiori\Http\Annotations\MapEntity;
+use WebFiori\Http\Annotations\PostMapping;
+use WebFiori\Http\Annotations\ResponseBody;
+use WebFiori\Http\Annotations\RestController;
+use WebFiori\Http\WebService;
+
+#[RestController('users', 'User API')]
+class UserService extends WebService {
+    
+    #[PostMapping]
+    #[ResponseBody]
+    #[MapEntity(User::class)]
+    public function createUser(User $user): array {
+        // $user is automatically populated from request body
+        // Request: {"name": "John", "email": "john@example.com", "age": 30}
+        
+        return [
+            'message' => 'User created',
+            'user' => $user->toArray()
+        ];
+    }
+}
+```
+
+The mapper matches request parameters to setter methods:
+- `name` → `setName()`
+- `email` → `setEmail()`
+- `user_age` → `setUserAge()`
+
+For custom parameter-to-setter mapping:
+
+``` php
+#[MapEntity(User::class, setters: [
+    'full-name' => 'setName',
+    'email-address' => 'setEmail'
+])]
+public function createUser(User $user): array {
+    // Maps 'full-name' param to setName(), 'email-address' to setEmail()
+}
+```
+
+Alternative: Use `getObject()` method:
+
+``` php
+public function createUser(): array {
+    $user = $this->getObject(User::class);
+    // ...
+}
+```
+
+## Authentication and Authorization
+
+### Using RequiresAuth and AllowAnonymous
+
+``` php
+#[RestController('admin', 'Admin API')]
+class AdminService extends WebService {
+    
+    #[GetMapping]
+    #[ResponseBody]
+    #[AllowAnonymous]  // No authentication required
+    public function getPublicInfo(): array {
+        return ['status' => 'online'];
+    }
+    
+    #[GetMapping]
+    #[ResponseBody]
+    #[RequiresAuth]  // Authentication required
+    public function getSecretData(): array {
+        return ['secret' => 'classified'];
+    }
+}
+```
+
+### Accessing Auth Headers
+
+``` php
+public function isAuthorized(): bool {
+    $authHeader = $this->getAuthHeader();
+    
+    if ($authHeader === null) {
+        return false;
+    }
+    
+    $scheme = $authHeader->getScheme();      // 'basic', 'bearer', etc.
+    $credentials = $authHeader->getCredentials();  // Token or encoded credentials
+    
+    if ($scheme === 'bearer') {
+        return $this->validateToken($credentials);
+    }
+    
+    if ($scheme === 'basic') {
+        $decoded = base64_decode($credentials);
+        [$username, $password] = explode(':', $decoded, 2);
+        return $this->validateUser($username, $password);
+    }
+    
+    return false;
+}
+```
+
+### Security Context
+
+Use `SecurityContext` for managing authentication state:
+
+``` php
+use WebFiori\Http\SecurityContext;
+use WebFiori\Http\SecurityPrincipal;
+
+// Set authenticated user
+$user = new SecurityPrincipal();
+$user->setId(1);
+$user->setUsername('john');
+$user->setRoles(['USER', 'ADMIN']);
+SecurityContext::setUser($user);
+
+// Check authentication
+if (SecurityContext::isAuthenticated()) {
+    $currentUser = SecurityContext::getUser();
+}
+
+// Evaluate security expressions
+SecurityContext::evaluateExpression("hasRole('ADMIN')");
+SecurityContext::evaluateExpression("hasAnyRole('USER', 'ADMIN')");
+SecurityContext::evaluateExpression("isAuthenticated()");
+SecurityContext::evaluateExpression("hasRole('ADMIN') && hasAuthority('DELETE_USER')");
+```
+
+## Creating Services Traditionally
+
+For more control, use the traditional approach by extending `AbstractWebService`.
+
+### Extending AbstractWebService
 
 ``` php
 use WebFiori\Http\AbstractWebService;
-use WebFiori\Http\RequestParameter;
 use WebFiori\Http\RequestMethod;
 use WebFiori\Http\ParamOption;
 use WebFiori\Http\ParamType;
@@ -106,9 +279,7 @@ class GetRandomService extends AbstractWebService {
     public function __construct() {
         parent::__construct('get-random-number');
         $this->addRequestMethod(RequestMethod::GET);
-        $this->addRequestMethod(RequestMethod::POST);
         
-        // Using array syntax to add multiple parameters
         $this->addParameters([
             'min' => [
                 ParamOption::TYPE => ParamType::INT,
@@ -120,121 +291,202 @@ class GetRandomService extends AbstractWebService {
             ]
         ]);
     }
-}
-```
 
-### Implementing The Abstract Methods of the Class `AbstractWebService`
-
-The class [`AbstractWebService`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService) has two abstract methods at which they must be implemented. The first one is the method [`AbstractWebService::isAuthorized()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#isAuthorized). This method is used to check if the one who is calling the service is allowed to call it or not. The second method is [`AbstractWebService::processRequest()`](https://webfiori.com/docs/WebFiori/Http/AbstractWebService#processRequest). This method is simply used to process client's request and send back a response.
-
-``` php
-use WebFiori\Http\AbstractWebService;
-use WebFiori\Http\RequestMethod;
-use WebFiori\Http\ParamOption;
-use WebFiori\Http\ParamType;
-
-class GetRandomService extends AbstractWebService {
-    public function __construct() {
-        parent::__construct('get-random-number');
-        $this->addRequestMethod(RequestMethod::GET);
-        $this->addRequestMethod(RequestMethod::POST);
-        
-        // Using array syntax to add multiple parameters
-        $this->addParameters([
-            'min' => [
-                ParamOption::TYPE => ParamType::INT,
-                ParamOption::OPTIONAL => true
-            ],
-            'max' => [
-                ParamOption::TYPE => ParamType::INT,
-                ParamOption::OPTIONAL => true
-            ]
-        ]);
-    }
-
-    public function isAuthorized() {
-        //Possibly, check if client is authorized to call the API or not.
-        //If he is not authorized, return false.
+    public function isAuthorized(): bool {
         return true;
     }
 
     public function processRequest() {
-        $max = $this->getParamVal('max');
-        $min = $this->getParamVal('min');
+        $min = $this->getParamVal('min') ?? 0;
+        $max = $this->getParamVal('max') ?? 100;
         
-        // Since the two are optional, they can be null
-        if ($max !== null && $min !== null) {
-            $random = rand($min, $max);
-        } else {
-            $random = rand();
-        }
-        $this->sendResponse($random);
+        $this->sendResponse(rand($min, $max));
     }
 }
 ```
 
-### Adding The Service to The Class `WebServicesManager`
-
-The final step is to add the service to a services manager. The main aim of services manager is to group related services in one place. Also, it is used to manage the incoming requests and send them to correct service. It is always recommended to have a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager) and use it to group the services. To add a service to a services manager, the method 
-[`WebServicesManager::addService()`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager#addService) can be used.
+### Adding to WebServicesManager
 
 ``` php
 use WebFiori\Http\WebServicesManager;
 
-class RandomGenerator extends WebServicesManager {
-    public function __construct() {
-        parent::__construct();
-        $this->addService(new GetRandomService());
-    }
-}
-```
-
-### Processing The Request
-
-In background, processing the request is performed by the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager), to be specific, the method [`WebServicesManager::process()`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager#process). For the service that was created, the developer need to create an instance of the class `RandomGenerator`. After that, he have to call the method [`WebServicesManager::process()`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager#process)
-
-``` php
-use WebFiori\Http\WebServicesManager;
-
-class RandomGenerator extends WebServicesManager {
+class RandomAPI extends WebServicesManager {
     public function __construct() {
         parent::__construct();
         $this->addService(new GetRandomService());
     }
 }
 
-$manager = new RandomGenerator();
+// Process request
+$manager = new RandomAPI();
 $manager->process();
 ```
 
-> **Note:** If the library is used in WebFiori Framework, then no need to perform the last step as the router will handle it. The code assumes that the library is used outside the scope of WebFiori Framework.
+Auto-discover services in a directory:
 
-### Calling The Service
+``` php
+$manager = new WebServicesManager();
+$manager->autoDiscoverServices();  // Discovers services in current directory
+$manager->process();
+```
 
-Assuming that the base URL of the website is `https://example.com` and the class `RandomGenerator` is at the root, then the service can be called using the link `https://example.com/RandomGenerator.php`. If navigated to the given URL in any web browser, the output should be similar to the following:
+## Response Handling
 
-``` json
-{
-    "message":"Service name is not set.", 
-    "type":"error", 
-    "http-code":404
+### JSON Response (Default)
+
+``` php
+#[GetMapping]
+#[ResponseBody]
+public function getData(): array {
+    return ['key' => 'value'];  // Automatically converted to JSON
 }
 ```
 
-This message means that service name is not included in the request and the manager does not know which service to call. To fix this issue, the name of the service that will be called must be included as `GET` parameter with the name `service`. In case the developer would like to call the service `GetRandomService`, he can use the value `get-random-number` for the parameter. So, the URL for calling the service would be `https://example.com/RandomGenerator.php?service=get-random-number`. Calling the service that way would result in the following output.
+### Custom Response Formats
 
-``` json
-{
-    "message":1480407584, 
-    "http-code":200
+``` php
+public function processRequest() {
+    // JSON response
+    $this->send('application/json', ['data' => 'value']);
+    
+    // Plain text
+    $this->send('text/plain', 'Hello World');
+    
+    // XML response
+    $xml = '<?xml version="1.0"?><root><item>value</item></root>';
+    $this->send('application/xml', $xml);
+    
+    // With status code
+    $this->sendResponse('Resource created', self::I, 201);
+    
+    // Error response
+    $this->sendResponse('Not found', self::E, 404);
 }
 ```
 
-It is also possible to can set a value for the parameter `min` or `max` using same way. For example, sending a request to `https://example.com/RandomGenerator.php?service=get-random-number` would result in getting a random number between 1 and 5.
+Response type constants:
+- `self::I` - Info message
+- `self::S` - Success message
+- `self::E` - Error message
 
-### Calling The Service using WebFiori Framework
+## OpenAPI Documentation
 
-The library is fully integrated with WebFiori Framework. In order to call a service, the developer have to create a route to a class which extends the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager). For more information about how to create routes to web services, [check here](learn/routing#api-route)
+Generate OpenAPI 3.1.0 specification automatically:
+
+``` php
+#[RestController('openapi', 'API Documentation')]
+class OpenAPIService extends WebService {
+    
+    #[GetMapping]
+    #[ResponseBody]
+    #[AllowAnonymous]
+    public function getSpec(): array {
+        $openApi = $this->getManager()->toOpenAPI();
+        
+        // Customize info
+        $info = $openApi->getInfo();
+        $info->setTitle('My API');
+        $info->setVersion('1.0.0');
+        $info->setDescription('API documentation');
+        
+        return $openApi->toArray();
+    }
+}
+```
+
+The generated spec can be used with:
+- Swagger UI
+- Postman (import as OpenAPI)
+- Other OpenAPI-compatible tools
+
+## Testing Web Services
+
+Use `APITestCase` for unit testing:
+
+``` php
+use WebFiori\Http\APITestCase;
+
+class UserServiceTest extends APITestCase {
+    
+    public function testGetUsers() {
+        $manager = new UserAPI();
+        
+        $output = $this->callEndpoint(
+            $manager,
+            'GET',
+            'get-users',
+            ['page' => 1, 'limit' => 10]
+        );
+        
+        $response = json_decode($output, true);
+        $this->assertArrayHasKey('users', $response);
+    }
+    
+    public function testCreateUser() {
+        $manager = new UserAPI();
+        
+        $output = $this->callEndpoint(
+            $manager,
+            'POST',
+            'create-user',
+            ['name' => 'John', 'email' => 'john@example.com']
+        );
+        
+        $response = json_decode($output, true);
+        $this->assertEquals('User created', $response['message']);
+    }
+    
+    public function testWithAuthentication() {
+        $manager = new UserAPI();
+        
+        $output = $this->callEndpoint(
+            $manager,
+            'GET',
+            'get-profile',
+            [],
+            ['Authorization' => 'Bearer test-token']
+        );
+        
+        $this->assertStringContainsString('profile', $output);
+    }
+    
+    public function testFileUpload() {
+        $manager = new FileAPI();
+        
+        $this->addFile('document', '/path/to/test.pdf');
+        
+        $output = $this->callEndpoint(
+            $manager,
+            'POST',
+            'upload-file',
+            ['description' => 'Test file']
+        );
+        
+        $response = json_decode($output, true);
+        $this->assertEquals('File uploaded', $response['message']);
+    }
+}
+```
+
+## Calling Services
+
+Services are called via HTTP with the `service` parameter:
+
+```
+GET https://example.com/api?service=get-users
+POST https://example.com/api?service=create-user
+```
+
+In WebFiori Framework, create a route to your services manager:
+
+``` php
+Router::api([
+    'path' => '/api',
+    'route-to' => UserAPI::class
+]);
+```
+
+Then call: `https://example.com/api?service=get-users`
 
 ## Related Articles
 
