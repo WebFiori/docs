@@ -25,7 +25,7 @@ webfiori-project/
 │   ├── Config/               # Application configuration files
 │   ├── Database/             # Database access and interaction classes
 │   ├── Entity/               # Core system entity classes
-│   ├── Init/                 # Initialization classes
+│   ├── Ini/                  # Initialization classes
 │   │   └── Routes/           # Route definition classes
 │   ├── Langs/                # Translation files for i18n
 │   ├── Middleware/           # Request filtering middleware
@@ -33,8 +33,7 @@ webfiori-project/
 │   ├── Storage/              # Application data (not web-accessible)
 │   │   ├── Uploads/          # User uploads and generated content
 │   │   ├── Sessions/         # Session data files
-│   │   ├── Logs/             # Application log files
-│   │   └── Cache/            # Cached data and temporary files
+│   │   └── Logs/             # Application log files
 │   └── Tasks/                # Background jobs and scheduled tasks
 ├── tests/                    # Unit and integration tests
 └── vendor/                   # Framework core and Composer dependencies
@@ -47,7 +46,7 @@ webfiori-project/
         * `Assets`: Static assets including theme resources and media files.
 
 * **Application Directory (`App`, customizable)**
-    * Main application source code directory (name can be customized via `APP_DIR` constant).
+    * Main application source code directory (name can be customized via the first parameter of `App::initiate()` in `public/index.php`).
     * Contains all business logic, configuration, and application-specific code.
 
 **Subdirectories within the Application Directory**
@@ -57,7 +56,7 @@ webfiori-project/
 * **`Config`:** Application configuration and settings files.
 * **`Database`:** Database models, queries, and connection classes.
 * **`Entity`:** Domain entities and business objects.
-* **`Init`:** Application initialization and bootstrap classes.
+* **`Ini`:** Application initialization and bootstrap classes.
     * **`Routes`:** URL routing definitions and route handlers.
 * **`Langs`:** Language files for internationalization and localization.
 * **`Middleware`:** HTTP middleware for request/response processing.
@@ -67,7 +66,6 @@ webfiori-project/
     * **`Uploads`:** User-uploaded files and generated content.
     * **`Sessions`:** Session storage files.
     * **`Logs`:** Application logs and error tracking.
-    * **`Cache`:** Temporary cached data for performance.
 
 **Testing (`tests`)**
 
@@ -84,8 +82,8 @@ webfiori-project/
 ## Setting Custom Application Folder
 
 * Customize the application folder name (default: `App`) to match your project's naming conventions or PSR-4 requirements.
-* Configure the folder name by modifying the `APP_DIR` constant at the top of `public/index.php`.
-* When changed, the framework automatically recreates the folder structure with your chosen name. For example, setting `APP_DIR` to `MyProject` creates configuration files at `MyProject/Config`.
+* Configure the folder name by modifying the first parameter of `App::initiate()` in `public/index.php`.
+* When changed, the framework automatically recreates the folder structure with your chosen name. For example, passing `'MyProject'` as the first parameter creates configuration files at `MyProject/Config`.
 
 This organized structure promotes maintainable code, efficient collaboration, and scalable application development.
 
