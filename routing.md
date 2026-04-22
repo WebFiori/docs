@@ -101,7 +101,7 @@ In general, the idea of creating route for each type of routes will be the same.
 
 This type is a route that will point to a web page. The page can be simple HTML page or dynamic PHP web page. Usually, the folder `[APP_DIR]/Pages` of the application will contain all pages. The method [Router::page()](https://webfiori.com/docs/WebFiori/Framework/Router/Router#page) is used to create such route.
 
-In order to make it easy for developers, they can use the class `[APP_DIR]/Init/Routes/PagesRoutes` to create routes to all pages. The developer can modify the body of the method `PagesRoutes::create()` to add new routes as needed.
+In order to make it easy for developers, they can use the class `[APP_DIR]/Ini/Routes/PagesRoutes` to create routes to all pages. The developer can modify the body of the method `PagesRoutes::create()` to add new routes as needed.
 
 Assuming that there exist 3 pages inside the folder `[APP_DIR]/Pages` as follows:
 
@@ -115,10 +115,10 @@ Also, assuming that the base URL of the website is `https://example.com/`. Assum
 * `https://example.com/user-login` should point to the class `LoginView.php`
 * `https://example.com/dashboard` should point to the view `DashboardView.html`
 
-The following sample code shows how to create such a URL structure using the class [`PagesRoutes`](https://webfiori.com/docs/App/Init/Routes/PagesRoutes).
+The following sample code shows how to create such a URL structure using the class [`PagesRoutes`](https://webfiori.com/docs/App/Ini/Routes/PagesRoutes).
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
@@ -172,7 +172,7 @@ A generic route is a route that has some of its path parts unknown. They can be 
 The following sample code shows how to create such a URL structure using the class `APIsRoutes`. Note that the value of path parameter must be `action`, `service-name` or `service` or the API call will fail.
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
@@ -201,11 +201,11 @@ A closure route is a route to a user defined code that will be executed when the
 The value of the parameter can be accessed using the method [`Router::getParameterValue()`](https://webfiori.com/docs/WebFiori/Framework/Router/Router#getParameterValue). All what needed to be done is to pass parameter name and the method will return its value. The following code sample shows how it's done.
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
-use WebFiori\Http\Response;
+use WebFiori\Framework\App;
  
 class ClosureRoutes {
     public static function create(){
@@ -213,7 +213,7 @@ class ClosureRoutes {
             RouteOption::PATH => '/say-hello-to/{A_Name}',
             RouteOption::TO => function(){
                 $name = Router::getParameterValue('A_Name');
-                Response::append('Hello Mr.'.$name);
+                App::getResponse()->write('Hello Mr.'.$name);
             }
        ]);
     }
@@ -226,7 +226,7 @@ A custom route is a route that points to a file which exist in a folder that was
 
 Assuming that there exist a folder which has the name `sys-files` and inside this folder,there exist two folders. One has the name `views` which contains web pages and another one has the name `apis` which contains system's web APIs. Assuming that the `views` folder has a view which has the name `HomeView.php` and the folder `apis` has one file which has the name `AuthAPI.php`. The following code shows how to create a route to each file:
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
@@ -251,7 +251,7 @@ class OtherRoutes {
 It is possible to have a route to a PHP class. When such route is created, the router will try to create an instance of the class at which the route is pointing to.
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
@@ -269,7 +269,7 @@ class OtherRoutes {
 Also, it is possible to have the route point to specific method in the class by using the option `action`. This is useful when using MVC in building the application and want from the route to point to specific controller method.
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
@@ -289,24 +289,17 @@ class OtherRoutes {
 This type of route is used to redirect specific request to another web page or website. This type of route can be added using the method [`Router::redirect()`](https://webfiori.com/docs/WebFiori/Framework/Router/Router#redirect).
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
-use WebFiori\Framework\Router\RouteOption;
 
 class RedirectRoutes {
     public static function create(){
         // Redirect to external website
-        Router::redirect([
-            RouteOption::PATH => '/old-page',
-            RouteOption::TO => 'https://example.com/new-page'
-        ]);
+        Router::redirect('/old-page', 'https://example.com/new-page');
         
         // Redirect to internal page
-        Router::redirect([
-            RouteOption::PATH => '/legacy-url',
-            RouteOption::TO => '/new-url'
-        ]);
+        Router::redirect('/legacy-url', '/new-url');
     }
 }
 ```
@@ -337,11 +330,11 @@ URI parameters can be also used to replace query string parameters to make URIs 
 In order to add a parameter to a route, the developer have to enclose the name of the parameter between two curly braces `{}`. To access the value of the parameter, the method [`Router::getParameterValue()`](https://webfiori.com/docs/WebFiori/Framework/Router/Router#getParameterValue) is used. The following sample code shows how to use URI parameters in creating generic routes.
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
-use WebFiori\Http\Response;
+use WebFiori\Framework\App;
 
 class ClosureRoutes {
     public static function create(){
@@ -349,7 +342,7 @@ class ClosureRoutes {
             RouteOption::PATH => '/news/{post-title}',
             RouteOption::TO => function(){
                 $name = Router::getParameterValue('post-title');
-                Response::append('You tried to open the post which has the title "'.$name.'"');
+                App::getResponse()->write('You tried to open the post which has the title "'.$name.'"');
             }
         ]);
     }
@@ -359,11 +352,11 @@ class ClosureRoutes {
 
 It is possible to have URI parameters as optional. In this case, the route will be resolved even if no value is provided in the path. To mark a parameter as optional, a question mark can be added to the end of parameter name as follows: `{var?}`.
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
-use WebFiori\Http\Response;
+use WebFiori\Framework\App;
 
 class ClosureRoutes {
     public static function create(){
@@ -373,9 +366,9 @@ class ClosureRoutes {
             RouteOption::TO => function () {
                 $name = Router::getParameterValue('post-title');
                 if ($name === null) {
-                    Response::append('No title is provided.');
+                    App::getResponse()->write('No title is provided.');
                 } else {
-                    Response::append('You tried to open the post which has the title "' . $name . '".');
+                    App::getResponse()->write('You tried to open the post which has the title "' . $name . '".');
                 }
             }
         ]);
@@ -393,14 +386,14 @@ One of the features of the router is the ability to group routes which share sam
 
 One thing to notice about the routes is that they share the same `users` path part. It is possible to create each route by itself but there is a better way that can be used to group the routes. The following code shows how to group routes.
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
 
 class PagesRoutes {
     public static function create(){
-        Router::group([
+        Router::page([
             RouteOption::PATH => '/users', 
             RouteOption::CASE_SENSITIVE => false,
             RouteOption::MIDDLEWARE => [
@@ -434,14 +427,14 @@ By grouping routes, the developer can achieve the following:
 You can create nested groups and apply different middleware to different levels:
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
 
 class AdminRoutes {
     public static function create(){
-        Router::group([
+        Router::addRoute([
             RouteOption::PATH => '/admin',
             RouteOption::MIDDLEWARE => ['auth', 'admin-only'],
             RouteOption::SUB_ROUTES => [
@@ -521,7 +514,7 @@ The `RouteOption::ACTION` option is used when the route is pointing to a class a
 Here's a comprehensive example showing various route options:
 
 ``` php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
@@ -573,19 +566,19 @@ class CompleteRoutes {
                 
                 // Validate parameters
                 if (!in_array($fileType, ['pdf', 'doc', 'txt'])) {
-                    Response::setResponseCode(400);
-                    Response::append('Invalid file type');
+                    App::getResponse()->setCode(400);
+                    App::getResponse()->write('Invalid file type');
                     return;
                 }
                 
                 if (!is_numeric($fileId)) {
-                    Response::setResponseCode(400);
-                    Response::append('Invalid file ID');
+                    App::getResponse()->setCode(400);
+                    App::getResponse()->write('Invalid file ID');
                     return;
                 }
                 
                 // Process download
-                Response::append("Downloading $fileType file with ID: $fileId");
+                App::getResponse()->write("Downloading $fileType file with ID: $fileId");
             },
             RouteOption::REQUEST_METHODS => ['GET'],
             RouteOption::VALUES => [
