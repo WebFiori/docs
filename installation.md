@@ -5,22 +5,23 @@ In this page:
 * **[System Requirements](#system-requirements)**
 * **[Local Development Environment Setup (Windows)](#local-development-environment-setup-windows)**
 * **[Creating WebFiori Application](#creating-webFiori-application)**
-* **[Running the Project](#running-the-roject)**
+* **[Running the Project](#running-the-project)**
 
 
 ## Introduction
 
-This domumentation explains the whole process from installing PHP and composer, to running your first WebFiori application. If you are familiar with how to install PHP on windows or you already have configured your environment, skip to the section "[Creating WebFiori Application](#creating-webFiori-application)".
+This documentation explains the whole process from installing PHP and composer, to running your first WebFiori application. If you are familiar with how to install PHP on windows or you already have configured your environment, skip to the section "[Creating WebFiori Application](#creating-webFiori-application)".
 
 ## System Requirements
 
-* **PHP:** Version 7.0 or later
+* **PHP:** Version 8.1 or later
 * **PHP Extensions:**
     * mbstring
     * mysqli (for MySQL connections)
     * sqlsrv (for SQL Server connections)
     * fileinfo
     * json
+    * openssl
 * **Composer:** Dependency manager
 * Integrated Development Environment (IDE) or text editor with debugging capabilities (e.g., [Apache NetBeans IDE](https://netbeans.apache.org), [VS Code](https://code.visualstudio.com/) or [PHPStorm](https://www.jetbrains.com/phpstorm/))
 
@@ -56,7 +57,7 @@ This domumentation explains the whole process from installing PHP and composer, 
 - Type the following command and press Enter: `php -v`
 - If the command outputs information about the PHP version and configuration, the installation is successful.
 
--- Note: For production environments, a dedicated web server application like [Apache](https://cwiki.apache.org/confluence/display/httpd/PHP), [Nginx](https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/), or [IIS](https://learn.microsoft.com/en-us/iis/application-frameworks/install-and-configure-php-applications-on-iis/using-fastcgi-to-host-php-applications-on-iis) is strongly recommended.
+> **Note:** For production environments, a dedicated web server application like [Apache](https://cwiki.apache.org/confluence/display/httpd/PHP), [Nginx](https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/), or [IIS](https://learn.microsoft.com/en-us/iis/application-frameworks/install-and-configure-php-applications-on-iis/using-fastcgi-to-host-php-applications-on-iis) is strongly recommended.
 
 ### Installing Composer
 
@@ -127,7 +128,7 @@ This launches the server on port 8080. The application can be accessed in your w
 
 **Customization of Application Folder Name:**
 
-The application source code folder name can be modified by adjusting the `APP_DIR` constant located at the beginning of the `index.php` file.
+The application source code folder name can be modified by adjusting the first parameter of `App::initiate()` in the `public/index.php` file.
 
 **Important Note:**
 
