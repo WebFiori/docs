@@ -116,13 +116,13 @@ This flexibility allows developers to choose the most appropriate approach for e
 
 ``` php
 //Assuming application folder name is "App"
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
 
 class PagesRoutes{
-    public static function init() {
+    public static function create() {
         // https://example.com/products/board-games/Chess
         Router::page([
             RouteOption::PATH => 'products/{category}/{sub-category}',
@@ -264,7 +264,7 @@ WebFiori's scheduler system allows developers to automate background tasks, enha
 * **Enhanced Reliability**: Guarantee the timely execution of crucial processes regardless of user activity, ensuring data integrity and task completion.
 * **Improved User Experience**: Offload time-consuming computations and resource-intensive operations to the background, maintaining smooth application performance and responsiveness.
 
-By leveraging the `WebFiori\Framework\Scheduler\AbstractTask` class as a foundation, developers can effortlessly create custom background tasks. Simply place your implemented task class within the designated `[APP_DIR]/tasks` folder, allowing WebFiori to automatically discover and register it for seamless integration.
+By leveraging the `WebFiori\Framework\Scheduler\AbstractTask` class as a foundation, developers can effortlessly create custom background tasks. Simply place your implemented task class within the designated `[APP_DIR]/Tasks` folder, allowing WebFiori to automatically discover and register it for seamless integration.
 
 For more information about creating background jobs, [check here](learn/background-tasks).
 
@@ -349,7 +349,7 @@ Router::page([
     RouteOption::PATH => '/',
     RouteOption::TO => HomePage::class
 ]);
-``
+```
 
 ## Framework Architecture
 
