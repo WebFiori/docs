@@ -1,0 +1,17 @@
+name: Trigger Website Build
+
+on:
+  push:
+    branches: [main, dev]
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch docs-updated event to web repo
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.WEB_REPO_TOKEN }}" \
+            https://api.github.com/repos/WebFiori/web/dispatches \
+            -d '{"event_type":"docs-updated"}'

@@ -37,6 +37,10 @@ The following table lists all environment variables and for what each one is use
 
 
 
-**Next: [Coding Standards](learn/coding-standards)**
+## Related Articles
 
-**Previous: [Internationalization](learn/i18n)**
+* [Internationalization](learn/i18n) - Configure language settings
+* [Installation](learn/installation) - Set up environment variables
+* [Database Management](learn/database) - Configure database connections
+* [Coding Standards](learn/coding-standards) - Follow configuration best practices
+* [Command Line Interface](learn/command-line-interface) - Manage environment via CLI

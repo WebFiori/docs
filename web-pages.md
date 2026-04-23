@@ -11,9 +11,10 @@ One essential part of any website or web application are the pages that the user
 Assume that we would like to have a page that has only one statement which says "Hello World!". The first step is to create new PHP class that extends the class [`WebPage`](https://webfiori.com/docs/webfiori/framework/ui/WebPage).
 
 ``` php
-namespace webfiori\examples\views;
+<?php
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
+use WebFiori\Framework\Ui\WebPage;
 
 class ExamplePage extends WebPage {
     public function __construct() {
@@ -23,22 +24,25 @@ class ExamplePage extends WebPage {
 }
 ```
 
-Once we have the class, we can create a route for it inside the class [`ViewRoutes`](https://webfiori.com/docs/webfiori/framework/router/ViewRoutes) as follows:
+Once we have the class, we can create a route for it inside the class [`PagesRoutes`](https://webfiori.com/docs/webfiori/framework/router/PagesRoutes) as follows:
 
 ``` php
-namespace webfiori\framework\router;
+<?php
+namespace App\Ini\Routes;
 
-use webfiori\examples\views\ExamplePage;
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+use App\Pages\ExamplePage;
 
-class ViewRoutes {
+class PagesRoutes {
     /**
-     * Create all views routes. Include your own here.
+     * Create all pages routes. Include your own here.
      * @since 1.0
      */
     public static function create() {
-        Router::view([
-            'path' => '/example', 
-            'route-to' => ExamplePage::class
+        Router::page([
+            RouteOption::PATH => '/example', 
+            RouteOption::TO => ExamplePage::class
         ]);
     }
 }
@@ -75,9 +79,10 @@ If we run the website using PHP's built-in server using the command `php -S loca
 This structure is the default page structure which is used by WebFiori framework. The developer can modify this structure as needed but we will not look into that now. The last thing that we have to do is to add the text "Hello World!" to the body of our page. We will be creating new `div` element and add the text to that `div`.
 
 ``` php
-namespace webfiori\examples\views;
+<?php
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
+use WebFiori\Framework\Ui\WebPage;
 
 class ExamplePage extends WebPage {
     public function __construct() {
@@ -96,9 +101,10 @@ Now when we refersh the page on the web browser, the statement "Hello World!" sh
 The developer can use the method [`WebPage::addMeta()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addMeta). This method accespts two parameters and one optional. The first argument is the value of the attribute `name` of the tag. The second one is the value of the attribute `content` of the tag. The last argument is used to tell if the value of the attribute `content` will be overreden if a tag with such `name` already exist.
 
 ``` php
-namespace webfiori\examples\views;
+<?php
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
+use WebFiori\Framework\Ui\WebPage;
 
 class ExamplePage extends WebPage {
     public function __construct() {
@@ -120,9 +126,10 @@ Adding extra CSS or JS resource files to your page can be performed using two me
 The second method is [`WebPage::addCSS()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addCSS). Similar to [`WebPage::addJS()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addJS), this method accepts two parameters. The first one is the value of the attribute `href` and the second one is an array that can have additional attributes for the CSS resource file. 
 
 ``` php
-namespace webfiori\examples\views;
+<?php
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
+use WebFiori\Framework\Ui\WebPage;
 
 class ExamplePage extends WebPage {
     public function __construct() {
@@ -142,21 +149,22 @@ class ExamplePage extends WebPage {
 
 One of the great fetaures of the framework is the ability to create and apply themes. The main aim of themes is to give a unified look and feel for all the pages of the website or web application. Simply, to change the whole look of the page without modifying the content, change one line of code to apply new style. For more information on how to create themes, [check here](learn/themes). 
 
-There are two ways to apply a theme to a web page. One way is to use the name of the theme if you know its name and the other way is to use the class that represents the theme. One of the themes that comes with the framework has a class name `WebfioriV108`. To apply this theme, simply use the following syntax:
+There are two ways to apply a theme to a web page. One way is to use the name of the theme if you know its name and the other way is to use the class that represents the theme. To apply a theme, simply use the following syntax:
 ``` php
-namespace webfiori\examples\views;
+<?php
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
+use WebFiori\Framework\Ui\WebPage;
 
 //First, import the theme.
-use webfiori\theme\WebFioriV108;
+use App\Themes\MyTheme;
 
 class ExamplePage extends WebPage {
     public function __construct() {
         parent::__construct();
         
         //Apply the theme
-        $this->setTheme(WebFioriV108::class);
+        $this->setTheme(MyTheme::class);
         
         $div = $this->insert('div');
         $div->text("Hello World!");
@@ -169,24 +177,29 @@ class ExamplePage extends WebPage {
 Suppose that we would like to perform an event before the page is rendered. For example, we would like to make an element be the last one to be added to the page. This can be achived using the method [`WebPage::addBeforeRender()`](https://webfiori.com/docs/webfiori/framework/ui/WebPage#addBeforeRender).
 
 ``` php
-namespace webfiori\examples\views;
+<?php
+namespace App\Pages;
 
-use webfiori\framework\ui\WebPage;
+use WebFiori\Framework\Ui\WebPage;
 
 class ExamplePage extends WebPage {
     public function __construct() {
         parent::__construct();
         
-        $this->addBeforeRender(function (WebPage $page, $name) {
+        $this->addBeforeRender(function (WebPage $page) {
             $div = $page->insert('div');
-            $div->text($name);
-        }, ["Ibrahim"]);
+            $div->text("Ibrahim");
+        });
         
         $div = $this->insert('div');
         $div->text("Hello");
     }
 }
 ```
-**Next: [UI Package](learn/ui-package)**
+## Related Articles
 
-**Previous: [The Class 'Response'](learn/class-response)**
+* [UI Package](learn/ui-package) - Build dynamic UI components for pages
+* [Themes](learn/themes) - Apply themes to web pages
+* [Routing](learn/routing) - Create routes for web pages
+* [The Class Response](learn/class-response) - Send page responses
+* [Basic Usage](learn/basic-usage) - Learn fundamental page concepts
