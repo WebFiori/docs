@@ -28,7 +28,6 @@ In this page:
   * [Adding Connection](#adding-connection)
   * [Creating Database Table](#creating-database-table)
   * [Initializing Database Table](#initializing-database-table)
-  * [Modifying Database Table](#modifying-database-table)
 
 ## Introduction
 
@@ -51,27 +50,15 @@ The following set of steps will show you how to create your database structure a
 
 ### Adding Connection Information
 
-Database connections are represented by the class [`ConnectionInfo`](https://webfiori.com/docs/WebFiori/Database/ConnectionInfo). Connection information are stored inside the class [`AppConfig`](https://github.com/WebFiori/app/blob/main/app/AppConfig.php#L465). It is possible to store multiple connections in it. There are two ways to add connection information. The first one is to add it manually or adding it using command line interface.
+Database connections are represented by the class [`ConnectionInfo`](https://webfiori.com/docs/WebFiori/Database/ConnectionInfo). Connection information is stored in the JSON configuration file at `[APP_DIR]/Config/app-config.json`. It is possible to store multiple connections. There are two ways to add connection information: editing the JSON config file directly or using the command line interface.
 
-Adding connection information manually is simple. The developer have to edit the code inside the method [`AppConfig::initDbConnections()`](https://github.com/WebFiori/app/blob/main/app/AppConfig.php#L465). Assuming that we have MySQL database with the name `testing_db` and username `root` and password `123456`, then connection can be added as follows:
-
-``` php
-private function initDbConnections() {
-    $this->dbConnections = [
-        'connection-00' => new ConnectionInfo('mysql', 'root', '123456', 'testing_db', 'localhost', 3306, [
-            'connection-name' => 'connection-00'
-        ])
-    ];
-}
-```
-
-The connection information is added inside the array `$dbConnections`. This array can have any number of connections. The key in the array represents connection name (`connection-00` in this example) and the value is an object of type [`ConnectionInfo`](https://webfiori.com/docs/WebFiori/Database/ConnectionInfo). Note that connection name will be used later to connect to the database.
+Adding connection information manually can be done by editing the `app-config.json` file. The CLI approach using `php webfiori add:db-connection` is recommended since connection information will be validated before being stored.
 
 ### Creating Database Tables
 
 MySQL Database tables represented by the class [`MySQLTable`](https://webfiori.com/docs/WebFiori/Database/MySql/MySQLTable). Each table in the database must be represented as a sub class of this class. There are two ways at which the developer can create a class that represent a database table. One is a manual way and the other one is to use command line interface.
 
-To create a table class manually, developer have to create new class that extend the class [`MySQLTable`](https://webfiori.com/docs/WebFiori/Database/MySql/MySQLTable) and add columns to it as needed. Assuming that the developer would like to place database tables in the folder `app/database` with namespace `App\Database`. Also, assuming that the developer would like to create a table for keeping contacts information. 
+To create a table class manually, developer have to create new class that extend the class [`MySQLTable`](https://webfiori.com/docs/WebFiori/Database/MySql/MySQLTable) and add columns to it as needed. Assuming that the developer would like to place database tables in the folder `App/Database` with namespace `App\Database`. Also, assuming that the developer would like to create a table for keeping contacts information. 
 
 The [constructor](https://webfiori.com/docs/WebFiori/Database/MySql/MySQLTable#__construct) of the class accepts one parameter which is the name of the table as it appears in the database. Let's assume that the name of the table is `contacts`.
 
@@ -678,25 +665,21 @@ WebFiori framework provides extra commands using CLI which are related to databa
 
 ### Adding Connection Using Command Line Interface
 
-This way of adding database connections is recommended since connection information will be first validated before stored. To add new connection, simply run the command `add` as follows: `php webfiori add`. When the command is executed, a menu that has options will appear. The following image shows the whole process of adding the connection using CLI.
+This way of adding database connections is recommended since connection information will be first validated before stored. To add new connection, simply run the command `php webfiori add:db-connection`. The following image shows the whole process of adding the connection using CLI.
 
 <img src="assets/images/add-connection-command.gif" alt="Add connection command.">
 
 ### Creating Database Table
 
-It is recommended to use command line interface in creating table classes. By using CLI, you only have to give database table properties as inputs and the class will be created automatically for you. To create a new database table class, simply run the command `php webfiori create` and select the desired option from the menu.
+It is recommended to use command line interface in creating table classes. By using CLI, you only have to give database table properties as inputs and the class will be created automatically for you. To create a new database table class, simply run the command `php webfiori create:table`.
 
 <img src="assets/images/add-table-command.gif" alt="Add database table command.">
 
 ### Initializing Database Table
 
-The command `php webfiori create` can be also used to initialize the table in database by selecting another option. 
+The command `php webfiori create:table` can be also used to initialize the table in database by selecting another option. 
 
 <img src="assets/images/initialize-table-command.gif" alt="Initialize database table command.">
-
-### Modifying Database Table
-
-The command `php webfiori update-table` is used to modify the structure of the table. This command accepts one argument that has the name `--table`. The value of the argument must be the name of the table class including its namespace. 
 
 <img src="assets/images/add-table-col-command.gif" alt="Initialize database table command.">
 

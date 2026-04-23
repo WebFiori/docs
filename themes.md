@@ -6,11 +6,7 @@ In this page:
 * [Introduction](#introduction)
 * [Using Themes](#using-themes)
 * [Creating Custom Theme](#creating-custom-theme)
-  * [Manually Creating a Theme](#manually-creating-a-theme) 
-    * [Creating Theme Directory and Resources Folders](#creating-theme-directory-and-resources-folders)
-    * [Adding Theme Resources](#adding-theme-resources)
-    * [Implementing The Theme](#implementing-the-theme)
-  * [Using Command Line to Create Themes](#using-command-line-to-create-themes)
+  * [Manually Creating a Theme](#manually-creating-a-theme)
 
 ## Introduction
 
@@ -20,17 +16,18 @@ Themes in WebFiori Framework are used to create different custom user interfaces
 
 ## Using Themes
 
-Each page in the application must be represented by the class [`WebPage`](https://webfiori.com/docs/WebFiori/Framework/Ui/WebPage) for themes to work. For more information about web pages, [check here](learn/web-pages). After that, all what needed about the theme is the class that represent it. A theme can be applied to a page using the method [`WebPage::setTheme()`](https://webfiori.com/docs/WebFiori/Framework/Ui/WebPage#setTheme). For example, if theme class is `themes\webfiori\WebFioriTheme`, then the theme can be applied as follows:
+Each page in the application must be represented by the class [`WebPage`](https://webfiori.com/docs/WebFiori/Framework/Ui/WebPage) for themes to work. For more information about web pages, [check here](learn/web-pages). After that, all what needed about the theme is the class that represent it. A theme can be applied to a page using the method [`WebPage::setTheme()`](https://webfiori.com/docs/WebFiori/Framework/Ui/WebPage#setTheme). For example, if theme class is `Themes\CustomTheme\CustomTheme`, then the theme can be applied as follows:
 
 ``` php
 namespace App\Pages;
 
 use WebFiori\Framework\Ui\WebPage;
+use Themes\CustomTheme\CustomTheme;
 
 class MyWebPage extends WebPage {
     public function __construct() {
         parent::__construct();
-        $this->setTheme(themes\webfiori\WebFioriTheme::class);
+        $this->setTheme(CustomTheme::class);
         
         // Add page content here
     }
@@ -142,8 +139,8 @@ For our theme, we will allow each method of the 3 to return a `<div>` element wi
 namespace Themes\CustomTheme;
 
 use WebFiori\Framework\Theme;
-use WebFiori\UI\HTMLNode;
-use WebFiori\UI\HeadNode;
+use WebFiori\Ui\HTMLNode;
+use WebFiori\Ui\HeadNode;
 
 class CustomTheme extends Theme {
     public function __construct() {
@@ -198,44 +195,6 @@ class ExamplePage extends WebPage {
     }
 }
 ```
-
-### Using Command Line to Create Themes
-
-Instead of going through all theme creation steps manually, it is recommended to use command line interface to create themes using the command `create` of the framework. This command will create a basic theme skeleton where the developer can use to build his theme. 
-
-
-#### Steps
-* Run the command `php webfiori create --c=theme`.
-* Provide theme class information when prompted (name and namespace).
-* Fix any namespace casing issues in the generated files if needed.
-
-Running this command will create 5 classes:
-* Main theme class.
-* A class with the name `HeadSection` which can be used to include theme resource files.
-* A class with the name `HeaderSection` which represents header section of the page.
-* A class with the name `AsideSection` which represents side section of the page.
-* A class with the name `FooterSection` which represents footer section of the page.
-
-**Important:** After generating the theme files, you may need to:
-1. Fix namespace casing issues (change `WebFiori\UI\` to `WebFiori\Ui\`)
-2. Create the corresponding assets directory structure in `public/assets/[ThemeName]/`
-3. Add CSS, JS, and image files as needed
-
-The following shell output shows actual run for creating a theme.
-
-``` 
-php webfiori create --c=theme
-
-Enter a name for the new class:
-SuperTheme
-Enter an optional namespace for the class: Enter = "Themes"
-Themes\SuperTheme
-
-Creating theme at "/path/to/app/Themes"...
-Info: New class was created at "/path/to/app/Themes".
-
-```
-
 
 ## Related Articles
 

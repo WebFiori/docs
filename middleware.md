@@ -25,12 +25,12 @@ Middleware represented by the class [`AbstractMiddleware`](https://webfiori.com/
 
 * [AbstractMiddleware::before()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#before)
 * [AbstractMiddleware::after()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#after)
-* [AbstractMiddleware::beforeTerminate()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#beforeTerminate)
+* [AbstractMiddleware::afterSend()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#afterSend)
 
 
 ## Implementing Custom Middleware
 
-The first step in creating new middleware is to create new class in the folder `[APP_DIR]/middleware` which extends the class [`AbstractMiddleware`](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware).
+The first step in creating new middleware is to create new class in the folder `[APP_DIR]/Middleware` which extends the class [`AbstractMiddleware`](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware).
 
 ``` php 
 namespace App\Middleware;
@@ -235,7 +235,7 @@ class AuthMiddleware extends AbstractMiddleware {
         // Log user activity
         $userId = SessionsManager::get('user-id');
         if ($userId) {
-            error_log("User $userId accessed: " . $request->getRequestURI());
+            error_log("User $userId accessed: " . $request->getUri());
         }
     }
 }
@@ -286,7 +286,7 @@ class CorsMiddleware extends AbstractMiddleware {
 
 ## Command Line Utility
 
-The framework comes with a command which can be used to create middleware skeleton. The command can be issued in the terminal by typing `php webfiori create --c=middleware`. The process will prompt for all attributes of the middleware and create the template. Later on, the developer have to write the actual code that will be executed by the middleware.  
+The framework comes with a command which can be used to create middleware skeleton. The command can be issued in the terminal by typing `php webfiori create:middleware`. The process will prompt for all attributes of the middleware and create the template. Later on, the developer have to write the actual code that will be executed by the middleware.  
 
 <img alt="Create middleware using CLI." src="assets/images/middleware-cli.gif">
 

@@ -368,7 +368,7 @@ Available components are:
 * [`Paragraph`](https://webfiori.com/docs/webfiori/ui/Paragraph)
 * [`TableCell`](https://webfiori.com/docs/webfiori/ui/TableCell)
 * [`TableRow`](https://webfiori.com/docs/webfiori/ui/TableRow)
-* [`UnrderedList`](https://webfiori.com/docs/webfiori/ui/UnrderedList)
+* [`UnorderedList`](https://webfiori.com/docs/webfiori/ui/UnorderedList)
 
 ## Related Articles
 

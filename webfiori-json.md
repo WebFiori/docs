@@ -129,7 +129,7 @@ $jsonObj = new Json(['name' => 'Ibrahim', 'age' => 26]);
 $name = $jsonObj->get('name');
 
 // Check if property exists
-if ($jsonObj->has('age')) {
+if ($jsonObj->hasKey('age')) {
     echo "Age property exists";
 }
 
@@ -551,10 +551,10 @@ The generated output will be similar to the following JSON:
 
 ## Reading JSON File
 
-One of the great features of the library is the ability to read any file that contains valid JSON and load it into an object of type `Json`. To achieve this, the static method [`Json::fromFile()`](https://webfiori.com/docs/WebFiori/Json/Json#fromFile) can be used. This method will return an object of type `Json` if the file content was parsed without issues. The following code sample shows how to use that method.
+One of the great features of the library is the ability to read any file that contains valid JSON and load it into an object of type `Json`. To achieve this, the static method [`Json::fromJsonFile()`](https://webfiori.com/docs/WebFiori/Json/Json#fromJsonFile) can be used. This method will return an object of type `Json` if the file content was parsed without issues. The following code sample shows how to use that method.
 
 ``` php 
-$jsonObj = Json::fromFile('jsonData.json');
+$jsonObj = Json::fromJsonFile('jsonData.json');
 if ($jsonObj instanceof Json) {
     // Do things with the data
 } else {

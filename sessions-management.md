@@ -25,10 +25,10 @@ Starting new session is very simple. The developer can use the method [`Sessions
 
 ``` php
 use WebFiori\Framework\Session\SessionsManager;
-use WebFiori\Http\Response;
+use WebFiori\Framework\App;
 
 SessionsManager::start('hello-session');
-Response::append(SessionsManager::getActiveSession()->toJSON());
+App::getResponse()->write(SessionsManager::getActiveSession()->toJSON());
 ```
 
 The output of the code would be something similar to this:
@@ -81,7 +81,7 @@ To resume a session, the developer simply have to use the same method which is u
 SessionsManager::start('hello-session');
 SessionsManager::close();
 SessionsManager::start('hello-session');
-Response::append(SessionsManager::getActiveSession()->toJSON());
+App::getResponse()->write(SessionsManager::getActiveSession()->toJSON());
 ```
 
 ## Destroying a Session
@@ -154,20 +154,11 @@ $v4 = SessionsManager::pull('var-2');
 //$v1 and $v3 will have same value
 //$v4 will be null
 
-// Check if a variable exists
-if (SessionsManager::has('products')) {
-    $products = SessionsManager::get('products');
-}
-
-// Get with default value
-$theme = SessionsManager::get('user_theme', 'light');
-
 // Remove a specific variable
 SessionsManager::remove('temporary_data');
 
 // Get all session variables
 $allVars = SessionsManager::getActiveSession()->getVars();
-```
 ```
 
 ## Generating New ID
@@ -176,15 +167,15 @@ In some cases, the ID of the session must be changed to prevent malicious users 
 
 ``` php
 SessionsManager::start('hello-session');
-Response::append('Old Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
+App::getResponse()->write('Old Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
 SessionsManager::newId();
 // This will show different ID.
-Response::append('New Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
+App::getResponse()->write('New Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
 ```
 
 ## Creating Custom Sessions Storage
 
-By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `[APP_DIR]/sto/sessions`.
+By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `[APP_DIR]/Storage/Sessions`.
 
 Creating new sessions storage is very simple. For example, the developer might want to use database to store session data.
 
@@ -317,8 +308,8 @@ The last step is to use the newly created sessions storage engine. In order to h
 By default, the framework comes with two session storage engines. One is the default one which uses files ([`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage)) and the other one which uses database ([`DatabaseSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DatabaseSessionStorage)). In order to be able to use database session storage, it must be first configured. Configuration steps are as follows:
 
 * Setting the value of the constant `WF_SESSION_STORAGE` to `\WebFiori\Framework\Session\DatabaseSessionStorage`.
-* Adding a database connection with the name `sessions-connection` using the command `add`.
-* Creating the table that will store the sessions using the command `run-query`.
+* Adding a database connection with the name `sessions-connection` using the command `add:db-connection`.
+* Creating the table that will store the sessions using a migration.
 
 ### Setting the Value of The Constant `WF_SESSION_STORAGE`
 
@@ -331,25 +322,15 @@ define('WF_SESSION_STORAGE', '\WebFiori\Framework\Session\DatabaseSessionStorage
 
 To add the connection which will be used by database session storage, run the following command:
 ```
-php webfiori add
+php webfiori add:db-connection
 ```
-From the menu, select the first option. Then it will start by asking about connection information. When the command asks about connection name, enter `sessions-connection`. The following image shows how the connection is added.
+When the command asks about connection name, enter `sessions-connection`.
 
 <img src="assets/images/add-sessions-db-connection.png" alt="add sessions connection" style="height:auto;max-width:100%;border:1px solid;">
 
 ### Initializing Database Table
 
-The final step is to initialize the table that will hold sessions data. First step in initializing the table is to run the following command:
-
-```
-php webfiori run-query --schema=WebFiori\Framework\Session\SessionDB
-```
-
-This command will ask to select what type of query that will be executed on the schema which is used to store the tables for sessions management. The developer must select the first option to run a query which will create all tables that are used to store sessions.
-
-The following image shows all command execution steps.
-
-<img src="assets/images/init-db-session-storage.png" alt="Run query for session storage." style="height:auto;max-width:100%;border:1px solid;">
+The final step is to initialize the table that will hold sessions data. This can be done by creating a migration that sets up the sessions table, then running it with `php webfiori migrations:run`.
 
 ## Related Articles
 

@@ -28,7 +28,7 @@ Once we have the class, we can create a route for it inside the class [`PagesRou
 
 ``` php
 <?php
-namespace App\Init\Routes;
+namespace App\Ini\Routes;
 
 use WebFiori\Framework\Router\Router;
 use WebFiori\Framework\Router\RouteOption;
@@ -149,7 +149,7 @@ class ExamplePage extends WebPage {
 
 One of the great fetaures of the framework is the ability to create and apply themes. The main aim of themes is to give a unified look and feel for all the pages of the website or web application. Simply, to change the whole look of the page without modifying the content, change one line of code to apply new style. For more information on how to create themes, [check here](learn/themes). 
 
-There are two ways to apply a theme to a web page. One way is to use the name of the theme if you know its name and the other way is to use the class that represents the theme. One of the themes that comes with the framework has a class name `WebFioriV108`. To apply this theme, simply use the following syntax:
+There are two ways to apply a theme to a web page. One way is to use the name of the theme if you know its name and the other way is to use the class that represents the theme. To apply a theme, simply use the following syntax:
 ``` php
 <?php
 namespace App\Pages;
@@ -157,14 +157,14 @@ namespace App\Pages;
 use WebFiori\Framework\Ui\WebPage;
 
 //First, import the theme.
-use themes\webfiori108\WebFioriV108;
+use App\Themes\MyTheme;
 
 class ExamplePage extends WebPage {
     public function __construct() {
         parent::__construct();
         
         //Apply the theme
-        $this->setTheme(WebFioriV108::class);
+        $this->setTheme(MyTheme::class);
         
         $div = $this->insert('div');
         $div->text("Hello World!");

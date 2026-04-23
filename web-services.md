@@ -244,16 +244,13 @@ Use `SecurityContext` for managing authentication state:
 use WebFiori\Http\SecurityContext;
 use WebFiori\Http\SecurityPrincipal;
 
-// Set authenticated user
-$user = new SecurityPrincipal();
-$user->setId(1);
-$user->setUsername('john');
-$user->setRoles(['USER', 'ADMIN']);
-SecurityContext::setUser($user);
+// Set authenticated user (using a class that implements SecurityPrincipal)
+$user = new AppUser(); // Must implement SecurityPrincipal interface
+SecurityContext::setCurrentUser($user);
 
 // Check authentication
 if (SecurityContext::isAuthenticated()) {
-    $currentUser = SecurityContext::getUser();
+    $currentUser = SecurityContext::getCurrentUser();
 }
 
 // Evaluate security expressions
@@ -357,10 +354,10 @@ public function processRequest() {
     $this->send('application/xml', $xml);
     
     // With status code
-    $this->sendResponse('Resource created', self::I, 201);
+    $this->sendResponse('Resource created', 201, self::I);
     
     // Error response
-    $this->sendResponse('Not found', self::E, 404);
+    $this->sendResponse('Not found', 404, self::E);
 }
 ```
 
