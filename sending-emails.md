@@ -18,7 +18,7 @@ Email messages are considered as one of the most effective communication ways, a
 
 ## Configuration
 
-Before sending any email, first the developer have to add SMTP account information that will be used to send emails. The account can be added in two ways. Either by using the command `php webfiori add` or by opening application configuration and adding the connection manually. The preferred way for adding SMTP connection information is the first one as it will validate connection information before storing them.
+Before sending any email, first the developer have to add SMTP account information that will be used to send emails. The account can be added in two ways. Either by using the command `php webfiori add:smtp-connection` or by opening application configuration and adding the connection manually. The preferred way for adding SMTP connection information is the first one as it will validate connection information before storing them.
 
 For every SMTP account, the following items must be specified:
 
@@ -34,7 +34,7 @@ The account name will act as an identifier for the account when sending a messag
 
 ## Creating and Sending an Email
 
-Sending HTML email messages is performed using the class [`EmailMessage`](https://webfiori.com/docs/WebFiori/Framework/Mail/EmailMessage). This class has methods which are used to set the attributes of an email message such as its subject, importance and the people who will get the message. This class is usually used in the following way:
+Sending HTML email messages is performed using the class [`EmailMessage`](https://webfiori.com/docs/WebFiori/Framework/EmailMessage). This class has methods which are used to set the attributes of an email message such as its subject, importance and the people who will get the message. This class is usually used in the following way:
 
 * Specify SMTP connection to use.
 * Set the subject of the message.
@@ -45,7 +45,7 @@ Sending HTML email messages is performed using the class [`EmailMessage`](https:
 There are other things which might be performed to the message before sending it. For example, the developer might specify the importance of the message or add attachments to it or add colors and styles. But for now, only the most basic use case is shown. The following PHP code shows how to create and send a basic email message.
 
 ``` php 
-use WebFiori\Framework\Mail\EmailMessage;
+use WebFiori\Framework\EmailMessage;
 
 //First thing to do, Specify SMTP account to use.
 //In our example, the name was 'no-reply'.
@@ -65,14 +65,14 @@ $p->text('This is a welcome message.');
 $message->send();
 ```
 
-The email will be sent in HTML format. To customize the content of the generated HTML, the developer must access the DOM of the message. Every email message instance is associated with an object of type [`HTMLDoc`](https://webfiori.com/docs/WebFiori/Ui/HTMLDoc). The document object can be accessed using the method [`EmailMessage::getDocument()`](https://webfiori.com/docs/WebFiori/Framework/Mail/EmailMessage#getDocument). In addition to that, it is possible to add objects of type [`HTMLNode`](https://webfiori.com/docs/WebFiori/Ui/HTMLNode) to the body of the message using the method [`EmailMessage::insert()`](https://webfiori.com/docs/WebFiori/Framework/Mail/EmailMessage#insert).
+The email will be sent in HTML format. To customize the content of the generated HTML, the developer must access the DOM of the message. Every email message instance is associated with an object of type [`HTMLDoc`](https://webfiori.com/docs/WebFiori/Ui/HTMLDoc). The document object can be accessed using the method [`EmailMessage::getDocument()`](https://webfiori.com/docs/WebFiori/Framework/EmailMessage#getDocument). In addition to that, it is possible to add objects of type [`HTMLNode`](https://webfiori.com/docs/WebFiori/Ui/HTMLNode) to the body of the message using the method [`EmailMessage::insert()`](https://webfiori.com/docs/WebFiori/Framework/EmailMessage#insert).
 
 ### Advanced Email Customization
 
 Here are some examples of creating more sophisticated email messages:
 
 ``` php
-use WebFiori\Framework\Mail\EmailMessage;
+use WebFiori\Framework\EmailMessage;
 
 $message = new EmailMessage('no-reply');
 $message->setSubject('Welcome to Our Platform!');
@@ -136,13 +136,14 @@ $footer->setStyle([
 $footer->text('© 2024 Your Company. All rights reserved.');
 
 $message->send();
+```
 
 ### Working with Email Templates
 
 For consistent email design, you can create reusable email templates:
 
 ``` php
-use WebFiori\Framework\Mail\EmailMessage;
+use WebFiori\Framework\EmailMessage;
 
 class EmailTemplate {
     public static function createWelcomeEmail($smtpAccount, $recipientEmail, $recipientName, $activationLink) {
@@ -221,12 +222,12 @@ $welcomeEmail->send();
 
 ## Attaching Files
 
-One of the features of the class [`EmailMessage`](https://webfiori.com/docs/WebFiori/Framework/Mail/EmailMessage) is the support for adding attachments to the message. In order to add attachments, the developer must use the class [`File`](https://webfiori.com/docs/WebFiori/File/File). This class is used to read and write files or send them back as a response. In order to add a file as an attachment, it must be first opened and then added to the message using the method [`EmailMessage::attach()`](https://webfiori.com/docs/WebFiori/Framework/Mail/EmailMessage#attach).
+One of the features of the class [`EmailMessage`](https://webfiori.com/docs/WebFiori/Framework/EmailMessage) is the support for adding attachments to the message. In order to add attachments, the developer must use the class [`File`](https://webfiori.com/docs/WebFiori/File/File). This class is used to read and write files or send them back as a response. In order to add a file as an attachment, it must be first opened and then added to the message using the method [`EmailMessage::attach()`](https://webfiori.com/docs/WebFiori/Framework/EmailMessage#attach).
 
 Assuming that we have a file which has the name "My CV.docx" in the root directory of the framework, The file can be attached to the email as follows:
 
 ``` php
-use WebFiori\Framework\Mail\EmailMessage;
+use WebFiori\Framework\EmailMessage;
 use WebFiori\File\File;
 
 $message = new EmailMessage('no-reply');
@@ -249,7 +250,7 @@ $message->send();
 You can attach multiple files of different types:
 
 ``` php
-use WebFiori\Framework\Mail\EmailMessage;
+use WebFiori\Framework\EmailMessage;
 use WebFiori\File\File;
 
 $message = new EmailMessage('no-reply');
@@ -278,7 +279,7 @@ $message->send();
 It's important to handle potential errors when sending emails:
 
 ``` php
-use WebFiori\Framework\Mail\EmailMessage;
+use WebFiori\Framework\EmailMessage;
 use WebFiori\File\File;
 
 try {
