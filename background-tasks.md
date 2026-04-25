@@ -9,7 +9,7 @@ In this page:
   * [The Class `AbstractTask`](#the-class-abstracttask)
   * [The Class `BaseTask`](#the-class-BaseTask)
   * [The Class `TasksManager`](#the-class-tasksmanager)
-  * [The Class `InitTasks`](#the-class-inittasks)
+  * [The Class `Tasks`](#the-class-tasks)
 * [Scheduling Jobs](#scheduling-jobs)
   * [Scheduling Job as a Closure](#scheduling-job-as-a-closure)
   * [Using the Class `AbstractTask`](#using-the-class-abstracttask)
@@ -23,7 +23,7 @@ In this page:
   * [Sending Arguments Through CRON Web Interface](#sending-arguments-through-cron-web-interface)
   * [Sending Arguments Through Terminal](#sending-arguments-through-terminal)
 * [Sending CRON Notifications](#sending-cron-notifications)
-  * [The Class `CronEmail`](#the-class-cronemail)
+  * [The Class `TaskStatusEmail`](#the-class-cronemail)
 
 ## Introduction
 
@@ -64,39 +64,39 @@ A job can be implemented using one of two ways, As a closure, or by extending th
 
 This way is straightforward and does not require lots of coding. To schedule a job as a closure, the class [`TasksManager`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager) is used directly. The class has many pre-made methods which can be used to schedule jobs as closures in different times. These methods include the following ones:
 
-* [`TasksManager::createJob()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#createJob): Schedule a job using specific cron expression.
-* [`TasksManager::dailyJob()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#dailyJob): Schedule a job to run every day at specific time.
-* [`TasksManager::monthlyJob()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#monthlyJob): Schedule a job to run once every month in a specific day and time.
-* [`TasksManager::weeklyJob()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#weeklyJob): Schedule a job to run once every week in a specific day and time.
+* [`TasksManager::createTask()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#createTask): Schedule a job using specific cron expression.
+* [`TasksManager::dailyTask()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#dailyTask): Schedule a job to run every day at specific time.
+* [`TasksManager::monthlyTask()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#monthlyTask): Schedule a job to run once every month in a specific day and time.
+* [`TasksManager::weeklyTask()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#weeklyTask): Schedule a job to run once every week in a specific day and time.
 
-The following code sample shows how to use each one of the methods to schedule jobs. Initializing jobs must be performed in the class `[APP_DIR]\ini\InitTasks`
+The following code sample shows how to use each one of the methods to schedule jobs. Initializing jobs must be performed in the class `[APP_DIR]\Ini\Tasks`
 
 ``` php
 namespace App\Ini;
 
 use WebFiori\Framework\Scheduler\TasksManager;
 
-class InitTasks {
+class Tasks {
     /**
      * A method that can be used to initialize cron jobs.
      * The developer can use this method to create cron jobs.
      * @since 1.0
      */
-    public static function init() {
+    public static function initialize() {
 
-        TasksManager::createJob('*/10 * * * *', 'Every Minute', function () {
+        TasksManager::createTask('*/10 * * * *', 'Every Minute', function () {
             echo "Will execute every 10 minutes";
         });
         
-        TasksManager::dailyJob("13:00", "Test Job", function () {
+        TasksManager::dailyTask("13:00", "Test Job", function () {
             echo "Will execute every day at 1:00 PM";
         });
         
-        TasksManager::weeklyJob('sun-15:30', 'Another Job', function () {
+        TasksManager::weeklyTask('sun-15:30', 'Another Job', function () {
             echo "Will execute every sunday at 3:30 PM";
         });
         
-        TasksManager::monthlyJob(1, '00:00', 'First Day Of Month', function () {
+        TasksManager::monthlyTask(1, '00:00', 'First Day Of Month', function () {
             echo "Will execute at first day of every month at 12:00 AM";
         });
     }
@@ -117,13 +117,13 @@ The method [`AbstractTask::afterExec()`](https://webfiori.com/docs/WebFiori/Fram
 
 #### A Sample Job
 
-It is recommended to place jobs at the folder `[APP_DIR]/jobs` as they will be auto-registered if they are placed in this folder. The following code shows a sample job that writes a text to a file.
+It is recommended to place jobs at the folder `[APP_DIR]/Tasks` as they will be auto-registered if they are placed in this folder. The following code shows a sample job that writes a text to a file.
 
 ``` php
 namespace App\Jobs;
 
 use WebFiori\Framework\Scheduler\AbstractTask;
-use WebFiori\Framework\File;
+use WebFiori\File\File;
 
 class WriteFileJob extends AbstractTask {
     public function __construct() {
@@ -153,7 +153,7 @@ class WriteFileJob extends AbstractTask {
 }
 ```
 
-After implementing the job, it must be registered. If the class is placed in the folder `[APP_DIR]/jobs`, then the registration process will be automatic. If the job class is somewhere else, then it must be registered manually. The developer can use the method [`TasksManager::scheduleJob()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#scheduleJob) to register jobs. The code which can be used to register a job can be placed in the class `[APP_DIR]\InitTasks`. The following code shows how it is done.
+After implementing the job, it must be registered. If the class is placed in the folder `[APP_DIR]/Tasks`, then the registration process will be automatic. If the job class is somewhere else, then it must be registered manually. The developer can use the method [`TasksManager::scheduleTask()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TasksManager#scheduleTask) to register jobs. The code which can be used to register a job can be placed in the class `[APP_DIR]\Ini\Tasks`. The following code shows how it is done.
 
 ``` php
 namespace App\Ini;
@@ -161,14 +161,14 @@ namespace App\Ini;
 use WebFiori\Framework\Scheduler\TasksManager;
 use App\Jobs\WriteFileJob;
 
-class InitTasks {
+class Tasks {
     /**
      * A method that can be used to initialize cron jobs.
      * The developer can use this method to create cron jobs.
      * @since 1.0
      */
-    public static function init() {
-        TasksManager::scheduleJob(new WriteFileJob());
+    public static function initialize() {
+        TasksManager::scheduleTask(new WriteFileJob());
     }
 }
 ```
@@ -299,18 +299,18 @@ One of the things that the framework supports is the ability to send email notif
 
 > **Note**: Note that to use mailing service of the framework, SMTP account must be setup. To learn more about sending emails and how to do the setup, [click here](learn/sending-emails).
 
-### The Class `CronEmail`
+### The Class `TaskStatusEmail`
 
-In order to send email notifications, the class [`CronEmail`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/CronEmail) must be used. This class can be used to send an email regarding the status of background job execution (failed or success). This class must be only used in one of the abstract methods of a background job since using it while no job is active will have no effect. It is recommended to create an instance of this class in the body of the method [`AbstractTask::afterExec()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/AbstractTask#afterExec).
+In order to send email notifications, the class [`TaskStatusEmail`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/TaskStatusEmail) must be used. This class can be used to send an email regarding the status of background job execution (failed or success). This class must be only used in one of the abstract methods of a background job since using it while no job is active will have no effect. It is recommended to create an instance of this class in the body of the method [`AbstractTask::afterExec()`](https://webfiori.com/docs/WebFiori/Framework/Scheduler/AbstractTask#afterExec).
 
-The following code sample shows how to use the class to send notifications to one email address. It assumes that there exist SMTP account which has the name `cron-notifications` is added to the class `[APP_DIR]\config\AppConfig` and it will be used to send the notifications.
+The following code sample shows how to use the class to send notifications to one email address. It assumes that there exist SMTP account which has the name `cron-notifications` added to the application configuration and it will be used to send the notifications.
 
 ``` php
 namespace App\Jobs;
 
 use WebFiori\Framework\Scheduler\AbstractTask;
 use WebFiori\Framework\Scheduler\TasksManager;
-use WebFiori\Framework\Scheduler\CronEmail;
+use WebFiori\Framework\Scheduler\TaskStatusEmail;
 
 class GenerateAttendanceReportJob extends AbstractTask {
     public function __construct() {
@@ -328,7 +328,7 @@ class GenerateAttendanceReportJob extends AbstractTask {
     
     public function afterExec() {
         //Send email that shows the status of job execution
-        new CronEmail('cron-notifications', [
+        new TaskStatusEmail('cron-notifications', [
             'ibrahim@example.com' => 'Ibrahim' 
         ]);
     }
