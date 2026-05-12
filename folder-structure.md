@@ -24,7 +24,8 @@ webfiori-project/
 │   ├── Commands/             # Custom CLI commands
 │   ├── Config/               # Application configuration files
 │   ├── Database/             # Database access and interaction classes
-│   ├── Entity/               # Core system entity classes
+│   ├── Domain/               # Domain entities and business objects
+│   ├── Infrastructure/       # Repositories and schema definitions
 │   ├── Ini/                  # Initialization classes
 │   │   └── Routes/           # Route definition classes
 │   ├── Langs/                # Translation files for i18n
@@ -54,8 +55,9 @@ webfiori-project/
 * **`Apis`:** REST API controllers and web service endpoints.
 * **`Commands`:** Custom CLI commands for application management.
 * **`Config`:** Application configuration and settings files.
-* **`Database`:** Database models, queries, and connection classes.
-* **`Entity`:** Domain entities and business objects.
+* **`Database`:** Database migrations, seeders, and related classes.
+* **`Domain`:** Domain entities and business objects. (Also commonly named `Entity` — see [MVC Architecture](learn/mvc) for the recommended structure.)
+* **`Infrastructure`:** Repository implementations and database schema (table) definitions.
 * **`Ini`:** Application initialization and bootstrap classes.
     * **`Routes`:** URL routing definitions and route handlers.
 * **`Langs`:** Language files for internationalization and localization.

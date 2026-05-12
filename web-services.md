@@ -408,12 +408,10 @@ class UserServiceTest extends APITestCase {
     public function testGetUsers() {
         $manager = new UserAPI();
         
-        $output = $this->callEndpoint(
-            $manager,
-            'GET',
-            'get-users',
-            ['page' => 1, 'limit' => 10]
-        );
+        $output = $this->getRequest($manager, 'get-users', [
+            'page' => 1, 
+            'limit' => 10
+        ]);
         
         $response = json_decode($output, true);
         $this->assertArrayHasKey('users', $response);
@@ -422,23 +420,43 @@ class UserServiceTest extends APITestCase {
     public function testCreateUser() {
         $manager = new UserAPI();
         
-        $output = $this->callEndpoint(
-            $manager,
-            'POST',
-            'create-user',
-            ['name' => 'John', 'email' => 'john@example.com']
-        );
+        $output = $this->postRequest($manager, 'create-user', [
+            'name' => 'John', 
+            'email' => 'john@example.com'
+        ]);
         
         $response = json_decode($output, true);
         $this->assertEquals('User created', $response['message']);
     }
     
+    public function testUpdateUser() {
+        $manager = new UserAPI();
+        
+        $output = $this->putRequest($manager, 'update-user', [
+            'id' => 1,
+            'name' => 'John Updated'
+        ]);
+        
+        $response = json_decode($output, true);
+        $this->assertEquals('User updated', $response['message']);
+    }
+    
+    public function testDeleteUser() {
+        $manager = new UserAPI();
+        
+        $output = $this->deleteRequest($manager, 'delete-user', [
+            'id' => 1
+        ]);
+        
+        $response = json_decode($output, true);
+        $this->assertEquals('User deleted', $response['message']);
+    }
+    
     public function testWithAuthentication() {
         $manager = new UserAPI();
         
-        $output = $this->callEndpoint(
+        $output = $this->getRequest(
             $manager,
-            'GET',
             'get-profile',
             [],
             ['Authorization' => 'Bearer test-token']
@@ -452,18 +470,25 @@ class UserServiceTest extends APITestCase {
         
         $this->addFile('document', '/path/to/test.pdf');
         
-        $output = $this->callEndpoint(
-            $manager,
-            'POST',
-            'upload-file',
-            ['description' => 'Test file']
-        );
+        $output = $this->postRequest($manager, 'upload-file', [
+            'description' => 'Test file'
+        ]);
         
         $response = json_decode($output, true);
         $this->assertEquals('File uploaded', $response['message']);
     }
 }
 ```
+
+Available test methods:
+
+| Method | Description |
+|--------|-------------|
+| `getRequest($manager, $service, $params, $headers)` | Simulate a GET request |
+| `postRequest($manager, $service, $params, $headers)` | Simulate a POST request |
+| `putRequest($manager, $service, $params, $headers)` | Simulate a PUT request |
+| `deleteRequest($manager, $service, $params, $headers)` | Simulate a DELETE request |
+| `addFile($name, $path)` | Add a file for upload testing |
 
 ## Calling Services
 

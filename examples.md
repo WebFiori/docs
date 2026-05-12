@@ -40,6 +40,12 @@ An admin dashboard with role-based access control, audit logging, switchable the
 
 **Covers:** Privileges, Middleware Chain, Audit Logging, Themes, i18n, Email, Background Tasks, CLI Commands, OpenAPI / Swagger, Testing
 
+### 6. Personal Finance Tracker
+
+A pure API backend designed to be consumed by separate SPA frontends (Vue, React, Angular). Demonstrates building a backend-only application with cross-origin support.
+
+**Covers:** CORS Middleware, Session Auth, User-Scoped Data, Aggregation Queries, Cross-Database Support, SPA Integration, Testing
+
 ## Quick Start
 
 Each example follows the same setup pattern:

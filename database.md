@@ -522,6 +522,10 @@ echo "Columns: " . implode(', ', $result->getColsNames()) . "\n";
 
 // Get all rows as array
 $allRows = $result->getRows();
+
+// Alternative methods for fetching records
+$firstRow = $result->fetch();       // Fetch a single row
+$allRows = $result->fetchAll();     // Fetch all rows as array
 ```
 
 ### Mapping Records to Objects

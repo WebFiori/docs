@@ -120,7 +120,7 @@ The method [`AbstractTask::afterExec()`](https://webfiori.com/docs/WebFiori/Fram
 It is recommended to place jobs at the folder `[APP_DIR]/Tasks` as they will be auto-registered if they are placed in this folder. The following code shows a sample job that writes a text to a file.
 
 ``` php
-namespace App\Jobs;
+namespace App\Tasks;
 
 use WebFiori\Framework\Scheduler\AbstractTask;
 use WebFiori\File\File;
@@ -159,7 +159,7 @@ After implementing the job, it must be registered. If the class is placed in the
 namespace App\Ini;
 
 use WebFiori\Framework\Scheduler\TasksManager;
-use App\Jobs\WriteFileJob;
+use App\Tasks\WriteFileJob;
 
 class Tasks {
     /**
@@ -179,7 +179,7 @@ When a job is scheduled, it will not get executed by itself even if it is time t
 
 ### Using `crontab` Entry to Trigger Execution
 
-The recommended way is to add a CRON entry on your server which looks like this one: `* * * * * php webfiori cron p="pass" --check`. This will execute the command `cron` of the framework with the option `--check` every minute. The option `pass` must be included if a password is set to protect jobs from unauthorized execution. It will simply check all scheduled jobs and to check if it is time to execute them. 
+The recommended way is to add a CRON entry on your server which looks like this one: `* * * * * php webfiori scheduler p="pass" --check`. This will execute the command `scheduler` of the framework with the option `--check` every minute. The option `pass` must be included if a password is set to protect jobs from unauthorized execution. It will simply check all scheduled jobs and to check if it is time to execute them. 
 
 If the server is running on windows, it is possible to use "Task Scheduler" to achieve the same result.
 
@@ -188,10 +188,10 @@ If the server is running on windows, it is possible to use "Task Scheduler" to a
 
 ### Using Command Line Interface to Trigger Execution
 
-Another way to trigger jobs execution is to use command line interface (or terminal) to run the command `cron`. If the server supports SSH access, it is possible to run the following command to trigger execution:
+Another way to trigger jobs execution is to use command line interface (or terminal) to run the command `scheduler`. If the server supports SSH access, it is possible to run the following command to trigger execution:
 
 ``` 
-php webfiori cron p="pass" --check
+php webfiori scheduler p="pass" --check
 ```
 
 Executing jobs through terminal can be useful if the developer would like to inspect the output of jobs or would like to check what causes a job to fail.
@@ -214,7 +214,7 @@ If the environment variable `CRON_THROUGH_HTTP` is defined and is set to `true`,
 Forcing a job to execute through terminal is useful in case of debugging. The terminal can be used to show the full output of executing a job. To force execution of a specific job, simply we have to run the following command:
 
 ```
-php webfiori cron p="pass" --force --show-log
+php webfiori scheduler p="pass" --force --show-log
 ```
 
 Once this command is executed, the terminal will ask the user to select one of the scheduled jobs to force. The following image shows the full terminal output when using this way to force a job.
@@ -287,7 +287,7 @@ To supply arguments to a job when forcing it to execute, simply navigate to the 
 
 ### Sending Arguments Through Terminal
 
-Another way to force jobs to execute is to use command line interface. The command `cron` is used to force the execution of a job. To force a job, simply supply the argument `--force` 
+Another way to force jobs to execute is to use command line interface. The command `scheduler` is used to force the execution of a job. To force a job, simply supply the argument `--force` 
 
 The following terminal output image shows how to force the job that was created using the code at the start of this page. Notice that if the job has extra arguments, it asks to supply them.
 
