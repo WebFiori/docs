@@ -24,6 +24,8 @@ In this page:
   * [Rollback Specific Batch](#rollback-specific-batch)
   * [Rollback All](#rollback-all)
   * [Fresh Migration](#fresh-migration)
+  * [Skipping Migrations (Baselining)](#skipping-migrations-baselining)
+  * [Connection-Targeted Migrations](#connection-targeted-migrations)
 * [Batch System](#batch-system)
 * [Transaction Support](#transaction-support)
 * [CLI Commands Reference](#cli-commands-reference)
@@ -372,6 +374,62 @@ php webfiori migrations:fresh --connection=main
 
 This is useful during development when you want to reset your database to a clean state.
 
+
+### Skipping Migrations (Baselining)
+
+When adopting the migration system on an existing database, you can mark migrations as "applied" without executing them:
+
+``` bash
+# Skip a single migration
+php webfiori migrations:skip --name=App\\Database\\Migrations\\CreateUsersTable --connection=main
+
+# Skip all pending migrations (full baseline)
+php webfiori migrations:skip --all --connection=main
+
+# Skip up to a specific migration (inclusive)
+php webfiori migrations:skip --up-to=CreateProductsTable --connection=main
+```
+
+This is equivalent to Flyway's `baseline`, Django's `--fake`, or Liquibase's `changelogSync`.
+
+### Connection-Targeted Migrations
+
+In multi-database architectures, migrations can target specific connections:
+
+``` php
+namespace App\Database\Migrations;
+
+use WebFiori\Database\Database;
+use WebFiori\Database\Schema\AbstractMigration;
+
+class CreateReportsTable extends AbstractMigration {
+    
+    public function getTargetConnections(): array {
+        return ['reporting-db']; // Only runs against 'reporting-db'
+    }
+    
+    public function up(Database $db): void {
+        // Create reporting tables...
+    }
+    
+    public function down(Database $db): void {
+        // Drop reporting tables...
+    }
+}
+```
+
+If `getTargetConnections()` returns an empty array (the default), the migration runs on all connections.
+
+To run migrations against all registered connections at once:
+
+``` bash
+php webfiori migrations:run --all-connections --env=dev
+```
+
+This iterates each connection and applies only the migrations that target it (or target all). Migrations targeting other connections are skipped with a "Connection mismatch" message.
+
+> **Note:** The connection name used for matching comes from `ConnectionInfo::getName()`. Make sure your connections have explicit names set.
+
 ## Batch System
 
 When you run migrations, all migrations applied in a single command are assigned the same batch number. This allows you to rollback groups of related changes together.
@@ -415,10 +473,12 @@ public function useTransaction(Database $db): bool {
 | `php webfiori create:seeder` | Create a new seeder class |
 | `php webfiori migrations:ini` | Create the schema tracking table |
 | `php webfiori migrations:run` | Execute pending migrations and seeders |
+| `php webfiori migrations:run --all-connections` | Run against all registered connections |
 | `php webfiori migrations:rollback` | Rollback migrations |
 | `php webfiori migrations:status` | Show applied and pending migrations |
 | `php webfiori migrations:dry-run` | Preview migrations without executing |
 | `php webfiori migrations:fresh` | Rollback all and re-run everything |
+| `php webfiori migrations:skip` | Mark migrations as applied without executing (baseline) |
 
 Common arguments for all commands:
 - `--connection` - Database connection name

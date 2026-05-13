@@ -243,6 +243,8 @@ use WebFiori\Http\Annotations\RequestParam;
 use WebFiori\Http\Annotations\ResponseBody;
 use WebFiori\Http\Annotations\RestController;
 use WebFiori\Http\WebService;
+use WebFiori\Database\Database;
+use WebFiori\Framework\App;
 
 #[RestController('users', 'User management API')]
 class UserController extends WebService {
@@ -251,7 +253,7 @@ class UserController extends WebService {
     public function __construct() {
         parent::__construct();
         // Initialize repository with database connection
-        $this->userRepo = new UserRepository(App::getDatabase());
+        $this->userRepo = new UserRepository(new Database(App::getConfig()->getDBConnection('connection-name')));
     }
 
     #[GetMapping]
@@ -273,7 +275,7 @@ class UserController extends WebService {
         $user = $this->userRepo->findById($id);
 
         if ($user === null) {
-            $this->sendResponse('User not found', self::E, 404);
+            $this->sendResponse('User not found', 404, self::E);
             return [];
         }
 
@@ -301,7 +303,7 @@ class UserController extends WebService {
         $user = $this->userRepo->findById($id);
 
         if ($user === null) {
-            $this->sendResponse('User not found', self::E, 404);
+            $this->sendResponse('User not found', 404, self::E);
             return [];
         }
 
@@ -339,6 +341,8 @@ use WebFiori\Http\AbstractWebService;
 use WebFiori\Http\ParamOption;
 use WebFiori\Http\ParamType;
 use WebFiori\Http\RequestMethod;
+use WebFiori\Database\Database;
+use WebFiori\Framework\App;
 
 class GetUsersService extends AbstractWebService {
     private UserRepository $userRepo;
@@ -366,7 +370,7 @@ class GetUsersService extends AbstractWebService {
             ]
         ]);
 
-        $this->userRepo = new UserRepository(App::getDatabase());
+        $this->userRepo = new UserRepository(new Database(App::getConfig()->getDBConnection('connection-name')));
     }
 
     public function isAuthorized(): bool {
@@ -380,7 +384,7 @@ class GetUsersService extends AbstractWebService {
             $user = $this->userRepo->findById($id);
             
             if ($user === null) {
-                $this->sendResponse('User not found', self::E, 404);
+                $this->sendResponse('User not found', 404, self::E);
                 return;
             }
             
@@ -395,7 +399,7 @@ class GetUsersService extends AbstractWebService {
         $this->send('application/json', [
             'users' => array_map(fn($u) => $u->toArray(), $result->getItems()),
             'pagination' => [
-                'page' => $result->getPage(),
+                'page' => $result->getCurrentPage(),
                 'per_page' => $result->getPerPage(),
                 'total' => $result->getTotalItems(),
                 'total_pages' => $result->getTotalPages()
@@ -559,6 +563,7 @@ namespace App\Apis;
 use App\Domain\Product;
 use App\Infrastructure\Repository\ProductRepository;
 use WebFiori\Framework\App;
+use WebFiori\Database\Database;
 use WebFiori\Http\Annotations\AllowAnonymous;
 use WebFiori\Http\Annotations\DeleteMapping;
 use WebFiori\Http\Annotations\GetMapping;
@@ -576,7 +581,7 @@ class ProductController extends WebService {
 
     public function __construct() {
         parent::__construct();
-        $this->repo = new ProductRepository(App::getDatabase());
+        $this->repo = new ProductRepository(new Database(App::getConfig()->getDBConnection('connection-name')));
     }
 
     #[GetMapping]
@@ -603,7 +608,7 @@ class ProductController extends WebService {
         $product = $this->repo->findById($this->getParamVal('id'));
 
         if (!$product) {
-            $this->sendResponse('Product not found', self::E, 404);
+            $this->sendResponse('Product not found', 404, self::E);
             return [];
         }
 
@@ -683,7 +688,7 @@ App/
        $this->repo->save($entity);
        return ['message' => 'Success'];
    } catch (Exception $e) {
-       $this->sendResponse('Operation failed', self::E, 500);
+       $this->sendResponse('Operation failed', 500, self::E);
        return [];
    }
    ```

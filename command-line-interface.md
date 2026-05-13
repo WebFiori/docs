@@ -39,7 +39,7 @@ $ php webfiori
      \/  /\  \/ /  /                  |
       \ /  \ / /  /                   |
        ______ /__/                    |
-WebFiori Framework  (c) Version 3.0.0-RC3 Beta
+WebFiori Framework  (c) Version 3.0.0-RC0
 
 
 Usage:
@@ -48,17 +48,27 @@ Usage:
 Global Arguments:
     --ansi:[Optional] Force the use of ANSI output.
 Available Commands:
-    help:                Display CLI Help. To display help for specific command, use the argument "--command-name" with this command.
-    v:                   Display framework version info.
-    show-settings:       Display application configuration.
-    cron:                Run CRON Scheduler.
-    create:              Creates a system entity (middleware, web service, background process ...).
-    add:                 Add a database connection or SMTP account.
-    list-routes:         List all created routes and which resource they point to.
-    list-themes:         List all registered themes.
-    run-query:           Execute SQL query on specific database.
-    update-settings:     Update application settings which are stored in the class "AppConfig".
-    update-table:        Update a database table.
+    help:                    Display CLI Help.
+    v:                       Display framework version info.
+    add:db-connection:       Add a database connection.
+    add:lang:                Add a website language.
+    add:smtp-connection:     Add SMTP connection.
+    create:command:           Create a new CLI command.
+    create:entity:           Create a new entity class.
+    create:middleware:        Create a new middleware.
+    create:migration:        Create a new database migration.
+    create:repository:       Create a new repository class.
+    create:seeder:           Create a new database seeder.
+    create:service:          Create a new web service.
+    create:table:            Create a new database table class.
+    create:task:             Create a new background task.
+    migrations:dry-run:      Preview pending migrations without executing.
+    migrations:fresh:        Rollback all and re-run migrations.
+    migrations:ini:          Initialize migrations tracking table.
+    migrations:rollback:     Rollback migrations.
+    migrations:run:          Run pending migrations.
+    migrations:status:       Show migrations status.
+    scheduler:               Run CRON Scheduler.
 ```
 
 Once this output appears, it means everything is ready to use the framework in terminal.
@@ -78,7 +88,7 @@ One of the commands that the framework supports is the command `help`. When tryi
 
 ```
 $ php webfiori help                                                                                                           
-WebFiori Framework  (c) Version 3.0.0-RC3 Beta
+WebFiori Framework  (c) Version 3.0.0-RC0
 
 
 Usage:
@@ -87,23 +97,33 @@ Usage:
 Global Arguments:
     --ansi:[Optional] Force the use of ANSI output.
 Available Commands:
-    help:                Display CLI Help. To display help for specific command, use the argument "--command-name" with this command.
-    v:                   Display framework version info.
-    show-settings:       Display application configuration.
-    cron:                Run CRON Scheduler.
-    create:              Creates a system entity (middleware, web service, background process ...).
-    add:                 Add a database connection or SMTP account.
-    list-routes:         List all created routes and which resource they point to.
-    list-themes:         List all registered themes.
-    run-query:           Execute SQL query on specific database.
-    update-settings:     Update application settings which are stored in the class "AppConfig".
-    update-table:        Update a database table.
+    help:                    Display CLI Help.
+    v:                       Display framework version info.
+    add:db-connection:       Add a database connection.
+    add:lang:                Add a website language.
+    add:smtp-connection:     Add SMTP connection.
+    create:command:           Create a new CLI command.
+    create:entity:           Create a new entity class.
+    create:middleware:        Create a new middleware.
+    create:migration:        Create a new database migration.
+    create:repository:       Create a new repository class.
+    create:seeder:           Create a new database seeder.
+    create:service:          Create a new web service.
+    create:table:            Create a new database table class.
+    create:task:             Create a new background task.
+    migrations:dry-run:      Preview pending migrations without executing.
+    migrations:fresh:        Rollback all and re-run migrations.
+    migrations:ini:          Initialize migrations tracking table.
+    migrations:rollback:     Rollback migrations.
+    migrations:run:          Run pending migrations.
+    migrations:status:       Show migrations status.
+    scheduler:               Run CRON Scheduler.
 ```
 
-From the help, it can be noticed that the help supports one argument and the name of the argument is `--command-name`. This argument is used to show help for a specific command. For example, if developer would like to show the help for the command `cron`, then he can do it as follows:
+From the help, it can be noticed that the help supports one argument and the name of the argument is `--command-name`. This argument is used to show help for a specific command. For example, if developer would like to show the help for the command `scheduler`, then he can do it as follows:
 
 ```
-$ php webfiori help --command-name=cron                
+$ php webfiori help --command-name=scheduler                
     cron:                Run CRON Scheduler.
     Supported Arguments:
                             p:[Optional] CRON password. If it is set in CRON, then it must be provided here.
@@ -123,7 +143,7 @@ One of the features of the framework is that it allow developers to extend the f
 * Implementing the abstract method [`Command::exec()`](https://webfiori.com/docs/WebFiori/Cli/Command#exec).
 * Register the command.
 
-The last setup must be performed if the command class is created outside the folder `[APP_DIR]/commands`. If the command is created inside that folder, it will be auto-registered.
+The last setup must be performed if the command class is created outside the folder `[APP_DIR]/Commands`. If the command is created inside that folder, it will be auto-registered.
 
 ### Extending The Class "Command"
 
@@ -131,7 +151,7 @@ The first step in creating new command is to create new PHP class and make the c
 
 The name of the command is a string which will be used to call it from the terminal. The arguments represented as an array that contains sub associative arrays. The arguments also can be objects of type [`Argument`](https://webfiori.com/docs/WebFiori/Cli/Argument). The description of the command is a string that will be shown when the command `help` is executed.
 
-Suppose that a developer would like to implement a command that takes the name of a person from the terminal as an input and display the string "Hi '{name}'". Assuming that the name of the command is `say-hi`. The command that will be created will be in the folder `app/commands`. The following code snippet shows how this command is created.
+Suppose that a developer would like to implement a command that takes the name of a person from the terminal as an input and display the string "Hi '{name}'". Assuming that the name of the command is `say-hi`. The command that will be created will be in the folder `App/Commands`. The following code snippet shows how this command is created.
 
 ``` php
 <?php
@@ -159,20 +179,20 @@ The method [`Command::println()`](https://webfiori.com/docs/WebFiori/Cli/Command
 
 ### Registering the command
 
-If the command is created inside the folder `[APP_DIR]/commands`, it will be registered automatically. But if the command is created somewhere else, it must be registered manually. To register any custom-created command, the class [`InitCommands`](https://github.com/WebFiori/app/blob/main/app/ini/InitCommands.php) can be used to complete this task. The class has one static method at which the developer can modify its body. The following code shows how to register new command.
+If the command is created inside the folder `[APP_DIR]/Commands`, it will be registered automatically. But if the command is created somewhere else, it must be registered manually. To register any custom-created command, the class `[APP_DIR]\Ini\Commands` can be used to complete this task. The class has one static method at which the developer can modify its body. The following code shows how to register new command.
 
 ``` php
 namespace App\Ini;
 
-use WebFiori\Framework\WebFioriApp;
+use WebFiori\Framework\App;
 
 //first, import the command.
 use App\Commands\SayHiCommand;
 
-class InitCommands {
+class Commands {
 
-    public static function init() {
-        WebFioriApp::getRunner()->register(new SayHiCommand());
+    public static function initialize() {
+        App::getRunner()->register(new SayHiCommand());
     }
 }
 ```

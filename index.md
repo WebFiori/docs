@@ -9,6 +9,7 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Installation](learn/installation) - Set up your development environment
 * [Folder Structure](learn/folder-structure) - Understand project organization
 * [Basic Usage](learn/basic-usage) - Learn fundamental concepts
+* [Examples](learn/examples) - Real-world example projects to learn from
 
 ## Core Features
 * [Routing](learn/routing) - URL routing and request handling
