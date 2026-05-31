@@ -145,3 +145,15 @@ This enables constructor injection for services.
 - **Flexible**: Mode 2 supports plugin architectures and rapid development
 - **DI-ready**: services get constructor dependencies injected
 - **Testable**: `RequestProcessor` works directly in tests without routing
+
+## GitHub Issues
+
+| Step | Issue |
+|------|-------|
+| 1 | [webfiori/framework#382](https://github.com/WebFiori/framework/issues/382) — ServiceRouter::discover() |
+| 2 | [webfiori/framework#383](https://github.com/WebFiori/framework/issues/383) — RouteOption::NAMESPACE |
+| 3 | [webfiori/framework#384](https://github.com/WebFiori/framework/issues/384) — DI container integration |
+| 4 | [webfiori/framework#385](https://github.com/WebFiori/framework/issues/385) — services:list CLI command |
+| 5 | [webfiori/framework#386](https://github.com/WebFiori/framework/issues/386) — Production caching |
+
+**Prerequisite:** [webfiori/http#121](https://github.com/WebFiori/http/issues/121) (RequestProcessor) from ADR-0005.

@@ -50,6 +50,16 @@ Other responsibilities are extracted:
 
 Each step is independently testable and shippable. No step breaks backward compatibility.
 
+## GitHub Issues
+
+| Step | Issue |
+|------|-------|
+| 1 | [webfiori/http#118](https://github.com/WebFiori/http/issues/118) — Move PUT/PATCH parsing into Request |
+| 2 | [webfiori/http#119](https://github.com/WebFiori/http/issues/119) — Extract ErrorResponse helper |
+| 3 | [webfiori/http#120](https://github.com/WebFiori/http/issues/120) — Extract OpenAPIGenerator |
+| 4 | [webfiori/http#121](https://github.com/WebFiori/http/issues/121) — Create RequestProcessor |
+| 5 | [webfiori/http#122](https://github.com/WebFiori/http/issues/122) — Deprecate WebServicesManager |
+
 ## Alternatives Considered
 
 - **Keep the manager, just add auto-discovery** — reduces boilerplate but doesn't address the god class problem.

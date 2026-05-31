@@ -61,3 +61,7 @@ GitHub Issue: https://github.com/WebFiori/http/issues/117
 ## Related
 
 - [ADR-0001](0001-access-can-role-resolution.md) — same root issue: framework not fully trusting `SecurityContext` as the auth/authz source of truth.
+
+## GitHub Issue
+
+[webfiori/http#117](https://github.com/WebFiori/http/issues/117)

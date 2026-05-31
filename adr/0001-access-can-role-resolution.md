@@ -48,3 +48,7 @@ public function can($user, string $permission, ?object $resource = null): bool {
 ## Related
 
 - [ADR-0003](0003-requires-auth-security-context.md) — same root issue: framework not fully trusting `SecurityContext` as the auth/authz source of truth.
+
+## GitHub Issue
+
+[webfiori/framework#381](https://github.com/WebFiori/framework/issues/381)

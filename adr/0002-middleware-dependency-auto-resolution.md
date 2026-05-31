@@ -82,3 +82,7 @@ private function resolveDependencies(array $middlewareList): array {
 - **Trade-off**: middleware that was previously silently skipped will now execute. This is the correct behavior but could surface latent bugs in applications that accidentally declared dependencies they didn't intend to run.
 
 GitHub Issue: https://github.com/WebFiori/framework/issues/380
+
+## Related
+
+- [ADR-0005](0005-request-processor-replaces-manager.md) — middleware dependencies are also relevant when ServiceRouter registers routes with middleware.

@@ -47,4 +47,4 @@ GitHub Issue: https://github.com/WebFiori/database/issues/159
 
 ## Related
 
-- ADR-0003 and ADR-0001 are indirectly related — the schema loading workaround was needed partly because of this bug.
+- [ADR-0005](0005-request-processor-replaces-manager.md) — once column names are correct, the schema-loading workaround in repositories becomes unnecessary.
