@@ -57,3 +57,7 @@ Final auth flow:
 - **Clear separation**: attributes control auth for the attribute style; `isAuthorized()` controls auth for the traditional style. They don't interfere with each other.
 
 GitHub Issue: https://github.com/WebFiori/http/issues/117
+
+## Related
+
+- [ADR-0001](0001-access-can-role-resolution.md) — same root issue: framework not fully trusting `SecurityContext` as the auth/authz source of truth.

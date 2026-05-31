@@ -44,3 +44,7 @@ public function can($user, string $permission, ?object $resource = null): bool {
 - **Eliminates silent failures**: passing a `SecurityPrincipal` to `can()` works without extra setup.
 - **`assignRoleToUser()` remains useful** for scenarios where roles come from database storage or need runtime override.
 - **Trade-off**: two code paths for role resolution — could cause confusion if both are populated with different values. The internal map wins in that case, which is the safer default.
+
+## Related
+
+- [ADR-0003](0003-requires-auth-security-context.md) — same root issue: framework not fully trusting `SecurityContext` as the auth/authz source of truth.
