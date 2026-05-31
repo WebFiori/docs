@@ -16,3 +16,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 |---|-------|--------|------|
 | 0001 | [Access::can() Role Resolution Strategy](0001-access-can-role-resolution.md) | Accepted | 2026-05-31 |
 | 0002 | [Middleware Dependency Auto-Resolution](0002-middleware-dependency-auto-resolution.md) | Accepted | 2026-05-31 |
+| 0003 | [#[RequiresAuth] Should Check SecurityContext Directly](0003-requires-auth-security-context.md) | Accepted | 2026-05-31 |
