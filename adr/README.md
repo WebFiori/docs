@@ -19,3 +19,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0003 | [#[RequiresAuth] Should Check SecurityContext Directly](0003-requires-auth-security-context.md) | Accepted | 2026-05-31 |
 | 0004 | [Column Attribute Name Parameter Must Be Respected](0004-column-name-parameter-respected.md) | Accepted | 2026-05-31 |
 | 0005 | [Replace WebServicesManager with RequestProcessor](0005-request-processor-replaces-manager.md) | Accepted | 2026-06-01 |
+| 0006 | [ServiceRouter — Framework Integration](0006-service-router-framework-integration.md) | Accepted | 2026-06-01 |
