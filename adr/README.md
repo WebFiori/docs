@@ -20,3 +20,8 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0004 | [Column Attribute Name Parameter Must Be Respected](0004-column-name-parameter-respected.md) | Accepted | 2026-05-31 |
 | 0005 | [Replace WebServicesManager with RequestProcessor](0005-request-processor-replaces-manager.md) | Accepted | 2026-06-01 |
 | 0006 | [ServiceRouter — Framework Integration](0006-service-router-framework-integration.md) | Accepted | 2026-06-01 |
+| 0007 | [Validation Errors 422 With Messages](0007-validation-errors-422-with-messages.md) | Accepted | 2026-06-01 |
+| 0008 | [Json: Auto-Detect Associative Arrays During Encoding](0008-json-auto-detect-associative-arrays.md) | Proposed | 2026-06-02 |
+| 0009 | [Json: Include All Getter Return Values and Add #[JsonIgnore]](0009-json-include-null-false-and-json-ignore.md) | Proposed | 2026-06-02 |
+| 0010 | [Json: Normalize Getter-Derived Names and Add #[JsonProperty]](0010-json-normalize-getter-names-and-json-property.md) | Proposed | 2026-06-02 |
+| 0011 | [Json: Typed Deserialization With Nested Object Hydration](0011-json-typed-deserialization.md) | Proposed | 2026-06-02 |
