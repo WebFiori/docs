@@ -25,3 +25,7 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0009 | [Json: Include All Getter Return Values and Add #[JsonIgnore]](0009-json-include-null-false-and-json-ignore.md) | Proposed | 2026-06-02 |
 | 0010 | [Json: Normalize Getter-Derived Names and Add #[JsonProperty]](0010-json-normalize-getter-names-and-json-property.md) | Proposed | 2026-06-02 |
 | 0011 | [Json: Typed Deserialization With Nested Object Hydration](0011-json-typed-deserialization.md) | Proposed | 2026-06-02 |
+| 0012 | [Json: Remove Error Suppression During Getter Calls](0012-json-remove-error-suppression.md) | Proposed | 2026-06-02 |
+| 0013 | [Json: Deprecate Global Constants in Favor of Static Defaults](0013-json-deprecate-global-constants.md) | Proposed | 2026-06-02 |
+| 0014 | [Json: Serialize INF/NaN as Strings (Never Crash)](0014-json-inf-nan-as-strings.md) | Accepted | 2026-06-02 |
+| 0015 | [Json: Only Support `get*` Prefix for Auto-Mapping](0015-json-only-get-prefix.md) | Accepted | 2026-06-02 |
