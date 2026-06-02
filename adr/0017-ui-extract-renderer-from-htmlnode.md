@@ -63,6 +63,16 @@ The `asCode()` method follows the same pattern with a `CodeRenderer` class.
 
 Static methods `setIsFormatted()`, `setIsQuotedAttribute()`, `setUseForwardSlash()` remain for backward compatibility but are deprecated. The renderer constructor is the new way to control output format.
 
+## Implementation Steps
+
+| Step | Description | Issue |
+|------|-------------|-------|
+| 1 | Create `HtmlRenderer` class with `render()` method, move `pushNode`/`popNode`/`open` logic | [WebFiori/ui#64](https://github.com/WebFiori/ui/issues/64) |
+| 2 | Create `CodeRenderer` class, move `pushNodeAsCode`/`popNodeAsCode`/`openAsCode`/`closeAsCode` | [WebFiori/ui#64](https://github.com/WebFiori/ui/issues/64) |
+| 3 | Delegate `toHTML()`, `toXML()`, `asCode()` to renderers | [WebFiori/ui#64](https://github.com/WebFiori/ui/issues/64) |
+| 4 | Deprecate static `setIsFormatted()`, `setIsQuotedAttribute()`, `setUseForwardSlash()` | [WebFiori/ui#61](https://github.com/WebFiori/ui/issues/61) |
+| 5 | Remove instance rendering variables from `HTMLNode` | [WebFiori/ui#64](https://github.com/WebFiori/ui/issues/64) |
+
 ## Alternatives Considered
 
 1. **Keep everything in HTMLNode but use local variables**: Would reduce the instance-state problem but doesn't address testability, SRP, or the 2800-line file size.
@@ -73,14 +83,16 @@ Static methods `setIsFormatted()`, `setIsQuotedAttribute()`, `setUseForwardSlash
 
 ## Consequences
 
-**Easier:**
+### Benefits
+
 - Rendering is reentrant and safe for async contexts
 - Renderer can be unit-tested independently
 - Future serialization formats (JSON, Markdown) follow the same extraction pattern
 - `HTMLNode` shrinks by ~400 lines
 - Static state can be deprecated over time
 
-**Harder:**
+### Trade-offs
+
 - Two places to look for rendering logic during transition
 - Slight overhead from object creation (negligible — one small object per `toHTML()` call)
 
