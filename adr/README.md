@@ -29,3 +29,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0013 | [Json: Deprecate Global Constants in Favor of Static Defaults](0013-json-deprecate-global-constants.md) | Proposed | 2026-06-02 |
 | 0014 | [Json: Serialize INF/NaN as Strings (Never Crash)](0014-json-inf-nan-as-strings.md) | Accepted | 2026-06-02 |
 | 0015 | [Json: Only Support `get*` Prefix for Auto-Mapping](0015-json-only-get-prefix.md) | Accepted | 2026-06-02 |
+| 0016 | [Introduce FileInterface Abstraction](0016-file-interface-abstraction.md) | Proposed | 2026-06-02 |
