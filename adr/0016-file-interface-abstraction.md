@@ -60,11 +60,11 @@ These methods remain on `File` but are not part of the contract.
 
 | Step | Description | Issue |
 |------|-------------|-------|
-| 1 | Define `FileInterface` with method signatures | [webfiori/file#1](https://github.com/WebFiori/file/issues/1) |
-| 2 | `File implements FileInterface` | [webfiori/file#2](https://github.com/WebFiori/file/issues/2) |
-| 3 | Verify `UploadedFile` satisfies interface, add assertion test | [webfiori/file#3](https://github.com/WebFiori/file/issues/3) |
-| 4 | Add `FileInterface` type-hints to `FileUploader` public API | [webfiori/file#4](https://github.com/WebFiori/file/issues/4) |
-| 5 | Document interface usage and mocking examples | [webfiori/file#5](https://github.com/WebFiori/file/issues/5) |
+| 1 | Define `FileInterface` with method signatures | [webfiori/file#66](https://github.com/WebFiori/file/issues/66) |
+| 2 | `File implements FileInterface` | [webfiori/file#67](https://github.com/WebFiori/file/issues/67) |
+| 3 | Verify `UploadedFile` satisfies interface, add assertion test | [webfiori/file#68](https://github.com/WebFiori/file/issues/68) |
+| 4 | Add `FileInterface` type-hints to `FileUploader` public API | [webfiori/file#69](https://github.com/WebFiori/file/issues/69) |
+| 5 | Document interface usage and mocking examples | [webfiori/file#70](https://github.com/WebFiori/file/issues/70) |
 
 ## Alternatives Considered
 
