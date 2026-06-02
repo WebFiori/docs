@@ -31,3 +31,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0015 | [Json: Only Support `get*` Prefix for Auto-Mapping](0015-json-only-get-prefix.md) | Accepted | 2026-06-02 |
 | 0016 | [Introduce FileInterface Abstraction](0016-file-interface-abstraction.md) | Proposed | 2026-06-02 |
 | 0017 | [UI: Extract Renderer from HTMLNode](0017-ui-extract-renderer-from-htmlnode.md) | Proposed | 2026-06-03 |
+| 0018 | [Collections: Add Vector (Array-Backed, O(1) Index Access)](0018-collections-add-vector.md) | Proposed | 2026-06-03 |
