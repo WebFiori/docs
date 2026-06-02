@@ -30,3 +30,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0014 | [Json: Serialize INF/NaN as Strings (Never Crash)](0014-json-inf-nan-as-strings.md) | Accepted | 2026-06-02 |
 | 0015 | [Json: Only Support `get*` Prefix for Auto-Mapping](0015-json-only-get-prefix.md) | Accepted | 2026-06-02 |
 | 0016 | [Introduce FileInterface Abstraction](0016-file-interface-abstraction.md) | Proposed | 2026-06-02 |
+| 0017 | [UI: Extract Renderer from HTMLNode](0017-ui-extract-renderer-from-htmlnode.md) | Proposed | 2026-06-03 |
