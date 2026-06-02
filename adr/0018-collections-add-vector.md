@@ -62,7 +62,7 @@ Methods align with existing `LinkedList` conventions where possible (`add`, `get
 
 | Step | Description | Issue |
 |------|-------------|-------|
-| 1 | Implement `Vector` class with full test coverage | [WebFiori/collections#4](https://github.com/WebFiori/collections/issues/4) |
+| 1 | Implement `Vector` class with full test coverage | [WebFiori/collections#15](https://github.com/WebFiori/collections/issues/15) |
 | 2 | Replace `LinkedList` with `Vector` for HTMLNode child storage | [WebFiori/ui#66](https://github.com/WebFiori/ui/issues/66) |
 
 ## Alternatives Considered
