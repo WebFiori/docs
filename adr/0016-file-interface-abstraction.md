@@ -39,6 +39,8 @@ interface FileInterface {
     public function write(bool $append = true, bool $createIfNotExist = false): void;
     public function create(bool $createDirIfNotExist = false): void;
     public function remove(): bool;
+    public function copy(string $destination): FileInterface;
+    public function moveTo(string $destination): void;
 }
 ```
 
