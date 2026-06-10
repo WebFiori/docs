@@ -1,7 +1,7 @@
 # ADR-0008: Auto-Detect Associative Arrays During JSON Encoding
 
 **Date:** 2026-06-02
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
