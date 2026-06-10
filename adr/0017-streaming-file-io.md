@@ -1,7 +1,7 @@
 # ADR-0017: Streaming File I/O with FileStream
 
 **Date:** 2026-06-02
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
