@@ -1,7 +1,7 @@
 # ADR-0011: Typed Deserialization With Nested Object Hydration
 
 **Date:** 2026-06-02
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
