@@ -1,7 +1,7 @@
 # ADR-0016: Introduce FileInterface Abstraction
 
 **Date:** 2026-06-02
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
@@ -24,20 +24,20 @@ namespace WebFiori\File;
 
 interface FileInterface {
     public function getName(): string;
-    public function setName(string $name);
+    public function setName(string $name): void;
     public function getDir(): string;
     public function setDir(string $dir): bool;
     public function getAbsolutePath(): string;
     public function getExtension(): string;
     public function getMIME(): string;
-    public function getSize(): int;
+    public function getSize(): ?int;
     public function isExist(): bool;
     public function getRawData(bool $encode = false): string;
-    public function setRawData(string $raw, bool $decode = false, bool $strict = false);
-    public function append($data);
-    public function read(int $from = -1, int $to = -1);
-    public function write(bool $append = true, bool $createIfNotExist = false);
-    public function create(bool $createDirIfNotExist = false);
+    public function setRawData(string $raw, bool $decode = false, bool $strict = false): void;
+    public function append(string|array $data): void;
+    public function read(int $from = -1, int $to = -1): void;
+    public function write(bool $append = true, bool $createIfNotExist = false): void;
+    public function create(bool $createDirIfNotExist = false): void;
     public function remove(): bool;
 }
 ```
