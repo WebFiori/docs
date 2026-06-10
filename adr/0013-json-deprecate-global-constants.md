@@ -1,7 +1,7 @@
 # ADR-0013: Deprecate Global Constants in Favor of Static Defaults
 
 **Date:** 2026-06-02
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
