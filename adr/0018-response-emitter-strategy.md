@@ -1,7 +1,7 @@
 # ADR-0018: ResponseEmitter Strategy for HTTP File Serving
 
 **Date:** 2026-06-02
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
