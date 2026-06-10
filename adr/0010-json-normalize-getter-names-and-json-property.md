@@ -1,7 +1,7 @@
 # ADR-0010: Normalize Getter-Derived Property Names and Add #[JsonProperty] Attribute
 
 **Date:** 2026-06-02
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
