@@ -28,7 +28,7 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Database Management](learn/database) - Database operations
 * [Migrations and Seeders](learn/migrations) - Schema versioning and data seeding
 * [Sessions Management](learn/sessions-management) - User session handling
-* [Caching](learn/caching) - Key-value cache with TTL and storage backends
+* [Caching](learn/caching) - Key-value cache with TTL, storage backends, and route caching
 * [The Library WebFiori JSON](learn/webfiori-json) - JSON data handling
 * [Uploading Files](learn/uploading-files) - File upload management
 

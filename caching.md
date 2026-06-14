@@ -101,6 +101,27 @@ $purged = CacheFacade::purgeExpired(); // returns count of removed entries
 
 For HTTP-level caching (ETag, Cache-Control), see the `HttpCacheMiddleware` in the [Built-in Middleware](learn/built-in-middleware) guide.
 
+## Route Caching
+
+In production, route discovery (namespace scanning via reflection) runs on every request. Route caching eliminates this overhead:
+
+```bash
+# Build the cache (run after deploy)
+php webfiori routes:cache
+
+# Clear the cache (run before re-caching)
+php webfiori routes:clear
+```
+
+Enable via environment variable:
+```
+ROUTE_CACHE_ENABLED=true
+```
+
+The route cache uses the same storage backend as the application cache (file or Redis). See [Environment Variables](learn/env-vars) for configuration.
+
+> **Note:** Always clear and rebuild route cache after deploying new services or changing routes.
+
 ## Best Practices
 
 - Use the cache-aside pattern (`get()` with generator) to avoid stampedes
