@@ -8,6 +8,9 @@ In this page:
 * [Assigning Middleware to Routes](#assigning-middleware-to-routes)
 * [Middleware Groups](#middleware-groups)
 * [Priority](#priority)
+  * [Dependencies](#dependencies)
+  * [Instantiable (Parameterized) Middleware](#instantiable-parameterized-middleware)
+  * [Registering Middleware Programmatically](#registering-middleware-programmatically)
 * [Command Line Utility](#command-line-utility)
 
 ## Introduction
@@ -23,9 +26,14 @@ The following image shows how middleware works in general. The green request rep
 ## The Class [`AbstractMiddleware`](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware)
 Middleware represented by the class [`AbstractMiddleware`](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware). The class has abstract methods at which the developer must implement to have a functional middleware. The methods are:
 
-* [AbstractMiddleware::before()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#before)
-* [AbstractMiddleware::after()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#after)
-* [AbstractMiddleware::afterSend()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#afterSend)
+* [AbstractMiddleware::before()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#before) — Runs before the request is processed. Can reject the request.
+* [AbstractMiddleware::after()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#after) — Runs after request processing but before sending the response. Can modify the response.
+* [AbstractMiddleware::afterSend()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#afterSend) — Runs after the response is sent. For cleanup, logging, etc.
+
+Other key methods:
+* `getDependencies()` — Returns middleware names this one depends on (auto-resolved).
+* `setPriority(int)` — Sets execution priority (higher = earlier).
+* `addToGroup(string)` / `addToGroups(array)` — Assigns to named groups.
 
 
 ## Implementing Custom Middleware
@@ -190,6 +198,81 @@ class MyMiddleware extends AbstractMiddleware {
 ```
 
 If two middleware having same priority and no dependency relationship, they execute in the order they were assigned to the route. In case of response (`after()`), the order of execution is reversed.
+
+### Dependencies
+
+Middleware can declare dependencies on other middleware via `getDependencies()`. The framework automatically resolves the dependency chain — you only need to assign the "leaf" middleware to a route:
+
+``` php
+namespace App\Middleware;
+
+use WebFiori\Framework\Middleware\AbstractMiddleware;
+use WebFiori\Http\Request;
+use WebFiori\Http\Response;
+
+class AuthMiddleware extends AbstractMiddleware {
+    
+    public function __construct() {
+        parent::__construct('auth');
+    }
+
+    public function getDependencies(): array {
+        return ['start-session']; // start-session runs before this
+    }
+
+    public function before(Request $request, Response $response) {
+        // Session is guaranteed to be started here
+    }
+
+    public function after(Request $request, Response $response) {}
+    public function afterSend(Request $request, Response $response) {}
+}
+```
+
+When `auth` is assigned to a route, `start-session` is automatically pulled in and executed first — even if you didn't list it in the route's middleware array.
+
+### Instantiable (Parameterized) Middleware
+
+Middleware can accept constructor parameters for configuration. Pass instances directly to routes:
+
+``` php
+use WebFiori\Framework\Router\Router;
+use WebFiori\Framework\Router\RouteOption;
+use WebFiori\Framework\Middleware\RateLimitMiddleware;
+use WebFiori\Framework\Middleware\CorsMiddleware;
+
+Router::api([
+    RouteOption::PATH => '/apis/{service}',
+    RouteOption::TO => MyManager::class,
+    RouteOption::MIDDLEWARE => [
+        'start-session',  // by name (from registry)
+        new RateLimitMiddleware(maxRequests: 100, windowSeconds: 60),  // by instance
+        new CorsMiddleware(['origins' => ['https://app.example.com']]),
+    ]
+]);
+```
+
+This allows different routes to use the same middleware class with different configurations.
+
+### Registering Middleware Programmatically
+
+Middleware placed in `[APP_DIR]/Middleware` is auto-discovered. To register middleware programmatically (e.g., from a package or with custom logic):
+
+``` php
+use WebFiori\Framework\Middleware\MiddlewareManager;
+
+// Register by class name
+MiddlewareManager::register(App\Middleware\MyMiddleware::class);
+
+// Register an instance
+MiddlewareManager::register(new RateLimitMiddleware(maxRequests: 30, windowSeconds: 60));
+
+// Retrieve by name
+$mw = MiddlewareManager::getMiddleware('auth');
+
+// Get all middleware in a group
+$webMiddleware = MiddlewareManager::getGroup('web');
+```
 
 ### Practical Middleware Examples
 

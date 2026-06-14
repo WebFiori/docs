@@ -116,6 +116,33 @@ new HttpCacheMiddleware([
 
 Best for read-heavy, infrequently-changing endpoints (product catalogs, static configs).
 
+## Response Caching
+
+Full server-side response caching. Stores the complete response (headers, status code, body) and serves it directly on subsequent requests, bypassing all application logic.
+
+```php
+use WebFiori\Framework\Middleware\CacheMiddleware;
+```
+
+Registered name: `cache`. Belongs to the `web` group. Priority: 50.
+
+This middleware works with the route's `cache-duration` option:
+
+```php
+Router::page([
+    RouteOption::PATH => '/products',
+    RouteOption::TO => ProductsPage::class,
+    RouteOption::MIDDLEWARE => ['cache'],
+    RouteOption::CACHE_DURATION => 300  // Cache for 5 minutes
+]);
+```
+
+How it works:
+1. `before()`: Checks if a cached response exists for the current URI. If found, sends it immediately (no further processing).
+2. `after()`: If the response wasn't cached, stores the full response (body, headers, status code) with the configured TTL.
+
+Cache storage uses `FileStorage` by default (stored in the system temp directory). The cache key is derived from the request URI.
+
 ## Session Start
 
 Starts the session. Required by middleware that reads session data (CSRF, auth, rate limiter with session keys).

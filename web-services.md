@@ -10,8 +10,13 @@ In this page:
   * [Basic Annotation-Based Service](#basic-annotation-based-service)
   * [Request Parameters](#request-parameters)
   * [Object Mapping](#object-mapping)
+  * [Cross-Field Validation](#cross-field-validation)
+  * [Reusable Parameter Sets](#reusable-parameter-sets)
+  * [Content Negotiation](#content-negotiation)
+  * [ResponseEntity](#responseentity)
 * [Authentication and Authorization](#authentication-and-authorization)
   * [Using RequiresAuth and AllowAnonymous](#using-requiresauth-and-allowanonymous)
+  * [Using PreAuthorize](#using-preauthorize)
   * [Accessing Auth Headers](#accessing-auth-headers)
   * [Security Context](#security-context)
 * [Creating Services Traditionally](#creating-services-traditionally)
@@ -85,9 +90,14 @@ Key annotations:
 | `#[PostMapping]` | Method | Maps to POST requests |
 | `#[PutMapping]` | Method | Maps to PUT requests |
 | `#[DeleteMapping]` | Method | Maps to DELETE requests |
+| `#[PatchMapping]` | Method | Maps to PATCH requests |
 | `#[ResponseBody]` | Method | Auto-converts return value to JSON |
 | `#[AllowAnonymous]` | Method | Skips authentication check |
 | `#[RequiresAuth]` | Method | Requires authentication |
+| `#[PreAuthorize]` | Method/Class | Expression-based authorization |
+| `#[Validate]` | Method | Cross-field validation function |
+| `#[UseParameterSet]` | Method | Imports a reusable parameter set |
+| `#[Produces]` | Method | Content negotiation (Accept header matching) |
 
 ### Request Parameters
 
@@ -187,6 +197,154 @@ public function createUser(): array {
 }
 ```
 
+### Cross-Field Validation
+
+Use the `#[Validate]` attribute to run custom validation logic after parameters are filtered:
+
+``` php
+use WebFiori\Http\Annotations\Validate;
+
+#[PostMapping]
+#[ResponseBody]
+#[RequestParam(name: 'password', type: 'string')]
+#[RequestParam(name: 'password_confirm', type: 'string')]
+#[RequestParam(name: 'email', type: 'email')]
+#[Validate('validateRegistration')]
+public function register(): array {
+    // Only reached if validation passes
+    return ['message' => 'User registered'];
+}
+
+private function validateRegistration(array $inputs): array {
+    $errors = [];
+    if ($inputs['password'] !== $inputs['password_confirm']) {
+        $errors['password_confirm'] = 'Passwords do not match.';
+    }
+    if (strlen($inputs['password']) < 8) {
+        $errors['password'] = 'Password must be at least 8 characters.';
+    }
+    return $errors; // Empty array = valid
+}
+```
+
+If the validation method returns a non-empty array, the framework sends a 422 response with the errors.
+
+### Reusable Parameter Sets
+
+Use the `ParameterSet` interface and `#[UseParameterSet]` attribute to share parameter definitions across services:
+
+``` php
+use WebFiori\Http\ParameterSet;
+use WebFiori\Http\ParamOption;
+use WebFiori\Http\ParamType;
+
+class PaginationParams implements ParameterSet {
+    public function getParameters(): array {
+        return [
+            'page' => [
+                ParamOption::TYPE => ParamType::INT,
+                ParamOption::OPTIONAL => true,
+                ParamOption::DEFAULT => 1
+            ],
+            'per-page' => [
+                ParamOption::TYPE => ParamType::INT,
+                ParamOption::OPTIONAL => true,
+                ParamOption::DEFAULT => 20
+            ]
+        ];
+    }
+}
+```
+
+Then use it on any method:
+
+``` php
+use WebFiori\Http\Annotations\UseParameterSet;
+
+#[GetMapping]
+#[ResponseBody]
+#[UseParameterSet(PaginationParams::class)]
+#[RequestParam(name: 'category', type: 'string', optional: true)]
+public function listProducts(): array {
+    $page = $this->getParamVal('page');
+    $perPage = $this->getParamVal('per-page');
+    // ...
+}
+```
+
+### Content Negotiation
+
+Use `#[Produces]` to declare what content types a method can return. The framework matches against the client's `Accept` header:
+
+``` php
+use WebFiori\Http\Annotations\Produces;
+use WebFiori\Http\MediaType;
+
+#[GetMapping]
+#[Produces(MediaType::JSON, MediaType::XML)]
+public function getReport(): ResponseEntity {
+    // Framework returns 406 Not Acceptable if client doesn't accept JSON or XML
+    return ResponseEntity::ok(['report' => '...']);
+}
+```
+
+Available `MediaType` constants: `JSON`, `XML`, `HTML`, `PLAIN`, `CSV`, `PDF`, `FORM`, `MULTIPART`, `OCTET_STREAM`.
+
+### ResponseEntity
+
+For more control over HTTP status codes and content types from `#[ResponseBody]` methods, return a `ResponseEntity`:
+
+``` php
+use WebFiori\Http\ResponseEntity;
+
+#[PostMapping]
+#[ResponseBody]
+public function createUser(User $user): ResponseEntity {
+    $this->userRepo->save($user);
+    return ResponseEntity::created(['user' => $user->toArray()]);
+}
+
+#[GetMapping]
+#[ResponseBody]
+#[RequestParam(name: 'id', type: 'int')]
+public function getUser(): ResponseEntity {
+    $user = $this->userRepo->findById($this->getParamVal('id'));
+    
+    if ($user === null) {
+        return ResponseEntity::notFound(['error' => 'User not found']);
+    }
+    
+    return ResponseEntity::ok(['user' => $user->toArray()]);
+}
+
+#[DeleteMapping]
+#[ResponseBody]
+#[RequestParam(name: 'id', type: 'int')]
+public function deleteUser(): ResponseEntity {
+    $this->userRepo->deleteById($this->getParamVal('id'));
+    return ResponseEntity::noContent();
+}
+```
+
+Static factory methods:
+
+| Method | HTTP Status |
+|--------|-------------|
+| `ResponseEntity::ok($body)` | 200 |
+| `ResponseEntity::created($body)` | 201 |
+| `ResponseEntity::noContent()` | 204 |
+| `ResponseEntity::badRequest($body)` | 400 |
+| `ResponseEntity::unauthorized($body)` | 401 |
+| `ResponseEntity::forbidden($body)` | 403 |
+| `ResponseEntity::notFound($body)` | 404 |
+| `ResponseEntity::error($body)` | 500 |
+
+Or construct directly with any status code:
+
+``` php
+return new ResponseEntity(['data' => $value], 202, 'application/json');
+```
+
 ## Authentication and Authorization
 
 ### Using RequiresAuth and AllowAnonymous
@@ -210,6 +368,49 @@ class AdminService extends WebService {
     }
 }
 ```
+
+### Using PreAuthorize
+
+For fine-grained authorization based on roles and authorities, use `#[PreAuthorize]` with security expressions:
+
+``` php
+use WebFiori\Http\Annotations\PreAuthorize;
+
+#[RestController('admin', 'Admin API')]
+class AdminService extends WebService {
+
+    #[GetMapping]
+    #[ResponseBody]
+    #[PreAuthorize("hasRole('ADMIN')")]
+    public function getAdminDashboard(): array {
+        return ['dashboard' => '...'];
+    }
+
+    #[DeleteMapping]
+    #[ResponseBody]
+    #[PreAuthorize("hasRole('ADMIN') && hasAuthority('DELETE_USER')")]
+    public function deleteUser(): array {
+        // Only admins with DELETE_USER authority can reach this
+        return ['message' => 'User deleted'];
+    }
+
+    #[GetMapping]
+    #[ResponseBody]
+    #[PreAuthorize("hasAnyRole('USER', 'ADMIN')")]
+    public function getProfile(): array {
+        return ['profile' => '...'];
+    }
+}
+```
+
+Supported expressions:
+- `hasRole('ROLE_NAME')` — user has the specified role
+- `hasAnyRole('ROLE1', 'ROLE2')` — user has at least one of the roles
+- `hasAuthority('AUTHORITY')` — user has the specified authority
+- `isAuthenticated()` — user is authenticated
+- Logical operators: `&&`, `||`, `!`
+
+`#[PreAuthorize]` can also be applied at the class level to apply to all methods.
 
 ### Accessing Auth Headers
 

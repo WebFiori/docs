@@ -12,6 +12,7 @@ In this page:
 * [Adding Data to a Session](#adding-data-to-a-session)
 * [Retrieving Stored Data](#retrieving-stored-data)
 * [Generating New ID](#generating-new-id)
+* [Garbage Collection](#garbage-collection)
 * [Creating Custom Sessions Storage](#creating-custom-sessions-storage)
 * [Configuring Database Session Storage](#configuring-database-session-storage)
   * [Using Cache Session Storage (Redis)](#using-cache-session-storage-redis)
@@ -174,6 +175,35 @@ SessionsManager::newId();
 // This will show different ID.
 App::getResponse()->write('New Session ID: '.SessionsManager::getActiveSession()->getId().'<br/>');
 ```
+
+## Garbage Collection
+
+Expired sessions are cleaned up automatically using probabilistic garbage collection (similar to PHP's native session GC). By default, GC runs with a probability of 1/1000 on each request.
+
+Configure GC behavior:
+
+``` php
+// Set probability: GC runs with probability/divisor chance on each request
+// Default: 1/1000 (0.1% chance per request)
+SessionsManager::setGCProbability(1, 100); // 1% chance per request
+
+// Limit how many expired sessions are cleaned per GC run
+// Useful for large session stores to prevent long pauses
+SessionsManager::setGCBatchSize(50); // Clean at most 50 sessions per run
+
+// Check current settings
+echo SessionsManager::getGCProbability(); // numerator
+echo SessionsManager::getGCDivisor();     // denominator
+echo SessionsManager::getGCBatchSize();   // max per run (0 = unlimited)
+```
+
+To disable GC entirely (e.g., if you handle cleanup externally via cron):
+
+``` php
+SessionsManager::setGCProbability(0, 0);
+```
+
+You can also set the `SESSION_GC` environment variable to control the expiry threshold in seconds.
 
 ## Creating Custom Sessions Storage
 
