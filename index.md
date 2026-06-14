@@ -1,6 +1,6 @@
 # Learning Center
 
-Here you will find topics which can help you to get started with WebFiori framework. For new learners, it is recommended to start from the top to bottom. Note that the topics are applicable to version 3.x.x of the framework which is currently in release candidate (v3.0.0-RC0).
+Here you will find topics which can help you to get started with WebFiori framework. For new learners, it is recommended to start from the top to bottom. Note that the topics are applicable to version 3.x.x of the framework.
 
 <meta name="description" content="A set of topics which helps in getting started with WebFiori Framework.">
 
@@ -17,6 +17,7 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Web Pages](learn/web-pages) - Dynamic page creation
 * [Web Services](learn/web-services) - API development
 * [Middleware](learn/middleware) - Request/response filtering
+* [Built-in Middleware](learn/built-in-middleware) - Rate limiting, CORS, CSRF, maintenance mode, HTTP caching
 
 ## User Interface
 * [UI Package](learn/ui-package) - HTML component system
@@ -27,6 +28,7 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Database Management](learn/database) - Database operations
 * [Migrations and Seeders](learn/migrations) - Schema versioning and data seeding
 * [Sessions Management](learn/sessions-management) - User session handling
+* [Caching](learn/caching) - Key-value cache with TTL, storage backends, and route caching
 * [The Library WebFiori JSON](learn/webfiori-json) - JSON data handling
 * [Uploading Files](learn/uploading-files) - File upload management
 
@@ -35,6 +37,12 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Sending Emails](learn/sending-emails) - Email functionality
 * [Background Tasks](learn/background-tasks) - Asynchronous processing
 * [Command Line Interface](learn/command-line-interface) - CLI tools
+* [Job Queue](learn/job-queue) - Background job processing with retry and priority
+* [Event Dispatcher](learn/event-dispatcher) - Decoupled event-driven architecture
+* [Dependency Injection](learn/dependency-injection) - DI container with auto-resolution
+* [Security & Authorization](learn/security) - RBAC, ABAC, SecurityContext, PreAuthorize
+* [Health Checks](learn/health-checks) - Application dependency monitoring
+* [Logging](learn/logging) - Structured file-based logging
 
 ## Configuration
 * [Environment Variables](learn/env-vars) - Configuration management

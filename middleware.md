@@ -155,6 +155,8 @@ class MyMiddleware extends AbstractMiddleware {
 
 Middleware acts as a layer in top of the application. In addition to that, a middleware can be used as a protection layer before reaching another middleware. For this reason, execution order of middleware matters. It is possible to specify the priority of the middleware using the method [AbstractMiddleware::setPriority()](https://webfiori.com/docs/WebFiori/Framework/Middleware/AbstractMiddleware#setPriority). The higher the priority, the earlier the middleware will be reached. For example, a middleware with priority 100 will be reached before a middleware with priority 99.
 
+> **Note:** If middleware declares dependencies via `getDependencies()`, dependency order takes precedence over priority. Priority is only used as a tiebreaker for middleware with no dependency relationship. See [Built-in Middleware](learn/built-in-middleware#middleware-dependencies) for details.
+
 ``` php 
 <?php
 
@@ -187,7 +189,7 @@ class MyMiddleware extends AbstractMiddleware {
 }
 ```
 
-If two middleware having same priority, the name of the middleware is used as indicator of which one will get executed first for incoming requests. For example, a middleware with name `compress-file` will be executed before a one with name `start-session`. In case of response, the order of execution will be in reverse.
+If two middleware having same priority and no dependency relationship, they execute in the order they were assigned to the route. In case of response (`after()`), the order of execution is reversed.
 
 ### Practical Middleware Examples
 

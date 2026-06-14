@@ -14,6 +14,8 @@ In this page:
 * [Generating New ID](#generating-new-id)
 * [Creating Custom Sessions Storage](#creating-custom-sessions-storage)
 * [Configuring Database Session Storage](#configuring-database-session-storage)
+  * [Using Cache Session Storage (Redis)](#using-cache-session-storage-redis)
+  * [Configuring Database Session Storage](#configuring-database-session-storage-1)
 
 ## Introduction
 
@@ -271,17 +273,15 @@ class SessionsDatabase extends DB implements SessionStorage {
         }
     }
     
-    public function gc() {
-        if (defined('SESSION_GC') && SESSION_GC > 0) {
-            $olderThan = time() - SESSION_GC;
-        } else {
-            //Clear any session which is older than 30 days
-            $olderThan = time() - 60 * 60 * 24 * 30;
-        }
-        $date = date('Y-m-d H:i:s', $olderThan);
-        $ids = $this->getSessionsIDs($date);
+    public function gc(string $olderThan, int $maxCount = 0) {
+        $ids = $this->getSessionsIDs($olderThan);
+        $removed = 0;
         foreach ($ids as $id) {
+            if ($maxCount > 0 && $removed >= $maxCount) {
+                break;
+            }
             $this->remove($id);
+            $removed++;
         }
     }
     
@@ -305,7 +305,51 @@ The last step is to use the newly created sessions storage engine. In order to h
 
 ## Configuring Database Session Storage
 
-By default, the framework comes with two session storage engines. One is the default one which uses files ([`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage)) and the other one which uses database ([`DatabaseSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DatabaseSessionStorage)). In order to be able to use database session storage, it must be first configured. Configuration steps are as follows:
+By default, the framework comes with three session storage engines:
+* **File-based** ([`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage)) — stores sessions as files in `[APP_DIR]/Storage/Sessions`.
+* **Database-backed** ([`DatabaseSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DatabaseSessionStorage)) — stores sessions in a database table.
+* **Cache-backed** ([`CacheSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/CacheSessionStorage)) — stores sessions using any cache backend (Redis, file cache, etc.).
+
+### Using Cache Session Storage (Redis)
+
+The `CacheSessionStorage` delegates to the cache library's `Storage` interface, which means any cache backend works — including Redis for horizontal scaling.
+
+``` php
+define('WF_SESSION_STORAGE', '\WebFiori\Framework\Session\CacheSessionStorage');
+```
+
+To configure it, register the storage in your application initialization:
+
+``` php
+use WebFiori\Cache\RedisStorage;
+use WebFiori\Framework\Session\CacheSessionStorage;
+use WebFiori\Framework\Session\SessionsManager;
+
+$redis = new \Redis();
+$redis->connect('127.0.0.1', 6379);
+
+$storage = new CacheSessionStorage(
+    new RedisStorage($redis),  // Any cache Storage implementation
+    'wf_session:',             // Key prefix (default)
+    7200                       // TTL in seconds (default: 2 hours)
+);
+SessionsManager::setStorage($storage);
+```
+
+You can also use file-based caching:
+
+``` php
+use WebFiori\Cache\FileStorage;
+use WebFiori\Framework\Session\CacheSessionStorage;
+use WebFiori\Framework\Session\SessionsManager;
+
+$storage = new CacheSessionStorage(new FileStorage('/path/to/cache/sessions'));
+SessionsManager::setStorage($storage);
+```
+
+The key prefix ensures session cache entries don't collide with application cache data.
+
+### Configuring Database Session Storage
 
 * Setting the value of the constant `WF_SESSION_STORAGE` to `\WebFiori\Framework\Session\DatabaseSessionStorage`.
 * Adding a database connection with the name `sessions-connection` using the command `add:db-connection`.

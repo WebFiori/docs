@@ -46,6 +46,30 @@ A pure API backend designed to be consumed by separate SPA frontends (Vue, React
 
 **Covers:** CORS Middleware, Session Auth, User-Scoped Data, Aggregation Queries, Cross-Database Support, SPA Integration, Testing
 
+### 7. Order Processing System
+
+An e-commerce order management API with payment processing, inventory management, and async notifications.
+
+**Covers:** CORS, Rate Limiting, HTTP Caching (ETag/304), Maintenance Mode, RBAC + ABAC Policies, `#[PreAuthorize]`, `#[RequiresAuth]`, Job Queue, DI Container, Event Dispatcher, Health Checks, Structured Logging, Session Encryption, Background Tasks, Testing
+
+### 8. Appointment Booking System
+
+A clinic/salon appointment booking system with reminders, cancellation policies, and SMS notifications.
+
+**Covers:** CORS, Rate Limiting, HTTP Caching, RBAC + ABAC Policies, `#[PreAuthorize]`, Job Queue (reminders, confirmations, cancellations), DI Container, Event Dispatcher, Health Checks, Structured Logging, Background Tasks, Testing
+
+### 9. Multi-Tenant Billing Platform
+
+A SaaS billing platform with tenant isolation, subscription management, invoice generation, and payment processing.
+
+**Covers:** CORS, Rate Limiting, Maintenance Mode, RBAC + ABAC (tenant isolation), `#[PreAuthorize]`, Job Queue (payment retry with backoff), DI Container, Event Dispatcher, Health Checks, Structured Logging, Background Tasks, Testing
+
+### 10. Middleware Dependency Chain
+
+A focused example demonstrating middleware dependency resolution and execution order.
+
+**Covers:** Middleware Dependencies (`getDependencies()`), Topological Sort, Execution Order (before/after/afterSend), Structured Logging
+
 ## Quick Start
 
 Each example follows the same setup pattern:

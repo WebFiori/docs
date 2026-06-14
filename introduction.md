@@ -52,19 +52,23 @@ WebFiori is a modern, developer-friendly PHP framework designed for building rob
 
 ### Key Capabilities
 
-* **Database Operations**: Store and manage user data, products, content, etc... with MySQL/MSSQL support
-* **API Development**: Build RESTful web services and microservices with built-in JSON handling
-* **Dynamic Web Pages**: Create interactive user interfaces using object-oriented HTML generation
-* **Background Processing**: Handle email sending, data processing, and scheduled tasks asynchronously
-* **Email Communication**: Send HTML emails with attachments and template support
+* **Database Operations**: Store and manage data with MySQL, MSSQL, and SQLite support. Includes migrations, seeders, and repository pattern.
+* **API Development**: Build RESTful APIs with `#[RestController]` annotations, auto-discovery via `ServiceRouter`, and OpenAPI 3.1 generation.
+* **Security**: RBAC + ABAC authorization, CSRF/CORS protection, rate limiting, session encryption (AES-256-GCM).
+* **Dynamic Web Pages**: Create interactive UIs using object-oriented HTML generation and theming.
+* **Background Processing**: Job queue with priority, retry, and encryption. CRON-based task scheduling.
+* **Observability**: Structured logging, health checks with HTTP endpoint, route caching for production.
+* **Dependency Injection**: Container with auto-resolution, `bind()`, `singleton()`, and `instance()`.
+* **Email Communication**: Send HTML emails with attachments, templates, and OAuth (Gmail/Microsoft).
 
 ### Why Choose WebFiori?
 
 **Compared to other frameworks**, WebFiori offers:
-* **Flexibility**: No forced architectural patterns - use what fits your project
+* **Zero external dependencies**: The entire ecosystem is self-contained — no supply-chain risk
+* **Flexibility**: No forced architectural patterns — use what fits your project
 * **Simplicity**: Less boilerplate code, more focus on business logic
-* **Completeness**: Built-in solutions for common web development needs
-* **Modern PHP**: Takes advantage of PHP 8.1+ features and performance improvements 
+* **Security by default**: Encryption, SRI, rate limiting, and CSRF out of the box
+* **Modern PHP**: Takes advantage of PHP 8.1+ features, attributes, and performance improvements
 
 
 WebFiori empowers developers to build everything from simple websites to complex applications without unnecessary complexity.
@@ -82,6 +86,9 @@ WebFiori empowers developers to build everything from simple websites to complex
 * [Command Line Interface](#command-line-interface)
 * [Database and Query Building](#database-schema-and-query-building)
 * [Web Services](#web-services)
+* [Security and Authorization](#security-and-authorization)
+* [Health Checks](#health-checks)
+* [Route Caching](#route-caching)
 
 ### Simple Routing Engine
 
@@ -353,16 +360,19 @@ Router::page([
 
 ## Framework Architecture
 
-WebFiori follows a modular architecture that promotes:
+WebFiori follows a modular architecture:
 
-* **Component Independence**: Use only what you need
+* **Component Independence**: 14 independent packages — use only what you need
+* **Interface-Driven**: Storage backends (sessions, cache, queue, auth) are pluggable
+* **Request Lifecycle**: Request → Middleware (before) → Route Dispatch → Middleware (after) → Response → Middleware (afterSend)
 * **Extensibility**: Easy integration with third-party libraries
-* **Testing Support**: Support for unit and integration testing 
+* **Testing Support**: Full support for unit and integration testing with `CLITestCase` and `ServiceTestCase`
 
 ## Getting Help
 
-* **Documentation**: Comprehensive guides and API reference
+* **Documentation**: Comprehensive guides and API reference at [webfiori.com/learn](https://webfiori.com/learn)
 * **GitHub**: [Source code and issue tracking](https://github.com/WebFiori/framework)
+* **Security**: Report vulnerabilities to [ibrahim@webfiori.com](mailto:ibrahim@webfiori.com)
 
 ## Related Articles
 

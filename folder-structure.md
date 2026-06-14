@@ -25,12 +25,14 @@ webfiori-project/
 │   ├── Config/               # Application configuration files
 │   ├── Database/             # Database access and interaction classes
 │   ├── Domain/               # Domain entities and business objects
+│   ├── Health/               # Health check implementations
 │   ├── Infrastructure/       # Repositories and schema definitions
 │   ├── Ini/                  # Initialization classes
 │   │   └── Routes/           # Route definition classes
 │   ├── Langs/                # Translation files for i18n
 │   ├── Middleware/           # Request filtering middleware
 │   ├── Pages/                # Page classes and HTML templates
+│   ├── Policies/             # ABAC policy classes
 │   ├── Storage/              # Application data (not web-accessible)
 │   │   ├── Uploads/          # User uploads and generated content
 │   │   ├── Sessions/         # Session data files
@@ -57,12 +59,14 @@ webfiori-project/
 * **`Config`:** Application configuration and settings files.
 * **`Database`:** Database migrations, seeders, and related classes.
 * **`Domain`:** Domain entities and business objects. (Also commonly named `Entity` — see [MVC Architecture](learn/mvc) for the recommended structure.)
+* **`Health`:** Health check implementations for monitoring application dependencies (see [Health Checks](learn/health-checks)).
 * **`Infrastructure`:** Repository implementations and database schema (table) definitions.
 * **`Ini`:** Application initialization and bootstrap classes.
     * **`Routes`:** URL routing definitions and route handlers.
 * **`Langs`:** Language files for internationalization and localization.
 * **`Middleware`:** HTTP middleware for request/response processing.
 * **`Pages`:** Page controllers, views, and HTML templates.
+* **`Policies`:** ABAC policy classes for attribute-based access control (see [Security](learn/security)).
 * **`Tasks`:** Background jobs and scheduled task definitions.
 * **`Storage`:** Private application data (not web-accessible).
     * **`Uploads`:** User-uploaded files and generated content.

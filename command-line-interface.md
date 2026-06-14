@@ -68,7 +68,12 @@ Available Commands:
     migrations:rollback:     Rollback migrations.
     migrations:run:          Run pending migrations.
     migrations:status:       Show migrations status.
+    migrations:skip:         Mark migrations as applied without executing.
+    migrations:step:         Interactively apply or skip migrations one at a time.
+    routes:cache:            Build the route cache for production.
+    routes:clear:            Clear the route cache.
     scheduler:               Run CRON Scheduler.
+    services:list:           List all auto-discovered API services.
 ```
 
 Once this output appears, it means everything is ready to use the framework in terminal.
@@ -117,7 +122,12 @@ Available Commands:
     migrations:rollback:     Rollback migrations.
     migrations:run:          Run pending migrations.
     migrations:status:       Show migrations status.
+    migrations:skip:         Mark migrations as applied without executing.
+    migrations:step:         Interactively apply or skip migrations one at a time.
+    routes:cache:            Build the route cache for production.
+    routes:clear:            Clear the route cache.
     scheduler:               Run CRON Scheduler.
+    services:list:           List all auto-discovered API services.
 ```
 
 From the help, it can be noticed that the help supports one argument and the name of the argument is `--command-name`. This argument is used to show help for a specific command. For example, if developer would like to show the help for the command `scheduler`, then he can do it as follows:

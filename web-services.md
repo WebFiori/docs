@@ -37,7 +37,9 @@ WebFiori framework provides the very basic level of utilities at which it can be
 |-------|-------------|
 | `WebService` | Modern service class with annotation support |
 | `AbstractWebService` | Traditional base class for services |
-| `WebServicesManager` | Manages and routes requests to services |
+| `WebServicesManager` | Manages and routes requests to services (traditional) |
+| `ServiceRouter` | Auto-discovers and registers service routes (recommended) |
+| `RequestProcessor` | Processes a single service against a request |
 | `RequestParameter` | Represents a request parameter |
 | `SecurityContext` | Manages authentication state |
 | `APITestCase` | PHPUnit helper for testing APIs |
@@ -492,6 +494,56 @@ Available test methods:
 
 ## Calling Services
 
+### Modern Approach: ServiceRouter (Recommended)
+
+Use `ServiceRouter::discover()` to auto-register all services in a namespace:
+
+``` php
+use WebFiori\Framework\Router\ServiceRouter;
+use WebFiori\Framework\Router\RouteOption;
+
+class APIsRoutes {
+    public static function create() {
+        ServiceRouter::discover('App\\Apis', '/apis', [
+            RouteOption::MIDDLEWARE => ['start-session', 'csrf']
+        ]);
+    }
+}
+```
+
+This scans `App/Apis/` and registers a route per service:
+- `#[RestController('orders')]` → `GET|POST /apis/orders`
+- `#[RestController]` on `ProductService` → `GET|POST /apis/product`
+- `WebService` without attribute (getName() = 'users') → `GET|POST /apis/users`
+- `WebServicesManager` subclass → registered as traditional manager route
+
+**Recursive scanning** discovers nested directories:
+
+``` php
+ServiceRouter::discover('App\\Apis', '/apis', [], null, recursive: true);
+// App/Apis/Admin/UserService.php → /apis/admin/user
+// App/Apis/Auth/LoginService.php → /apis/auth/login
+```
+
+Directory names are converted to kebab-case (`UserAuth` → `user-auth`).
+
+**Dynamic resolution** (no restart needed for new services):
+
+``` php
+ServiceRouter::dynamic('App\\Apis', '/apis/{controller}', [
+    RouteOption::MIDDLEWARE => ['start-session']
+]);
+// Request to /apis/orders → resolves OrderService at runtime
+```
+
+**List discovered services:**
+
+```bash
+php webfiori services:list
+```
+
+### Traditional Approach: WebServicesManager
+
 Services are called via HTTP with the `service` parameter:
 
 ```
@@ -499,16 +551,18 @@ GET https://example.com/api?service=get-users
 POST https://example.com/api?service=create-user
 ```
 
-In WebFiori Framework, create a route to your services manager:
+Create a route to your services manager:
 
 ``` php
 Router::api([
-    'path' => '/api',
+    'path' => '/api/{service}',
     'route-to' => UserAPI::class
 ]);
 ```
 
-Then call: `https://example.com/api?service=get-users`
+Then call: `https://example.com/api/get-users`
+
+> **Note:** Both approaches work side by side. Existing `WebServicesManager` routes are unchanged.
 
 ## Related Articles
 

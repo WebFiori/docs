@@ -479,6 +479,7 @@ public function useTransaction(Database $db): bool {
 | `php webfiori migrations:dry-run` | Preview migrations without executing |
 | `php webfiori migrations:fresh` | Rollback all and re-run everything |
 | `php webfiori migrations:skip` | Mark migrations as applied without executing (baseline) |
+| `php webfiori migrations:step` | Interactively apply or skip migrations one at a time |
 
 Common arguments for all commands:
 - `--connection` - Database connection name
