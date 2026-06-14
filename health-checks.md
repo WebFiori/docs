@@ -112,6 +112,36 @@ Returns `200` when all checks pass, `503` when any check fails. Suitable for loa
 |-------|-----------------|
 | `CacheCheck` | Cache write/read/delete cycle works |
 
+## Introspection
+
+Retrieve all registered checks for dashboards or debugging:
+
+```php
+$checks = HealthCheck::getChecks();
+// Returns associative array keyed by check name.
+// Values are HealthCheckInterface instances or callables.
+
+$count = HealthCheck::getCheckCount();
+```
+
+## Post-Run Hooks
+
+Register callbacks that execute after all checks complete. Useful for notifications:
+
+```php
+HealthCheck::afterAll(function (array $results) {
+    if ($results['status'] === 'fail') {
+        // Send alert to Slack, email, etc.
+        NotificationService::alert('Health check failed', $results);
+    }
+});
+
+// Callbacks receive the same aggregate array returned by runAll()
+$result = HealthCheck::runAll(); // afterAll callbacks fire here
+```
+
+Multiple callbacks can be registered — they execute in order. Call `HealthCheck::reset()` to clear both checks and callbacks.
+
 ## Best Practices
 
 - Keep checks fast (< 1 second each) — they run on every probe
