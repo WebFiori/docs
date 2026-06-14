@@ -1,12 +1,12 @@
 # WebFiori Documentation
 
-Documentation repository for WebFiori framework. Any change to this repo in the `main` branch is reflected directly to the website at https://webfiori.com/learn. The documentation in this repo covers version 3.x.x of the framework.
+Documentation repository for WebFiori framework. Any change to this repo in the `main` branch is reflected directly to the website at https://webfiori.com/docs. The documentation in this repo covers version 3.x.x of the framework.
 
 ## Quick Start
 
 - **New to WebFiori?** Start with [Introduction](introduction.md)
 - **Ready to install?** Check [Installation Guide](installation.md)
-- **Browse all topics:** See [Learning Center](index.md)
+- **Browse all topics:** See [Learning Center](https://webfiori.com/docs)
 
 ## Documentation Structure
 
