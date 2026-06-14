@@ -161,12 +161,21 @@ RouteOption::MIDDLEWARE => ['web']  // applies all middleware in the 'web' group
 
 ## Middleware Dependencies
 
-Middleware can declare dependencies via `getDependencies()`. When multiple middleware are assigned to a route, the framework sorts them using topological sort based on dependencies, with priority as a tiebreaker for unrelated middleware.
+Middleware can declare dependencies via `getDependencies()`. When a middleware is assigned to a route, the framework automatically pulls in all transitive dependencies from the middleware registry and sorts them using topological sort (Kahn's algorithm). Priority is used as a tiebreaker for unrelated middleware.
 
 ```php
 class MyMiddleware extends AbstractMiddleware {
     public function getDependencies(): array {
-        return ['start-session']; // ensures session starts before this runs
+        return ['start-session']; // start-session is auto-included and runs first
     }
 }
 ```
+
+You only need to assign the "leaf" middleware to a route — its entire dependency chain is resolved automatically:
+
+```php
+// Only assign MyMiddleware — start-session is pulled in from the registry
+RouteOption::MIDDLEWARE => ['my-middleware']
+```
+
+If a declared dependency is not registered in `MiddlewareManager`, it is silently skipped. Circular dependencies throw a `RoutingException`.
