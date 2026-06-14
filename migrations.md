@@ -338,6 +338,43 @@ php webfiori migrations:dry-run --connection=main
 
 This shows pending migrations and the SQL queries they would execute.
 
+Programmatically, you can use `getPendingChanges()` to preview pending migrations with their SQL:
+
+``` php
+$pending = $runner->getPendingChanges(true); // true = include SQL queries
+
+foreach ($pending as $info) {
+    echo $info['name'] . "\n";
+    foreach ($info['queries'] as $sql) {
+        echo "  " . $sql . "\n";
+    }
+}
+```
+
+### Step-by-Step Execution
+
+To apply migrations one at a time (useful for debugging or gradual deployment):
+
+``` bash
+php webfiori migrations:step --connection=main
+```
+
+Programmatically:
+
+``` php
+// Apply a single pending migration
+$change = $runner->applyOne();
+
+// Skip the next N pending migrations
+$skipped = $runner->skipNext(3);
+
+// Skip all remaining pending migrations
+$skipped = $runner->skipAll();
+
+// Skip everything up to (and including) a specific migration
+$skipped = $runner->skipUpTo(CreateProductsTable::class);
+```
+
 ## Rolling Back Migrations
 
 ### Rollback Last Batch

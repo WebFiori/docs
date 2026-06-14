@@ -20,6 +20,8 @@ In this page:
   * [Loading Template File](#loading-template-file)
   * [Slots](#slots)
 * [Components](#components)
+* [Using PHP Templates](#using-php-templates)
+* [The `HtmlRenderer` Class](#the-htmlrenderer-class)
 
 ## Introduction
 
@@ -359,16 +361,81 @@ The library has a set of pre-made components at which the developer can use to b
 
 Available components are:
 
-* [`Anchor`](https://webfiori.com/docs/webfiori/ui/Anchor)
-* [`CodeSnippet`](https://webfiori.com/docs/webfiori/ui/CodeSnippet)
-* [`Input`](https://webfiori.com/docs/webfiori/ui/Input)
-* [`Label`](https://webfiori.com/docs/webfiori/ui/Label)
-* [`ListItem`](https://webfiori.com/docs/webfiori/ui/ListItem)
-* [`OrderedList`](https://webfiori.com/docs/webfiori/ui/OrderedList)
-* [`Paragraph`](https://webfiori.com/docs/webfiori/ui/Paragraph)
-* [`TableCell`](https://webfiori.com/docs/webfiori/ui/TableCell)
-* [`TableRow`](https://webfiori.com/docs/webfiori/ui/TableRow)
-* [`UnorderedList`](https://webfiori.com/docs/webfiori/ui/UnorderedList)
+* [`Anchor`](https://webfiori.com/docs/webfiori/ui/Anchor) — `<a>` element
+* [`Br`](https://webfiori.com/docs/webfiori/ui/Br) — `<br>` element
+* [`CodeSnippet`](https://webfiori.com/docs/webfiori/ui/CodeSnippet) — `<pre><code>` element for code display
+* [`HeadNode`](https://webfiori.com/docs/webfiori/ui/HeadNode) — `<head>` element with helpers for meta, CSS, JS
+* [`HTMLList`](https://webfiori.com/docs/webfiori/ui/HTMLList) — Base class for ordered/unordered lists
+* [`HTMLTable`](https://webfiori.com/docs/webfiori/ui/HTMLTable) — `<table>` element with row/column management
+* [`Input`](https://webfiori.com/docs/webfiori/ui/Input) — `<input>` element
+* [`JsCode`](https://webfiori.com/docs/webfiori/ui/JsCode) — Inline `<script>` element
+* [`Label`](https://webfiori.com/docs/webfiori/ui/Label) — `<label>` element
+* [`ListItem`](https://webfiori.com/docs/webfiori/ui/ListItem) — `<li>` element
+* [`OrderedList`](https://webfiori.com/docs/webfiori/ui/OrderedList) — `<ol>` element
+* [`Paragraph`](https://webfiori.com/docs/webfiori/ui/Paragraph) — `<p>` element
+* [`RadioGroup`](https://webfiori.com/docs/webfiori/ui/RadioGroup) — A fieldset of radio buttons with labels
+* [`TableCell`](https://webfiori.com/docs/webfiori/ui/TableCell) — `<td>` / `<th>` element
+* [`TableRow`](https://webfiori.com/docs/webfiori/ui/TableRow) — `<tr>` element
+* [`UnorderedList`](https://webfiori.com/docs/webfiori/ui/UnorderedList) — `<ul>` element
+
+## Using PHP Templates
+
+In addition to HTML templates with slots, the library supports PHP template files through [`TemplateCompiler`](https://webfiori.com/docs/webfiori/ui/TemplateCompiler). PHP templates can contain logic and receive variables:
+
+**template.php:**
+``` php
+<section class="user-card">
+    <h2><?= $name ?></h2>
+    <p>Email: <?= $email ?></p>
+    <?php if ($isAdmin): ?>
+        <span class="badge">Admin</span>
+    <?php endif; ?>
+</section>
+```
+
+**Loading the template:**
+``` php
+use WebFiori\Ui\HTMLNode;
+
+$component = HTMLNode::fromFile('path/to/template.php', [
+    'name' => 'Ibrahim',
+    'email' => 'ibrahim@example.com',
+    'isAdmin' => true
+]);
+```
+
+The array keys become available as variables inside the PHP template. This is useful for complex rendering logic that is hard to express with slots alone.
+
+## The `HtmlRenderer` Class
+
+The [`HtmlRenderer`](https://webfiori.com/docs/webfiori/ui/HtmlRenderer) class provides stateless HTML rendering that is safe for concurrent use (e.g., in Swoole or ReactPHP environments). Unlike `HTMLNode::toHTML()` which stores rendering state on the node itself, `HtmlRenderer` keeps all state local:
+
+``` php
+use WebFiori\Ui\HtmlRenderer;
+use WebFiori\Ui\HTMLNode;
+
+$renderer = new HtmlRenderer(
+    formatted: true,       // Indented output
+    quoted: true,          // Quote all attribute values
+    useForwardSlash: false // Self-closing slash for void elements
+);
+
+$node = new HTMLNode('div');
+$node->addChild('p')->text('Hello World');
+
+$html = $renderer->render($node);
+```
+
+For XML output:
+
+``` php
+$xml = $renderer->renderXML($node, formatted: true);
+```
+
+Use `HtmlRenderer` when:
+- Running in async/concurrent PHP environments
+- You need different formatting for the same node tree (e.g., minified for production, formatted for debugging)
+- Thread safety matters
 
 ## Related Articles
 

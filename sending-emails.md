@@ -10,6 +10,8 @@ In this page:
 * [SMTP Setup For Common Servers](#smtp-setup-for-common-servers)
   * [GMail SMTP Server](#gmail-smtp-server)
   * [Outlook SMTP Server](#outlook-smtp-server)
+* [Custom Transport](#custom-transport)
+  * [Send Modes](#send-modes)
 
 ## Introduction
 Email messages are considered as one of the most effective communication ways, and at some point, any website or web application will have to use them. WebFiori Framework has all needed tools to allow the application to be able to send HTML emails. Email messages are used in many ways. For example, they are used to activate user account, reset password, send news letters, etc...
@@ -328,6 +330,74 @@ When connecting to Gmail SMTP server, it is noticed that in some cases it fail e
 * Server port: `587`
 
 In order to connect to Outlook SMTP, the developer must first generate an app password and use it as login password when adding the SMTP account. For more information on app passwords, check [here](https://support.microsoft.com/en-us/account-billing/using-app-passwords-with-apps-that-don-t-support-two-step-verification-5896ed9b-4263-e681-128a-a6f2979a7944).
+
+## Custom Transport
+
+The library supports a pluggable transport architecture via `TransportInterface`. By default, emails are sent using `SmtpTransport`, but you can implement your own transport for API-based providers (SES, SendGrid, etc.) or for testing.
+
+### Using a Custom Transport
+
+``` php
+use WebFiori\Mail\Email;
+use WebFiori\Mail\TransportInterface;
+
+// Pass a transport to send()
+$email = new Email($smtpAccount);
+$email->setSubject('Hello');
+$email->addTo('user@example.com');
+$email->send(new MyCustomTransport());
+```
+
+### Implementing a Transport
+
+``` php
+use WebFiori\Mail\Email;
+use WebFiori\Mail\TransportInterface;
+use WebFiori\Mail\Exceptions\SMTPException;
+
+class NullTransport implements TransportInterface {
+    private array $sent = [];
+
+    public function getName(): string {
+        return 'null';
+    }
+
+    public function send(Email $message): void {
+        // Capture instead of sending — useful for testing
+        $this->sent[] = $message;
+    }
+
+    public function getSentMessages(): array {
+        return $this->sent;
+    }
+}
+```
+
+This makes testing email functionality simple — inject a `NullTransport` and assert on captured messages without hitting an SMTP server.
+
+### Send Modes
+
+The library supports different send modes via `SendMode`:
+
+| Mode | Description |
+|------|-------------|
+| `SendMode::PROD` | Send to actual recipients (default) |
+| `SendMode::TEST_SEND` | Send to configured test addresses instead of real recipients |
+| `SendMode::TEST_STORE` | Store the email to disk instead of sending (for local dev) |
+
+``` php
+use WebFiori\Mail\SendMode;
+
+$email->setMode(SendMode::TEST_STORE, [
+    'store-path' => '/tmp/emails'
+]);
+$email->send(); // Writes to /tmp/emails instead of sending
+
+$email->setMode(SendMode::TEST_SEND, [
+    'send-addresses' => 'qa@example.com;dev@example.com'
+]);
+$email->send(); // Sends to QA addresses instead of real recipients
+```
 
 ## Related Articles
 

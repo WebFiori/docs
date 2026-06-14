@@ -16,6 +16,12 @@ In this page:
    * [Confirm](#confirm)
    * [Multiple Choice](#multiple-choice)
 * [Coloring Output](#coloring-output)
+* [Verbosity Levels](#verbosity-levels)
+* [Progress Bars](#progress-bars)
+* [Table Display](#table-display)
+* [Signal Handling](#signal-handling)
+* [PHP 8 Attributes](#php-8-attributes)
+* [Testing Commands](#testing-commands)
 
 ## Introduction
 One of the features of the framework is the ability to run it as a command line application using terminal. This can be useful if the server that the application is deployed in have SSH access. The command line interface of the framework has a limit functionality but the developer can extend it by creating custom commands.
@@ -438,6 +444,215 @@ $this->info('Useful extra info.');
 
 <img src="assets/images/cli04.png" alt="Terminal Output" style="height:auto;max-width:100%;border:1px solid;">
 
+
+## Verbosity Levels
+
+Commands support verbosity flags that control how much output is shown. Users pass flags when running a command:
+
+- No flag: Normal output (`Verbosity::NORMAL`)
+- `-q`: Quiet mode — suppress non-critical output (`Verbosity::QUIET`)
+- `-v`: Verbose mode — show additional diagnostic info (`Verbosity::VERBOSE`)
+- `-vv`: Debug mode — maximum detail (`Verbosity::DEBUG`)
+
+Use the dedicated methods to output messages at specific verbosity levels:
+
+``` php
+public function exec(): int {
+    $this->println("Always shown");          // Shown at all levels
+    $this->verbose("Connecting to DB...");   // Only shown with -v or -vv
+    $this->debug("Query: SELECT * FROM x"); // Only shown with -vv
+    
+    return 0;
+}
+```
+
+## Progress Bars
+
+For long-running operations, display a progress bar:
+
+``` php
+public function exec(): int {
+    $bar = $this->createProgressBar(100);
+    $bar->start();
+    
+    for ($i = 0; $i < 100; $i++) {
+        // Do work...
+        usleep(50000);
+        $bar->advance();
+    }
+    
+    $bar->finish();
+    return 0;
+}
+```
+
+For iterating over a collection with automatic progress:
+
+``` php
+public function exec(): int {
+    $items = $this->getItemsToProcess();
+    
+    $this->withProgressBar($items, function ($item) {
+        $this->processItem($item);
+    }, 'Processing items...');
+    
+    return 0;
+}
+```
+
+## Table Display
+
+Display data in formatted tables using the `table()` method:
+
+``` php
+public function exec(): int {
+    $data = [
+        ['Ibrahim', 'ibrahim@example.com', 'Admin'],
+        ['Ahmad', 'ahmad@example.com', 'User'],
+        ['Fatima', 'fatima@example.com', 'Editor'],
+    ];
+    
+    $this->table($data, ['Name', 'Email', 'Role']);
+    
+    return 0;
+}
+```
+
+With styling and column colorizers:
+
+``` php
+$this->table($data, ['Name', 'Email', 'Status'], [
+    'style' => 'bordered',   // bordered, compact, minimal
+    'colorize' => [
+        'Status' => fn($v) => match($v) {
+            'Active' => ['color' => 'green', 'bold' => true],
+            'Inactive' => ['color' => 'red'],
+            default => []
+        }
+    ]
+]);
+```
+
+For complex tables, use `TableBuilder` directly:
+
+``` php
+use WebFiori\Cli\Table\TableBuilder;
+
+$table = TableBuilder::create()
+    ->setHeaders(['ID', 'Product', 'Price'])
+    ->setData($products)
+    ->useStyle('bordered')
+    ->setMaxWidth(80);
+
+$this->println($table->render());
+```
+
+## Signal Handling
+
+Handle POSIX signals (e.g., SIGINT for Ctrl+C) to perform cleanup:
+
+``` php
+public function exec(): int {
+    $this->onSignal(SIGINT, function () {
+        $this->warning('Interrupted! Cleaning up...');
+        $this->cleanup();
+        exit(130);
+    });
+    
+    // Long-running work...
+    while ($this->hasWork()) {
+        $this->processNextItem();
+    }
+    
+    return 0;
+}
+```
+
+> **Note:** Signal handling requires the `pcntl` PHP extension. On systems without it (e.g., Windows), signal handlers are silently ignored.
+
+## PHP 8 Attributes
+
+### `#[Group]`
+
+Organize commands into named groups in the help output:
+
+``` php
+use WebFiori\Cli\Attributes\Group;
+use WebFiori\Cli\Command;
+
+#[Group('database')]
+class MigrateCommand extends Command {
+    public function __construct() {
+        parent::__construct('migrate', [], 'Run database migrations');
+    }
+    
+    public function exec(): int { /* ... */ return 0; }
+}
+```
+
+Commands with the same group name are displayed together in the help listing.
+
+### `#[SingleInstance]`
+
+Prevent concurrent execution of a command (e.g., a scheduler or queue worker):
+
+``` php
+use WebFiori\Cli\Attributes\SingleInstance;
+use WebFiori\Cli\Command;
+
+#[SingleInstance(exitCode: 1)]
+class QueueWorkerCommand extends Command {
+    public function __construct() {
+        parent::__construct('queue:work', [], 'Process queue jobs');
+    }
+    
+    public function exec(): int {
+        // Only one instance can run at a time.
+        // A second attempt exits immediately with code 1.
+        while (true) {
+            $this->processNextJob();
+        }
+        return 0;
+    }
+}
+```
+
+The lock is file-based using `flock()` and is automatically released on process exit or crash.
+
+## Testing Commands
+
+Use `CommandTestCase` to write unit tests for CLI commands:
+
+``` php
+use WebFiori\Cli\CommandTestCase;
+
+class SayHiCommandTest extends CommandTestCase {
+    
+    public function testWithName() {
+        $this->executeCommand(new SayHiCommand(), [
+            '--name' => 'Ibrahim'
+        ]);
+        
+        $this->assertEquals(0, $this->getExitCode());
+        $this->assertOutputContains('Hi Ibrahim');
+    }
+    
+    public function testInteractiveInput() {
+        $this->setInputs(['Ibrahim']);
+        
+        $this->executeCommand(new SayHiCommand(), []);
+        
+        $this->assertEquals(0, $this->getExitCode());
+        $this->assertOutputContains('Hi Ibrahim');
+    }
+}
+```
+
+The test case provides input/output stream mocking — no actual terminal interaction needed.
+
+## Command Line Utility
+
+The framework provides a command to scaffold new CLI commands: `php webfiori create:command`. It prompts for the command name, arguments, and description, then generates the class file.
 
 ## Related Articles
 

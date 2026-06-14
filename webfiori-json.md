@@ -22,6 +22,9 @@ In this page:
   * [Kebab Style Example](#kebab-style-example)
   * [Camel Style Example](#camel-style-example)
 * [Reading JSON File](#reading-json-file)
+* [PHP 8 Attributes for Serialization](#php-8-attributes-for-serialization)
+* [Typed Deserialization](#typed-deserialization)
+* [Converting to JSONx](#converting-to-jsonx)
 
 ## Introduction
 
@@ -560,6 +563,167 @@ if ($jsonObj instanceof Json) {
 } else {
     // Failed to read JSON data.
 }
+```
+
+## PHP 8 Attributes for Serialization
+
+### `#[JsonProperty]`
+
+Customize the JSON key name for a property or getter method:
+
+``` php
+use WebFiori\Json\JsonProperty;
+
+class User {
+    #[JsonProperty('user-name')]
+    public string $username = '';
+    
+    #[JsonProperty('e-mail')]
+    public string $email = '';
+    
+    public int $age = 0;
+}
+
+$user = new User();
+$user->username = 'ibrahim';
+$user->email = 'ibrahim@example.com';
+$user->age = 30;
+
+$json = new Json();
+$json->addObject('user', $user);
+```
+
+Output:
+``` json
+{
+    "user": {
+        "user-name": "ibrahim",
+        "e-mail": "ibrahim@example.com",
+        "age": 30
+    }
+}
+```
+
+### `#[JsonIgnore]`
+
+Exclude a property or getter from JSON output:
+
+``` php
+use WebFiori\Json\JsonIgnore;
+
+class User {
+    public string $name = '';
+    
+    #[JsonIgnore]
+    public string $password = '';
+    
+    public string $email = '';
+}
+```
+
+The `password` property will never appear in the JSON output.
+
+## Typed Deserialization
+
+The `JsonDeserializer` class converts JSON data back into typed PHP objects. It supports constructor hydration, setter methods, and public properties.
+
+### Basic Deserialization
+
+``` php
+use WebFiori\Json\Json;
+use WebFiori\Json\JsonDeserializer;
+
+class User {
+    public function __construct(
+        public string $name = '',
+        public string $email = '',
+        public int $age = 0
+    ) {}
+}
+
+$json = Json::decode('{"name":"Ibrahim","email":"ibrahim@example.com","age":30}');
+$user = JsonDeserializer::deserialize($json, User::class);
+
+echo $user->name;  // Ibrahim
+echo $user->email; // ibrahim@example.com
+echo $user->age;   // 30
+```
+
+The deserializer resolves values in this order:
+1. Static `fromJSON(Json $json)` factory method (if exists)
+2. Constructor parameters matched by name
+3. Setter methods (e.g., `setName()` for key `name`)
+4. Public properties
+
+### Nested Objects with `#[JsonType]`
+
+For nested objects or arrays of objects, use the `#[JsonType]` attribute:
+
+``` php
+use WebFiori\Json\JsonType;
+
+class Address {
+    public function __construct(
+        public string $city = '',
+        public string $country = ''
+    ) {}
+}
+
+class Order {
+    public function __construct(
+        public int $id = 0,
+        public string $product = '',
+        public float $total = 0
+    ) {}
+}
+
+class User {
+    public function __construct(
+        public string $name = '',
+        #[JsonType(Address::class)]
+        public ?Address $address = null,
+        #[JsonType(Order::class, isArray: true)]
+        public array $orders = []
+    ) {}
+}
+
+$json = Json::decode('{
+    "name": "Ibrahim",
+    "address": {"city": "Riyadh", "country": "SA"},
+    "orders": [
+        {"id": 1, "product": "Laptop", "total": 999.99},
+        {"id": 2, "product": "Mouse", "total": 29.99}
+    ]
+}');
+
+$user = JsonDeserializer::deserialize($json, User::class);
+echo $user->address->city;       // Riyadh
+echo $user->orders[0]->product;  // Laptop
+echo count($user->orders);       // 2
+```
+
+### Custom Factory Method
+
+If a class has a static `fromJSON()` method, it takes priority:
+
+``` php
+class Config {
+    private array $data;
+    
+    private function __construct(array $data) {
+        $this->data = $data;
+    }
+    
+    public static function fromJSON(Json $json): self {
+        return new self([
+            'host' => $json->get('db-host'),
+            'port' => $json->get('db-port') ?? 3306,
+        ]);
+    }
+}
+
+$json = Json::decode('{"db-host":"localhost","db-port":5432}');
+$config = JsonDeserializer::deserialize($json, Config::class);
 ```
 
 ## Converting to JSONx
