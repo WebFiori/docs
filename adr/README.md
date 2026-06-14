@@ -32,3 +32,6 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0016 | [Introduce FileInterface Abstraction](0016-file-interface-abstraction.md) | Proposed | 2026-06-02 |
 | 0017 | [UI: Extract Renderer from HTMLNode](0017-ui-extract-renderer-from-htmlnode.md) | Proposed | 2026-06-03 |
 | 0018 | [Collections: Add Vector (Array-Backed, O(1) Index Access)](0018-collections-add-vector.md) | Proposed | 2026-06-03 |
+| 0024 | [CLI: Verbosity Levels Without Built-in Logging](0024-cli-verbosity-not-logging.md) | Proposed | 2026-06-13 |
+| 0025 | [CLI: Command Metadata via PHP Attributes](0025-cli-attributes-for-metadata.md) | Proposed | 2026-06-13 |
+| 0026 | [CLI: ANSI Colors On by Default (TTY Auto-Detection)](0026-cli-ansi-auto-detect.md) | Proposed | 2026-06-13 |
