@@ -149,7 +149,30 @@ class PagesRoutes {
   
 ### API Route
 
-An API route is a route that will point to a PHP class that exist in the folder `[APP_DIR]/Apis`. Usually the class will extend the class [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager) or the class [`ExtendedWebServicesManager`](https://webfiori.com/docs/WebFiori/Framework/ExtendedWebServicesManager). To execute one of the services at which the class manages, the developer have to include an extra `GET` or `POST` parameter which has the name `service-name` or `service`. More information about web services can be found [here](learn/web-services).
+An API route is a route that will point to a PHP class that exist in the folder `[APP_DIR]/Apis`.
+
+#### Modern Approach: ServiceRouter
+
+The recommended way to register API routes is via `ServiceRouter::discover()` which auto-registers routes from annotated classes:
+
+``` php
+use WebFiori\Framework\Router\ServiceRouter;
+use WebFiori\Framework\Router\RouteOption;
+
+class APIsRoutes {
+    public static function create() {
+        ServiceRouter::discover('App\\Apis', '/apis', [
+            RouteOption::MIDDLEWARE => ['start-session']
+        ]);
+    }
+}
+```
+
+See [Web Services](learn/web-services#calling-services) for full details on `ServiceRouter`.
+
+#### Traditional Approach: WebServicesManager
+
+The class will extend [`WebServicesManager`](https://webfiori.com/docs/WebFiori/Http/WebServicesManager) or [`ExtendedWebServicesManager`](https://webfiori.com/docs/WebFiori/Framework/ExtendedWebServicesManager). To execute one of the services, the developer must include a path parameter `{service}` in the URL. More information about web services can be found [here](learn/web-services).
 
 Suppose that there exist 3 services classes as follows:
 * `[APP_DIR]/Apis/UserServicesManager.php`
