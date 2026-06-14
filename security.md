@@ -171,11 +171,47 @@ Access::role('admin', ['orders.create', 'orders.view', 'orders.cancel',
 Access::assignRoleToUser($userId, 'customer');
 ```
 
-Check permissions:
+### Role Inheritance
+
+Roles can inherit permissions from a parent role:
 
 ```php
-// Pass user object — reads roles from getRoles()
+Access::role('manager', ['reports.view'])->inherits('staff');
+// manager now has: reports.view + all staff permissions
+```
+
+### Checking Permissions
+
+```php
+// Pass user object — reads roles from getRoles() if no internal mapping exists
 Access::can($user, 'orders.cancel');
+
+// Pass user ID — uses roles from assignRoleToUser() or storage
+Access::can(42, 'orders.cancel');
+```
+
+### Storage Backends
+
+By default, roles are stored in memory. For persistence across requests, use a storage backend:
+
+| Backend | Class | Use Case |
+|---------|-------|----------|
+| In-memory | `InMemoryAccessStorage` | Testing, stateless APIs |
+| File-based | `FileAccessStorage` | Simple deployments |
+| Database | `DatabaseAccessStorage` | Production with DB |
+
+```php
+use WebFiori\Framework\AccessManager;
+use WebFiori\Framework\Storage\DatabaseAccessStorage;
+
+$manager = new AccessManager(new DatabaseAccessStorage($connectionName));
+$manager->loadFromStorage(); // load roles/permissions from DB
+```
+
+To persist changes:
+
+```php
+$manager->saveToStorage();
 ```
 
 ## ABAC with Policies
