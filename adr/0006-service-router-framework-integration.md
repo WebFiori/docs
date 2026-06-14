@@ -92,21 +92,40 @@ class ServiceRouter {
 
 ```php
 private static function scanNamespace(string $namespace): array {
-    $map = []; // name → FQCN
+    $map = []; // name → ['class' => FQCN, 'type' => 'service'|'manager']
 
     foreach (ClassLoader::getClassesInNamespace($namespace) as $class) {
         $ref = new ReflectionClass($class);
-        $attrs = $ref->getAttributes(RestController::class);
 
+        // Priority 1: #[RestController] attribute
+        $attrs = $ref->getAttributes(RestController::class);
         if (!empty($attrs)) {
-            $name = $attrs[0]->newInstance()->name;
-            $map[$name] = $class;
+            $attr = $attrs[0]->newInstance();
+            $name = !empty($attr->name) ? $attr->name : self::deriveNameFromClass($ref->getShortName());
+            $map[$name] = ['class' => $class, 'type' => 'service'];
+            continue;
+        }
+
+        // Priority 2: WebServicesManager subclass (traditional manager)
+        if ($ref->isSubclassOf(WebServicesManager::class) && !$ref->isAbstract()) {
+            $name = self::deriveNameFromClass($ref->getShortName());
+            $map[$name] = ['class' => $class, 'type' => 'manager'];
+            continue;
+        }
+
+        // Priority 3: WebService subclass without attribute
+        if ($ref->isSubclassOf(WebService::class) && !$ref->isAbstract()) {
+            $instance = new $class();
+            $name = $instance->getName();
+            $map[$name] = ['class' => $class, 'type' => 'service'];
         }
     }
 
     return $map;
 }
 ```
+
+The discovery order ensures that attributed classes are preferred. Non-attributed `WebService` subclasses use their `getName()` value. `WebServicesManager` subclasses are registered as traditional manager routes (the manager handles its own sub-service dispatch internally).
 
 ## Instantiation
 
