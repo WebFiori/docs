@@ -24,6 +24,10 @@ In this page:
   * [Adding to WebServicesManager](#adding-to-webservicesmanager)
 * [Response Handling](#response-handling)
 * [OpenAPI Documentation](#openapi-documentation)
+  * [Declarative Response Descriptions](#declarative-response-descriptions)
+  * [Custom Route Paths](#custom-route-paths)
+  * [Built-in OpenAPI Spec Service](#built-in-openapi-spec-service)
+  * [Namespace Scanning](#namespace-scanning)
 * [Testing Web Services](#testing-web-services)
 * [Calling Services](#calling-services)
 
@@ -85,13 +89,15 @@ Key annotations:
 
 | Annotation | Target | Description |
 |------------|--------|-------------|
-| `#[RestController]` | Class | Defines service name and description |
+| `#[RestController]` | Class | Defines service name, description, and path |
 | `#[GetMapping]` | Method | Maps to GET requests |
 | `#[PostMapping]` | Method | Maps to POST requests |
 | `#[PutMapping]` | Method | Maps to PUT requests |
 | `#[DeleteMapping]` | Method | Maps to DELETE requests |
 | `#[PatchMapping]` | Method | Maps to PATCH requests |
 | `#[ResponseBody]` | Method | Auto-converts return value to JSON |
+| `#[RequestParam]` | Method | Declares a request parameter |
+| `#[ApiResponse]` | Method | Declares a possible response for OpenAPI spec (repeatable) |
 | `#[AllowAnonymous]` | Method | Skips authentication check |
 | `#[RequiresAuth]` | Method | Requires authentication |
 | `#[PreAuthorize]` | Method/Class | Expression-based authorization |
@@ -571,26 +577,117 @@ Response type constants:
 
 ## OpenAPI Documentation
 
-Generate OpenAPI 3.1.0 specification automatically:
+The library generates OpenAPI 3.1.0 specifications automatically from your service definitions.
+
+### Declarative Response Descriptions
+
+Use the repeatable `#[ApiResponse]` attribute to declare possible responses on each method:
 
 ``` php
-#[RestController('openapi', 'API Documentation')]
-class OpenAPIService extends WebService {
-    
-    #[GetMapping]
-    #[ResponseBody]
-    #[AllowAnonymous]
-    public function getSpec(): array {
-        $openApi = $this->getManager()->toOpenAPI();
-        
-        // Customize info
-        $info = $openApi->getInfo();
-        $info->setTitle('My API');
-        $info->setVersion('1.0.0');
-        $info->setDescription('API documentation');
-        
-        return $openApi->toArray();
-    }
+use WebFiori\Http\Annotations\ApiResponse;
+
+#[GetMapping]
+#[ResponseBody]
+#[ApiResponse(status: '200', description: 'List of products')]
+#[ApiResponse(status: '404', description: 'Product not found')]
+#[RequestParam(name: 'id', type: 'int', optional: true)]
+public function getProducts(?int $id): array {
+    // ...
+}
+
+#[PostMapping]
+#[ResponseBody]
+#[ApiResponse(status: '201', description: 'Product created')]
+#[ApiResponse(status: '400', description: 'Invalid input')]
+#[RequestParam(name: 'name', type: 'string')]
+public function createProduct(string $name): array {
+    // ...
+}
+```
+
+If no `#[ApiResponse]` is present, the spec defaults to `200 - Successful operation`. Programmatic `addResponse()` calls take priority over annotations.
+
+### Custom Route Paths
+
+Use the `path` property on `#[RestController]` to set a multi-segment URL path independent of the service name:
+
+``` php
+#[RestController(name: 'login', path: 'auth/login', description: 'Authentication endpoint')]
+class LoginService extends WebService {
+    // Route: /apis/auth/login
+    // Service name: login (used for lookups)
+}
+```
+
+- `name` — service identifier (no slashes, used for internal lookups)
+- `path` — URL mount point (slashes allowed, used in OpenAPI spec and routing)
+- If `path` is not set, the service name is used as the path
+
+### Built-in OpenAPI Spec Service
+
+Use `OpenAPISpecService` to expose your spec as a live endpoint without writing boilerplate:
+
+``` php
+use WebFiori\Http\OpenAPI\OpenAPISpecService;
+use WebFiori\Http\RequestProcessor;
+
+$specService = new OpenAPISpecService(
+    'App\\Apis',       // Namespace to scan for #[RestController] classes
+    '/apis',           // Base path prefix in the spec
+    'My API',          // API title
+    '1.0.0'            // API version
+);
+
+$processor = new RequestProcessor();
+$processor->process($specService);
+```
+
+Point Swagger UI at this endpoint to get auto-generated, always-current documentation.
+
+### Namespace Scanning
+
+Use `OpenAPIGenerator` to discover services and generate specs without manual registration:
+
+``` php
+use WebFiori\Http\OpenAPI\OpenAPIGenerator;
+
+$generator = new OpenAPIGenerator();
+
+// Auto-discover all #[RestController] classes in a namespace
+$spec = $generator->generateFromNamespace(
+    'App\\Apis',
+    'My API',
+    '1.0.0',
+    '/apis'
+);
+
+echo $spec->toJSON();
+```
+
+Or use the explicit approach for full control:
+
+``` php
+$spec = $generator->generate(
+    [new UserService(), new ProductService()],
+    'My API',
+    '1.0.0',
+    '/apis'
+);
+```
+
+### Returning JsonI from ResponseBody
+
+When a `#[ResponseBody]` method returns a `JsonI` object (such as the OpenAPI spec itself), the framework serializes it directly via `toJSON()` without wrapping or metadata:
+
+``` php
+use WebFiori\Json\JsonI;
+
+#[GetMapping]
+#[ResponseBody]
+#[AllowAnonymous]
+public function getSpec(): JsonI {
+    $generator = new OpenAPIGenerator();
+    return $generator->generateFromNamespace('App\\Apis', 'My API', '1.0.0', '/apis');
 }
 ```
 
@@ -713,6 +810,7 @@ class APIsRoutes {
 ```
 
 This scans `App/Apis/` and registers a route per service:
+- `#[RestController(name: 'orders', path: 'shop/orders')]` → `GET|POST /apis/shop/orders`
 - `#[RestController('orders')]` → `GET|POST /apis/orders`
 - `#[RestController]` on `ProductService` → `GET|POST /apis/product`
 - `WebService` without attribute (getName() = 'users') → `GET|POST /apis/users`
