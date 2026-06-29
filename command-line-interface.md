@@ -212,6 +212,42 @@ class Commands {
     }
 }
 ```
+
+#### Using a Factory for Dependency Injection
+
+By default, auto-discovered commands (those in `[APP_DIR]/Commands`) are instantiated using `new $className()`, which requires zero-argument constructors. If your commands need constructor dependencies (database connections, services, etc.), you can set a factory callable on the command discovery:
+
+``` php
+namespace App\Ini;
+
+use WebFiori\Framework\App;
+use WebFiori\Cli\Discovery\CommandDiscovery;
+
+class Commands {
+
+    public static function initialize() {
+        $container = App::getContainer();
+
+        // Set a factory that uses the DI container to build commands
+        App::getRunner()->getCommandDiscovery()->setFactory(
+            fn($class) => $container->get($class)
+        );
+    }
+}
+```
+
+The factory receives the fully qualified class name as its only argument and must return a `Command` instance. If no factory is set, the default `new $className()` behavior is used. This works with `webfiori/container`, any PSR-11 container, or a simple closure:
+
+``` php
+App::getRunner()->getCommandDiscovery()->setFactory(function ($class) use ($db, $mailer) {
+    return match ($class) {
+        MigrateCommand::class => new MigrateCommand($db),
+        NotifyCommand::class => new NotifyCommand($mailer),
+        default => new $class(),
+    };
+});
+```
+
 ### Running The Command
 
 When the command `help` is executed, the newly created command will appear at the end of supported commands list as follows:
