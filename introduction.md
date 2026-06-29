@@ -364,6 +364,9 @@ WebFiori follows a modular architecture:
 
 * **Component Independence**: 14 independent packages — use only what you need
 * **Interface-Driven**: Storage backends (sessions, cache, queue, auth) are pluggable
+* **Facades**: Classes like `ContainerFacade` and `EventDispatcherFacade` are static proxies to underlying instances, following the convention popularized by the PHP community. For dependency injection or multiple instances, use the underlying classes directly.
+* **Request/Response**: `App::getRequest()` and `App::getResponse()` are per-request singletons. PHP's share-nothing execution model means each request runs in an isolated process — no shared state between users. These are safe to use as static accessors within a single request lifecycle.
+* **No separate controller layer required**: `WebService` classes can act as controllers directly — routing, validation, and request handling in one annotated class, similar to JAX-RS (Java) or ASP.NET minimal APIs. For full MVC, use `WebService` as a thin controller that delegates to service/repository classes. See [MVC Architecture](learn/mvc) for details.
 * **Request Lifecycle**: Request → Middleware (before) → Route Dispatch → Middleware (after) → Response → Middleware (afterSend)
 * **Extensibility**: Easy integration with third-party libraries
 * **Testing Support**: Full support for unit and integration testing with `CLITestCase` and `ServiceTestCase`

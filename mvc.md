@@ -27,6 +27,8 @@ WebFiori Framework supports the Model-View-Controller (MVC) architectural patter
 - **Repositories**: Data access layer using `AbstractRepository` for database operations
 - **API Controllers (Controller)**: Web services that handle HTTP requests using `WebService` class
 
+For JSON APIs, the response array serves as the view — the framework handles serialization. For server-rendered pages, WebFiori's [Theme system](learn/themes) and [WebPage classes](learn/web-pages) provide the view layer.
+
 This separation of concerns makes your code more maintainable, testable, and scalable.
 
 ## Architecture Overview
