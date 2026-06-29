@@ -24,6 +24,7 @@ In this page:
 * [Reading JSON File](#reading-json-file)
 * [PHP 8 Attributes for Serialization](#php-8-attributes-for-serialization)
 * [Typed Deserialization](#typed-deserialization)
+* [Converting to Array](#converting-to-array)
 * [Converting to JSONx](#converting-to-jsonx)
 
 ## Introduction
@@ -724,6 +725,52 @@ class Config {
 
 $json = Json::decode('{"db-host":"localhost","db-port":5432}');
 $config = JsonDeserializer::deserialize($json, Config::class);
+```
+
+## Converting to Array
+
+The `toArray()` method converts a `Json` object to a plain PHP associative array. This avoids the overhead of encoding to a JSON string and decoding it back with `json_decode()`.
+
+``` php
+use WebFiori\Json\Json;
+
+$json = new Json([
+    'name' => 'Ibrahim',
+    'age' => 30,
+    'active' => true,
+]);
+
+$address = new Json(['city' => 'Riyadh', 'country' => 'SA']);
+$json->add('address', $address);
+
+$array = $json->toArray();
+// Result:
+// [
+//     'name' => 'Ibrahim',
+//     'age' => 30,
+//     'active' => true,
+//     'address' => [
+//         'city' => 'Riyadh',
+//         'country' => 'SA',
+//     ],
+// ]
+```
+
+The method recursively converts all nested `Json` objects into associative arrays. Arrays are preserved with their elements recursively converted as well. This is useful when:
+
+* Passing structured data to functions that expect arrays
+* Writing PHPUnit assertions with `assertEquals` against expected arrays
+* Merging JSON data with other arrays using `array_merge()`
+* Returning data from controller methods without triggering serializer metadata
+
+Previously, the only way to achieve this was the round-trip approach:
+
+``` php
+// Old approach (inefficient)
+$array = json_decode($json . '', true);
+
+// New approach (direct conversion)
+$array = $json->toArray();
 ```
 
 ## Converting to JSONx
