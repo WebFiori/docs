@@ -35,3 +35,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0024 | [CLI: Verbosity Levels Without Built-in Logging](0024-cli-verbosity-not-logging.md) | Proposed | 2026-06-13 |
 | 0025 | [CLI: Command Metadata via PHP Attributes](0025-cli-attributes-for-metadata.md) | Proposed | 2026-06-13 |
 | 0026 | [CLI: ANSI Colors On by Default (TTY Auto-Detection)](0026-cli-ansi-auto-detect.md) | Proposed | 2026-06-13 |
+| 0027 | [AI Library as Standalone Package](0027-ai-standalone-package.md) | Accepted | 2026-07-06 |
