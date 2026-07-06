@@ -39,3 +39,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0028 | [AI: Provider-Agnostic Interface Design](0028-ai-provider-agnostic-interface.md) | Accepted | 2026-07-06 |
 | 0029 | [AI: cURL Behind a Custom Interface](0029-ai-curl-behind-interface.md) | Accepted | 2026-07-06 |
 | 0030 | [AI: Exceptions Over Result Objects for Error Handling](0030-ai-exceptions-over-result-objects.md) | Accepted | 2026-07-06 |
+| 0031 | [AI: Logging via Callback Instead of PSR-3](0031-ai-logging-via-callback.md) | Accepted | 2026-07-06 |
