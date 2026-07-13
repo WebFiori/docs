@@ -171,6 +171,8 @@ Access::role('admin', ['orders.create', 'orders.view', 'orders.cancel',
 Access::assignRoleToUser($userId, 'customer');
 ```
 
+Permission and group IDs can contain letters (`A-Z`, `a-z`), digits (`0-9`), underscores (`_`), dots (`.`), and dashes (`-`). Dots and dashes are useful as namespace separators (e.g., `orders.create`, `billing-read`).
+
 ### Role Inheritance
 
 Roles can inherit permissions from a parent role:

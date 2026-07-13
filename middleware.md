@@ -231,6 +231,47 @@ class AuthMiddleware extends AbstractMiddleware {
 
 When `auth` is assigned to a route, `start-session` is automatically pulled in and executed first — even if you didn't list it in the route's middleware array.
 
+#### Using ::class Syntax
+
+Instead of relying on string names, you can reference dependencies using the `::class` syntax. This provides IDE autocompletion, refactoring support, and compile-time typo checking:
+
+``` php
+namespace App\Middleware;
+
+use WebFiori\Framework\Middleware\AbstractMiddleware;
+use WebFiori\Framework\Middleware\StartSessionMiddleware;
+use WebFiori\Http\Request;
+use WebFiori\Http\Response;
+
+class AuthMiddleware extends AbstractMiddleware {
+    
+    public function __construct() {
+        parent::__construct('auth');
+    }
+
+    public function getDependencies(): array {
+        return [StartSessionMiddleware::class];
+    }
+
+    public function before(Request $request, Response $response) {
+        // Session is guaranteed to be started here
+    }
+
+    public function after(Request $request, Response $response) {}
+    public function afterSend(Request $request, Response $response) {}
+}
+```
+
+You can mix both string names and `::class` references in the same array:
+
+``` php
+public function getDependencies(): array {
+    return [StartSessionMiddleware::class, 'audit-log'];
+}
+```
+
+The framework resolves `::class` entries by finding the registered middleware instance of that class. If the class is not registered, the dependency is skipped silently (same behavior as an unresolvable string name).
+
 ### Instantiable (Parameterized) Middleware
 
 Middleware can accept constructor parameters for configuration. Pass instances directly to routes:
