@@ -12,6 +12,13 @@ In this page:
   * [Outlook SMTP Server](#outlook-smtp-server)
 * [Custom Transport](#custom-transport)
   * [Send Modes](#send-modes)
+* [SSL/TLS Verification](#ssltls-verification)
+* [Connection Retry and Timeout](#connection-retry-and-timeout)
+* [Message-ID and Reply Threading](#message-id-and-reply-threading)
+* [OAuth Authentication](#oauth-authentication)
+  * [Microsoft 365 / Outlook](#microsoft-365--outlook)
+  * [Custom OAuth Provider](#custom-oauth-provider)
+* [Amazon SES SMTP](#amazon-ses-smtp)
 
 ## Introduction
 Email messages are considered as one of the most effective communication ways, and at some point, any website or web application will have to use them. WebFiori Framework has all needed tools to allow the application to be able to send HTML emails. Email messages are used in many ways. For example, they are used to activate user account, reset password, send news letters, etc...
@@ -398,6 +405,147 @@ $email->setMode(SendMode::TEST_SEND, [
 ]);
 $email->send(); // Sends to QA addresses instead of real recipients
 ```
+
+## SSL/TLS Verification
+
+By default, SSL/TLS peer verification is **enabled** for all connections. The server certificate is verified against your system's CA bundle and the hostname must match. This is the correct and secure default for any publicly trusted SMTP server.
+
+For internal servers with self-signed certificates, enable `ALLOW_SELF_SIGNED`:
+
+```php
+use WebFiori\Mail\AccountOption;
+use WebFiori\Mail\SMTPAccount;
+
+$account = new SMTPAccount([
+    // ...
+    AccountOption::ALLOW_SELF_SIGNED => true,  // peer verification stays on
+]);
+
+// Or disable all verification (not recommended for production):
+$account->setVerifySsl(false);
+```
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `VERIFY_SSL` | `true` | Enable/disable SSL peer and hostname verification |
+| `ALLOW_SELF_SIGNED` | `false` | Allow self-signed certs (only when `VERIFY_SSL` is `true`) |
+
+> **Warning:** Setting `VERIFY_SSL` to `false` exposes credentials to man-in-the-middle attacks.
+
+## Connection Retry and Timeout
+
+Failed connections are automatically retried with exponential backoff. The read timeout applies after the connection is established, preventing indefinite hangs if the server becomes unresponsive mid-session.
+
+```php
+$account = new SMTPAccount([
+    // ...
+    AccountOption::MAX_RETRIES => 5,  // retry up to 5 times (default: 3)
+    AccountOption::RETRY_DELAY => 2,  // base delay in seconds (default: 1)
+                                      // backoff: 2s, 4s, 8s, 16s, 32s
+]);
+
+// Disable retries:
+$account->setMaxRetries(0);
+```
+
+Retries apply to TCP connection establishment only. A timeout during `read()` throws `SMTPException` immediately — the session state is unknown and the caller must reconnect.
+
+## Message-ID and Reply Threading
+
+Every sent email automatically gets a unique `Message-ID` header (RFC 5322). After calling `send()` you can read it back:
+
+```php
+$email->send();
+echo $email->getMessageId(); // e.g. <a3f2c1...@smtp.office365.com>
+```
+
+To send a reply that threads correctly in email clients:
+
+```php
+$reply = new Email($account);
+$reply->setInReplyTo($originalEmail->getMessageId());
+$reply->setSubject('Re: Original Subject');
+$reply->addTo('sender@example.com');
+$reply->send();
+```
+
+## OAuth Authentication
+
+The `OAuthTokenProvider` interface allows lazy token acquisition — `getToken()` is called just before each send, ensuring the token is always fresh.
+
+### Microsoft 365 / Outlook
+
+Use `MicrosoftOAuthProvider` with the Client Credentials flow against Microsoft Entra ID. Requires an App Registration with `SMTP.SendAsApp` permission.
+
+```php
+use WebFiori\Mail\MicrosoftOAuthProvider;
+use WebFiori\Mail\AccountOption;
+use WebFiori\Mail\SMTPAccount;
+use WebFiori\Mail\Email;
+
+$provider = new MicrosoftOAuthProvider(
+    tenantId:     getenv('SMTP_TENANT_ID'),
+    clientId:     getenv('SMTP_CLIENT_ID'),
+    clientSecret: getenv('SMTP_CLIENT_SECRET')
+);
+
+$account = new SMTPAccount([
+    AccountOption::SERVER_ADDRESS => 'smtp.office365.com',
+    AccountOption::PORT           => 587,
+    AccountOption::USERNAME       => getenv('SMTP_USERNAME'),
+    AccountOption::SENDER_ADDRESS => getenv('SMTP_USERNAME'),
+    AccountOption::SENDER_NAME    => 'My App',
+]);
+$account->setTokenProvider($provider);
+
+$email = new Email($account);
+$email->setSubject('Hello via OAuth');
+$email->addTo('recipient@example.com');
+$email->insert('p')->text('Sent with XOAUTH2.');
+$email->send();
+```
+
+For the full Azure setup, see [webfiori/mail OAuth setup guide](https://github.com/WebFiori/mail/blob/main/examples/oauth-usage/README.md).
+
+### Custom OAuth Provider
+
+Implement `OAuthTokenProvider` for any other OAuth2-capable SMTP server:
+
+```php
+use WebFiori\Mail\OAuthTokenProvider;
+
+class MyProvider implements OAuthTokenProvider {
+    public function getToken(): string {
+        // fetch, cache and return your access token
+    }
+}
+
+$account->setTokenProvider(new MyProvider());
+```
+
+## Amazon SES SMTP
+
+Amazon SES SMTP uses IAM credentials, not OAuth. `SESCredentialHelper` derives the required SMTP password from your IAM Secret Access Key:
+
+```php
+use WebFiori\Mail\SESCredentialHelper;
+use WebFiori\Mail\AccountOption;
+use WebFiori\Mail\SMTPAccount;
+
+$region  = 'us-east-1';
+$account = new SMTPAccount([
+    AccountOption::SERVER_ADDRESS => SESCredentialHelper::smtpEndpoint($region),
+    AccountOption::PORT           => 587,
+    AccountOption::USERNAME       => getenv('AWS_ACCESS_KEY_ID'),
+    AccountOption::PASSWORD       => SESCredentialHelper::deriveSmtpPassword(
+                                         getenv('AWS_SECRET_ACCESS_KEY'), $region
+                                     ),
+    AccountOption::SENDER_ADDRESS => 'sender@verified-domain.com',
+    AccountOption::SENDER_NAME    => 'My App',
+]);
+```
+
+No special transport needed — SES SMTP uses standard `AUTH LOGIN`. The derived password is deterministic so it can be pre-computed and stored in a secrets manager.
 
 ## Related Articles
 
