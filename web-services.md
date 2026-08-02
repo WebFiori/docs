@@ -13,6 +13,7 @@ In this page:
   * [Cross-Field Validation](#cross-field-validation)
   * [Reusable Parameter Sets](#reusable-parameter-sets)
   * [Content Negotiation](#content-negotiation)
+  * [Request Content Type Control](#request-content-type-control)
   * [ResponseEntity](#responseentity)
 * [Authentication and Authorization](#authentication-and-authorization)
   * [Using RequiresAuth and AllowAnonymous](#using-requiresauth-and-allowanonymous)
@@ -104,6 +105,7 @@ Key annotations:
 | `#[Validate]` | Method | Cross-field validation function |
 | `#[UseParameterSet]` | Method | Imports a reusable parameter set |
 | `#[Produces]` | Method | Content negotiation (Accept header matching) |
+| `#[Consumes]` | Method | Per-method content type control (request body types) |
 
 ### Request Parameters
 
@@ -295,6 +297,79 @@ public function getReport(): ResponseEntity {
 ```
 
 Available `MediaType` constants: `JSON`, `XML`, `HTML`, `PLAIN`, `CSV`, `PDF`, `FORM`, `MULTIPART`, `OCTET_STREAM`.
+
+### Request Content Type Control
+
+Use `#[Consumes]` to declare which content types a method accepts in the request body. This overrides the default allowed types (`application/x-www-form-urlencoded`, `multipart/form-data`, `application/json`) for POST and PUT requests:
+
+``` php
+use WebFiori\Http\Annotations\Consumes;
+use WebFiori\Http\Annotations\PostMapping;
+use WebFiori\Http\Annotations\ResponseBody;
+use WebFiori\Http\MediaType;
+use WebFiori\Http\ResponseEntity;
+
+#[PostMapping]
+#[Consumes(MediaType::OCTET_STREAM)]
+#[ResponseBody]
+public function uploadBinary(): ResponseEntity {
+    // Only application/octet-stream is accepted
+    // Default types (form, json) are REJECTED
+    $body = file_get_contents('php://input');
+    $size = strlen($body);
+    
+    return ResponseEntity::created(['size' => $size, 'md5' => md5($body)]);
+}
+```
+
+Key behaviors:
+
+- **No `#[Consumes]`**: The default three types apply (backward compatible).
+- **With `#[Consumes]`**: Only the listed types are accepted. The defaults are overridden, not merged.
+- **Non-standard types**: When a non-parseable content type is used (not form-encoded, multipart, or JSON), parameter filtering is automatically skipped. The raw body is available via `php://input`.
+- **Standard types in `#[Consumes]`**: If you list a parseable type (e.g. `MediaType::FORM`), normal parameter filtering still applies for requests using that type.
+
+Multiple content types on one method:
+
+``` php
+#[PostMapping]
+#[Consumes(MediaType::OCTET_STREAM, MediaType::XML, 'text/xml')]
+#[ResponseBody]
+public function acceptMultiple(): ResponseEntity {
+    $contentType = $this->getManager()->getRequest()->getContentType();
+    $body = file_get_contents('php://input');
+    
+    // Handle based on actual content type received
+    if (str_contains($contentType, 'xml')) {
+        return $this->handleXml($body);
+    }
+    
+    return $this->handleBinary($body);
+}
+```
+
+Mixing standard and non-standard types:
+
+``` php
+#[PostMapping]
+#[Consumes(MediaType::FORM, MediaType::OCTET_STREAM)]
+#[ResponseBody]
+public function flexible(): ResponseEntity {
+    $contentType = $this->getManager()->getRequest()->getContentType();
+    
+    if (str_contains($contentType, 'octet-stream')) {
+        // Raw binary — no parameter filtering
+        $body = file_get_contents('php://input');
+        return ResponseEntity::ok(['raw_size' => strlen($body)]);
+    }
+    
+    // Form-encoded — normal parameter filtering applies
+    $name = $this->getParamVal('name');
+    return ResponseEntity::ok(['name' => $name]);
+}
+```
+
+> **Note:** `#[Consumes]` only affects POST and PUT requests. GET, DELETE, and PATCH requests bypass content type validation regardless of the annotation.
 
 ### ResponseEntity
 

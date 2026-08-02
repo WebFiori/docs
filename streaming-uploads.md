@@ -152,34 +152,52 @@ console.log(result);
 
 ## Full API Example
 
-A complete web service that accepts streaming uploads:
+A complete web service that accepts streaming uploads using the `#[Consumes]` annotation:
 
 ``` php
 use WebFiori\File\Exceptions\FileException;
 use WebFiori\File\StreamingUploader;
+use WebFiori\Http\Annotations\AllowAnonymous;
+use WebFiori\Http\Annotations\Consumes;
+use WebFiori\Http\Annotations\PostMapping;
+use WebFiori\Http\Annotations\ResponseBody;
+use WebFiori\Http\Annotations\RestController;
+use WebFiori\Http\MediaType;
+use WebFiori\Http\ResponseEntity;
+use WebFiori\Http\WebService;
 
-// In your route handler or web service
-$uploader = new StreamingUploader('/home/files/uploads', ['pdf', 'docx', 'xlsx']);
-$uploader->setMaxFileSize(50 * 1024 * 1024); // 50MB
+#[RestController('uploads', 'File upload service')]
+class UploadService extends WebService {
 
-$uploader->setOnAfterUpload(function ($file) {
-    // Log or queue processing
-});
+    #[PostMapping]
+    #[Consumes(MediaType::OCTET_STREAM)]
+    #[ResponseBody]
+    #[AllowAnonymous]
+    public function upload(): ResponseEntity {
+        $uploader = new StreamingUploader('/home/files/uploads', ['pdf', 'docx', 'xlsx']);
+        $uploader->setMaxFileSize(50 * 1024 * 1024); // 50MB
 
-try {
-    $file = $uploader->receive(); // filename from headers
+        try {
+            $file = $uploader->receive(); // filename from headers
 
-    http_response_code(201);
-    echo json_encode([
-        'name' => $file->getName(),
-        'size' => filesize($file->getAbsolutePath()),
-        'mime' => $file->getMIME(),
-    ]);
-} catch (FileException $e) {
-    http_response_code(422);
-    echo json_encode(['error' => $e->getMessage()]);
+            return ResponseEntity::created([
+                'name' => $file->getName(),
+                'size' => filesize($file->getAbsolutePath()),
+                'mime' => $file->getMIME(),
+            ]);
+        } catch (FileException $e) {
+            return ResponseEntity::unprocessableEntity(['error' => $e->getMessage()]);
+        }
+    }
 }
 ```
+
+The `#[Consumes(MediaType::OCTET_STREAM)]` annotation tells the framework to:
+1. Accept `application/octet-stream` as a valid content type for this method
+2. Skip parameter filtering (since binary data cannot be parsed as form fields)
+3. Reject other content types (form-urlencoded, JSON, etc.) with 415
+
+Without `#[Consumes]`, requests with `application/octet-stream` would be rejected with 415 Unsupported Media Type before reaching your code.
 
 ## Related Topics
 
