@@ -168,6 +168,23 @@ class RedisQueueStorage implements QueueStorage {
 }
 ```
 
+If your backend supports listing all pending jobs (files, database, Redis), implement `ListableQueueStorage` instead:
+
+```php
+use WebFiori\Queue\ListableQueueStorage;
+use WebFiori\Queue\QueuedJob;
+
+class RedisQueueStorage implements ListableQueueStorage {
+    // ... all QueueStorage methods plus:
+
+    public function getPending(): array {
+        // Return all pending jobs sorted by priority desc, createdAt asc
+    }
+}
+```
+
+Backends that cannot enumerate their contents (SQS, RabbitMQ) should only implement the base `QueueStorage` interface.
+
 To use a custom storage:
 
 ```php
@@ -181,9 +198,21 @@ QueueFacade::setInstance($queue);
 ## Checking Queue Status
 
 ```php
-// Number of pending jobs
+// Number of pending jobs (works with any storage backend)
 $count = QueueFacade::getPendingCount();
+
+// List all pending jobs including delayed ones (requires ListableQueueStorage)
+$pending = QueueFacade::getPending();
+
+foreach ($pending as $queuedJob) {
+    echo $queuedJob->getId() . ' | '
+        . 'priority=' . $queuedJob->getPriority() . ' | '
+        . 'attempts=' . $queuedJob->getAttempts() . ' | '
+        . 'available=' . date('Y-m-d H:i:s', $queuedJob->getAvailableAt()) . "\n";
+}
 ```
+
+> **Note:** `getPending()` requires a `ListableQueueStorage` backend (e.g. `FileQueueStorage`). If the storage backend does not support listing (e.g. an SQS adapter), a `LogicException` is thrown. Use `getPendingCount()` as a universal alternative for simple checks.
 
 ## Best Practices
 
