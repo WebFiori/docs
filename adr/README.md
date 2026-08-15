@@ -43,3 +43,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0032 | [SMTP: Stream Timeout and Connection Retry with Exponential Backoff](0032-smtp-timeout-and-retry-backoff.md) | Accepted | 2026-07-27 |
 | 0033 | [AI: RAG via Tool Calling Instead of Pipeline Wrapping](0033-ai-rag-as-tool.md) | Accepted | 2026-08-16 |
 | 0034 | [AI: SQLite3 Class Over PDO for SqliteVectorStore](0034-ai-sqlite3-over-pdo.md) | Accepted | 2026-08-16 |
+| 0035 | [AI: Provider-Native Built-In Tools via Typed Enums](0035-ai-built-in-tools-enums.md) | Accepted | 2026-08-16 |
