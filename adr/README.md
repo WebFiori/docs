@@ -48,3 +48,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0037 | [AI: ModelRouter — Intelligent Multi-Provider Routing](0037-ai-model-router.md) | Accepted | 2026-08-16 |
 | 0039 | [AI: FallbackProvider — Resilient Multi-Provider Failover](0039-ai-fallback-provider.md) | Accepted | 2026-08-19 |
 | 0040 | [AI: Typed Configuration Objects for Provider Clients](0040-ai-typed-config-objects.md) | Accepted | 2026-08-19 |
+| 0041 | [AI: Vertex AI Model Garden — GoogleAdapter Pattern](0041-ai-vertex-google-adapter.md) | Accepted | 2026-08-19 |
