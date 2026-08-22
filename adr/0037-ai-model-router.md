@@ -1,6 +1,7 @@
 # ADR-0037: AI: ModelRouter — Intelligent Multi-Provider Routing
 
 **Date:** 2026-08-16
+**Updated:** 2026-08-23
 **Status:** Accepted
 
 ## Context
@@ -23,36 +24,87 @@ Add a `ModelRouter` class that implements `ProviderInterface`. It is a
 drop-in replacement anywhere a provider is used, including inside other routers
 (nested routing for multi-tier specialization).
 
-**Routing Priority Stack (highest to lowest):**
+### Integration with ModelAliases
+
+`ModelRouter` works with **logical tier names** (e.g., `'fast'`, `'smart'`,
+`'coding'`) rather than provider-specific model IDs. Each provider in the
+router can carry a `ModelAliases` registry that resolves the tier name to its
+own model ID. This cleanly separates two concerns:
+
+- **Router strategies** work in terms of logical tiers — portable across providers
+- **ModelAliases** handle provider-specific naming — updated in one place
+
+```
+Request
+   │
+   ▼
+ModelRouter  ← picks tier based on request characteristics
+   │              ('fast', 'smart', 'coding', etc.)
+   ▼
+Provider (with ModelAliases)  ← resolves tier → actual model ID
+   │              'fast' → 'gpt-4o-mini' (OpenAI)
+   │              'fast' → 'gemini-2.5-flash' (Google)
+   ▼
+API Call
+```
+
+```php
+$aliases = new ModelAliases([
+    'fast'  => ['openai' => 'gpt-4o-mini',  'google' => 'gemini-2.5-flash'],
+    'smart' => ['openai' => 'gpt-4o',        'google' => 'gemini-2.5-pro'],
+]);
+
+$openai = new OpenAIClient(...);  $openai->setModelAliases($aliases);
+$google = new GoogleClient(...);  $google->setModelAliases($aliases);
+
+// Providers keyed by tier name — same names as the aliases
+$router = new ModelRouter([
+    'fast'  => $openai,   // 'fast' alias → gpt-4o-mini for this provider
+    'smart' => $google,   // 'smart' alias → gemini-2.5-pro for this provider
+]);
+
+$router->setStrategy(new TaskComplexityStrategy([
+    'default' => 'fast',
+    'complex' => 'smart',
+]));
+
+// Router picks tier, provider resolves to its model ID
+$response = $router->chat($messages);
+```
+
+Swapping a provider is transparent to routing logic — only the alias table
+needs updating when model versions change.
+
+### Routing Priority Stack (highest to lowest)
 
 ```
 1. force_provider in chat() options   — per-call caller override
 2. forceRoute() configuration         — developer locks a route
 3. Rule-based routing                 — developer-defined conditions
 4. Tool-based routing                 — model decides via tool call
-5. Fallback provider                  — default when nothing matched
+5. Default tier                       — fallback when nothing matched
 ```
 
-**Transparent Handoff:**
+### Transparent Handoff
 
-The routed provider receives the original messages unchanged, not a relay
-from the default model. This is critical for code generation — the specialist
-model should answer directly, not have its output paraphrased by the router.
+The routed provider receives the original messages unchanged. The router
+injects the resolved tier name as the `model` option so the provider's
+`ModelAliases` can resolve it to the correct model ID.
 
 ```
 User messages
      │
      ▼
-ModelRouter classifies task
+ModelRouter classifies task → picks tier ('smart')
      │
-     ▼ (library intercepts, swaps provider transparently)
-Specialist provider receives original messages
+     ▼  options['model'] = 'smart'
+Google provider (with aliases) → resolves 'smart' → 'gemini-2.5-pro'
      │
      ▼
 Response returned to caller
 ```
 
-**Three Routing Modes:**
+### Three Routing Modes
 
 ```php
 RoutingMode::RULE    // developer-defined conditions only, no LLM call
@@ -60,82 +112,94 @@ RoutingMode::TOOL    // model decides via tool call
 RoutingMode::HYBRID  // rules first, tool-based for unmatched (default)
 ```
 
-Hybrid is the default — rules handle obvious cases with zero overhead,
-tool-based handles ambiguous ones.
-
-**API:**
+### API
 
 ```php
-$router = new ModelRouter($defaultClient);
+$router = new ModelRouter(
+    providers: [
+        'fast'    => $openaiClient,   // tier → provider
+        'smart'   => $googleClient,
+        'coding'  => $claudeClient,
+    ],
+    default: 'fast',
+);
 
-// Register routes
-$router->addRoute('coding',    $claudeClient,  'Code writing, debugging, review');
-$router->addRoute('reasoning', $geminiPro,     'Math, logic, multi-step analysis');
-
-// Rule-based override (no LLM call needed)
+// Rule-based: explicit condition → tier name
 $router->addRule(
     condition: fn(array $messages) => $this->hasImageRequest($messages),
-    provider: $dalleClient,
+    tier: 'imaging',
     priority: 10,
 );
 
-// Force a specific provider globally
-$router->forceProvider($geminiFlashClient);
+// Force a specific tier globally
+$router->forceRoute('coding');
 
-// Force a specific route to a specific provider
-$router->forceRoute('coding', $geminiFlashClient);
-
-// Observability
-$router->onRoute(function (string $route, ProviderInterface $provider): void {
-    // Log which model was chosen and why
+// Observability callback
+$router->onRoute(function (string $tier, ProviderInterface $provider, string $reason): void {
+    // Log which tier was chosen and why
 });
 
-// Per-call override (highest priority)
+// Per-call override
 $response = $router->chat($messages, [
-    'force_provider' => $geminiFlashClient,
+    'force_provider' => 'smart',  // tier name or ProviderInterface instance
 ]);
 
 // Normal call — router decides
 $response = $router->chat($messages);
 ```
 
-**Tool hiding:** When `force_provider` is set (either globally or per-call),
-the routing tool definition is not sent to the model. Offering a tool the
-system will not honour is misleading.
+### Built-in Strategies
 
-**Implements `ProviderInterface`:** All `chat()`, `streamChat()`, `embed()`,
-`generateImage()`, and `healthCheck()` calls are forwarded to the resolved
-provider. Non-chat operations (embed, image) use `forceProvider` if set,
-otherwise the fallback provider.
+| Strategy | Logic |
+|----------|-------|
+| `AlwaysStrategy` | Always routes to a specific tier |
+| `TokenLengthStrategy` | Short → fast tier, long → smart tier |
+| `KeywordStrategy` | Pattern matching on message content |
+| `TaskComplexityStrategy` | Combines token length + tool count + keyword signals |
+| `CascadeStrategy` | Try fast tier first, retry with smart tier if response is low quality |
+
+### TaskComplexityStrategy signals
+
+- Message length (short vs long)
+- Number of tools available
+- Keywords indicating complexity: "compare", "analyze", "summarize", "generate report"
+- File attachments present
+- Conversation length
 
 ## Alternatives Considered
 
-**Relay-based routing (default model relays to specialist):**
+**Using raw model names as router keys (original design):**
+`$router->addRoute('coding', $claudeClient, 'description')` tied routing
+to the provider instance directly. Rejected in favour of tier names + aliases
+because:
+- Tier names are portable — `'smart'` means the same thing regardless of provider
+- Alias tables let you swap model versions without touching routing logic
+- Routing strategies can be written once and reused across provider configurations
+
+**Relay-based routing:**
 The default model classifies, calls a tool, receives the specialist's response,
 and relays it to the user. Rejected because:
 - Two LLM calls and double token cost on every routed request
 - Default model may paraphrase or alter the specialist's output
-- Code, structured output, and citations are particularly vulnerable to relay distortion
 
 **Separate router class (not implementing ProviderInterface):**
-A `Router::route($messages)` that returns a provider, leaving the caller to
-call `chat()`. Rejected because it requires changes at every call site and
-cannot be used as a drop-in replacement.
+Requires changes at every call site and cannot be used as a drop-in replacement.
 
 **Config-only routing (no tool-based):**
-Only rule-based routing, no LLM classification. Simpler but brittle — keyword
-rules miss intent and require constant maintenance as use cases grow.
+Only rule-based routing. Simpler but brittle — keyword rules miss intent and
+require constant maintenance.
 
 ## Consequences
 
 **Easier:**
-- Multi-model applications require no routing logic at the call site
+- Strategy logic is written in terms of logical tiers — no provider-specific knowledge needed
+- Swapping providers or updating model versions requires only alias table changes
 - `ModelRouter` composes with itself — nested routers for multi-tier specialization
-- Existing code that accepts `ProviderInterface` works with `ModelRouter` without changes
+- Existing code that accepts `ProviderInterface` works with `ModelRouter` unchanged
 - Hybrid mode gives zero-overhead routing for known patterns with intelligent fallback
 
 **Harder:**
 - Tool-based routing adds one classification API call per unmatched request
-- Developers must write clear route descriptions for the model to classify correctly
+- Developers must write clear tier descriptions for the model to classify correctly
 - Streaming with tool-based routing requires the classification call to complete
   before the stream can start — adds latency to the first token
