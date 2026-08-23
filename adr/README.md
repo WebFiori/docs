@@ -50,3 +50,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0040 | [AI: Typed Configuration Objects for Provider Clients](0040-ai-typed-config-objects.md) | Accepted | 2026-08-19 |
 | 0041 | [AI: Vertex AI Model Garden — GoogleAdapter Pattern](0041-ai-vertex-google-adapter.md) | Accepted | 2026-08-19 |
 | 0042 | [AI: Response Recording & Replay — VCR-Style HTTP Fixtures](0042-ai-response-recording-replay.md) | Accepted | 2026-08-23 |
+| 0043 | [AI: SummarizingWindowStrategy — Summarize Old Context Instead of Truncating](0043-ai-summarizing-window-strategy.md) | Accepted | 2026-08-23 |
