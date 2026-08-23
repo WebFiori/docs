@@ -52,3 +52,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0042 | [AI: Response Recording & Replay — VCR-Style HTTP Fixtures](0042-ai-response-recording-replay.md) | Accepted | 2026-08-23 |
 | 0043 | [AI: SummarizingWindowStrategy — Summarize Old Context Instead of Truncating](0043-ai-summarizing-window-strategy.md) | Accepted | 2026-08-23 |
 | 0044 | [AI: Dynamic Temperature Strategy](0044-ai-dynamic-temperature-strategy.md) | Accepted | 2026-08-23 |
+| 0045 | [AI: RagProviderInterface — Provider-Agnostic RAG](0045-ai-rag-provider-interface.md) | Accepted | 2026-08-23 |
