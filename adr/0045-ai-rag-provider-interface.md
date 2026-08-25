@@ -21,32 +21,70 @@ apply to RAG.
 
 ## Decision
 
-Add `RagProviderInterface` as the top-level abstraction for retrieval-augmented
-generation, regardless of where the underlying index lives.
+Add `RagProviderInterface` as the single developer-facing contract for
+retrieval-augmented generation, regardless of where the underlying index lives.
+
+`RetrieverInterface` is **removed** — `RagProviderInterface` replaces it entirely.
+`VectorStorageInterface` is **internal** to `LocalRagProvider` only and is not
+exposed to consumers. The `Retriever` class still exists and implements
+`RagProviderInterface` for backward compatibility, but `LocalRagProvider` is the
+preferred entry point for new code.
 
 ```php
 interface RagProviderInterface {
-    /**
-     * Retrieves relevant documents for a query.
-     */
-    public function retrieve(string $query, int $limit = 5, array $options = []): array; // RetrievalResult[]
-
-    /**
-     * Ingests content into the RAG store.
-     */
-    public function ingest(string $content, array $metadata = []): string; // → document ID
-
-    /**
-     * Deletes a document by ID.
-     */
+    /** @return RetrievalResult[] */
+    public function retrieve(string $query, int $topK = 5, array $options = []): array;
+    public function ingest(string $content, array $metadata = []): string;
     public function delete(string $id): void;
 }
 ```
 
-### Implementations
+## Design Decisions
 
-**LocalRagProvider** — wraps the existing `VectorStorageInterface` + embedder.
-Backward compatible — existing code using `Retriever` continues to work.
+### Single Interface
+
+`RagProviderInterface` is the only contract consumers interact with. Both
+`AgentMemory` and `RetrievalTool` accept `RagProviderInterface` directly — not
+`VectorStorageInterface` or `RetrieverInterface`.
+
+### Auth Extraction
+
+`Auth/GoogleAuth` and `Auth/AwsSigner` + `Auth/AwsCredentialChain` are reusable
+auth utilities extracted from provider-specific code.
+
+- **GoogleAuth** supports Application Default Credentials (ADC): environment
+  variable → gcloud CLI → GCE metadata server.
+- **AwsSigner** handles SigV4 signing for any AWS service.
+
+These are shared across all providers that need Google or AWS authentication,
+avoiding duplicated auth logic in each provider implementation.
+
+## Architecture
+
+```
+Developer-facing:
+  RagProviderInterface (retrieve / ingest / delete)
+    ├── LocalRagProvider(VectorStorageInterface, ProviderInterface)
+    ├── GoogleRagProvider(GoogleRagConfig) → uses Auth/GoogleAuth
+    └── BedrockKnowledgeBaseProvider(BedrockKbConfig) → uses Auth/AwsSigner
+
+Backward compatibility:
+  Retriever — implements RagProviderInterface (deprecated, use LocalRagProvider)
+
+Consumers accept RagProviderInterface:
+  AgentMemory(RagProviderInterface)
+  RetrievalTool(RagProviderInterface)
+
+Internal (not developer-facing):
+  VectorStorageInterface — pluggable backend for LocalRagProvider
+  Auth/GoogleAuth — reusable Google ADC + service account auth
+  Auth/AwsSigner — reusable AWS SigV4 signing
+```
+
+## Implementations
+
+**LocalRagProvider(VectorStorageInterface, ProviderInterface)** — local vector stores.
+Wraps an embedder and a vector store backend (FileVectorStore, SqliteVectorStore, etc.).
 
 ```php
 $rag = new LocalRagProvider(
@@ -55,47 +93,41 @@ $rag = new LocalRagProvider(
 );
 ```
 
-**VertexAISearchProvider** — calls Vertex AI Search API directly.
+**GoogleRagProvider(GoogleRagConfig)** — calls Google RAG API directly. Uses
+`Auth/GoogleAuth` for authentication, supporting ADC (environment variable,
+gcloud CLI, or metadata server). Note: `ingest()` throws
+`UnsupportedFeatureException` — Google RAG corpora are managed externally.
 
 ```php
-$rag = new VertexAISearchProvider(new VertexAISearchConfig(
+$rag = new GoogleRagProvider(new GoogleRagConfig(
     projectId: 'my-project',
     location: 'us-central1',
-    dataStoreId: 'my-datastore',
-    credentials: '/path/to/key.json',
+    corpusId: 'my-corpus',
+    credentials: null, // string path, array service account, or null for ADC
 ));
 ```
 
-**BedrockKnowledgeBaseProvider** — calls AWS Bedrock Knowledge Bases.
+**BedrockKnowledgeBaseProvider(BedrockKbConfig)** — calls AWS Bedrock Knowledge
+Bases. Uses `Auth/AwsSigner` for SigV4 authentication. Note: `ingest()` and
+`delete()` throw `UnsupportedFeatureException` because Bedrock Knowledge Bases
+use S3 data source sync rather than per-document ingestion.
 
 ```php
 $rag = new BedrockKnowledgeBaseProvider(new BedrockKbConfig(
     region: 'us-east-1',
     knowledgeBaseId: 'KB123',
-    accessKey: '...',
-    secretKey: '...',
 ));
 ```
 
-### Integration
+## Integration
 
-`RagProviderInterface` becomes the single injection point wherever RAG is used:
+`RagProviderInterface` is the single injection point wherever RAG is used:
 
 ```php
-// RetrievalTool accepts RagProviderInterface
-$tool = new RetrievalTool($rag);
-
-// AgentMemory accepts RagProviderInterface
-$memory = new AgentMemory($rag);
-
-// Retriever wraps RagProviderInterface (or stays as LocalRagProvider internally)
+// Single injection point everywhere:
+$tool = new RetrievalTool($ragProvider);
+$memory = new AgentMemory($ragProvider);
 ```
-
-### Backward Compatibility
-
-`LocalRagProvider` wraps the existing `VectorStorageInterface` + `Retriever`.
-All existing code using `FileVectorStore`, `SqliteVectorStore`, or `Retriever`
-continues to work — `LocalRagProvider` is just a new entry point.
 
 ## Alternatives Considered
 
@@ -112,6 +144,17 @@ Two interfaces for what is conceptually one thing (retrieval) creates confusion.
 Adapters would need to fake the vector operations (embed query, pretend to store,
 etc.). Leaky abstraction. Rejected.
 
+**Keep RetrieverInterface alongside RagProviderInterface:**
+Two interfaces for the same purpose confuses developers. Having both creates
+ambiguity about which to implement and which to depend on. Rejected — consolidated
+into `RagProviderInterface` as the single contract.
+
+**Embed auth in each provider:**
+Duplicates logic across GoogleRagProvider, BedrockKnowledgeBaseProvider, and
+any future cloud providers. Makes auth untestable in isolation and forces
+credential handling code to be repeated. Rejected — extracted to `Auth/` namespace
+as reusable utilities.
+
 ## Consequences
 
 **Easier:**
@@ -119,8 +162,10 @@ etc.). Leaky abstraction. Rejected.
 - `AgentMemory` works with GCP, AWS, Azure, or local store transparently
 - New RAG providers (Pinecone, Weaviate, etc.) follow one clear pattern
 - `RetrievalTool` and `AgentMemory` have a single injection point
+- Auth logic is reusable across all providers needing Google/AWS credentials
+- No interface proliferation — one contract to learn and implement
 
 **Harder:**
 - `ingest()` semantics differ between providers (local = embed+store, managed = upload document)
-- Some managed services don't support programmatic ingestion via the same API
-- `LocalRagProvider` adds a thin wrapper over existing code
+- Some managed services don't support programmatic ingestion (Bedrock KB throws `UnsupportedFeatureException`)
+- Migration from `Retriever`/`RetrieverInterface` to `RagProviderInterface` required

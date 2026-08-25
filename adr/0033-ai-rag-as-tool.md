@@ -18,19 +18,20 @@ into the system prompt before forwarding to the model.
 
 **Pattern B — RAG as a tool:**
 The retrieval step is exposed as a tool. The chat model decides when to invoke
-it. The library provides `RetrieverInterface`, `Retriever`, and `RetrievalTool`.
+it. The library provides `RagProviderInterface`, `LocalRagProvider`,
+`Retriever` (backward compat), and `RetrievalTool`.
 The developer registers the tool and calls `chat()` normally.
 
 ## Decision
 
 Implement RAG as a tool (Pattern B), not as a pipeline wrapper (Pattern A).
 
-The `RetrievalTool` implements `ToolInterface` and wraps a `RetrieverInterface`.
+The `RetrievalTool` implements `ToolInterface` and wraps a `RagProviderInterface`.
 The model invokes it when it determines that a knowledge lookup is needed:
 
 ```php
-$retriever = new Retriever($embedProvider, $vectorStore);
-$ragTool   = new RetrievalTool($retriever, name: 'search_knowledge');
+$provider = new LocalRagProvider($embedProvider, $vectorStore);
+$ragTool  = new RetrievalTool($provider, name: 'search_knowledge');
 
 $response = $chatProvider->chat(
     messages: $messages,
@@ -95,7 +96,7 @@ it a special case rather than a composable feature.
 - Composable — the retrieval tool sits alongside other tools (web search,
   calculator, database queries) with no special treatment
 - Transparent — tool calls are visible in `ChatResponse::getMessage()->getToolCalls()`
-- Testable — `RetrieverInterface` can be mocked without touching the provider
+- Testable — `RagProviderInterface` can be mocked without touching the provider
 - The embedding and chat models are fully decoupled; either can be swapped
   independently
 
