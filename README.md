@@ -34,6 +34,7 @@ This repo currently covers **version 3.x** of the framework.
 | `webfiori/jsonx` | JSON handling |
 | `webfiori/ui` | UI Package, Themes, Web Pages |
 | `webfiori/mail` | Sending Emails |
+| `webfiori/ai` | AI (add-on): Introduction, Basic Chat, Providers, Configuration |
 
 ## Versioning
 

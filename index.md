@@ -51,6 +51,13 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Environment Variables](learn/env-vars) - Configuration management
 * [Coding Standards](learn/coding-standards) - Best practices
 
+## AI (Add-on Library)
+The `webfiori/ai` package is a standalone, provider-agnostic AI library. It is not part of the framework core — install it with `composer require webfiori/ai`.
+* [Introduction to WebFiori AI](learn/ai-introduction) - Overview, installation, and core concepts
+* [Basic Chat](learn/ai-basic-chat) - Send messages and read responses
+* [AI Providers](learn/ai-providers) - Supported providers and feature matrix
+* [AI Configuration](learn/ai-configuration) - Configure each provider client
+
 ## Quick Links
 - **New to WebFiori?** Start with [Introduction](learn/introduction) → [Installation](learn/installation)
 - **Building APIs?** Check [Web Services](learn/web-services) → [Database Management](learn/database)
