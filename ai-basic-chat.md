@@ -112,5 +112,4 @@ try {
 
 ## Where to Next
 
-- [Providers](learn/ai-providers) — choose a provider and see the feature matrix
-- [Configuration](learn/ai-configuration) — configure the client for your provider
+See [Providers](learn/ai-providers) to choose a provider and review the feature matrix, then [Configuration](learn/ai-configuration) to set up the client for your chosen provider.

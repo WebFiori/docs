@@ -43,7 +43,7 @@ Chat, streaming, tool calling, structured output, and vision are available on ev
 | Embeddings                 |   ✅   |   ✅   |    ❌     |     ❌¹     |
 | Image generation           |   ✅   |   ✅   |    ❌     |     ❌¹     |
 
-¹ Not implemented for Bedrock. Anthropic has no embeddings or image-generation API — use OpenAI or Google for those.
+¹ Not implemented for Bedrock. Anthropic has no embeddings or image-generation API, so use OpenAI or Google for those.
 
 ## Unsupported Operations
 
@@ -81,7 +81,7 @@ $client = new BedrockClient(new BedrockClientConfig(region: 'us-east-1', accessK
 
 ## Self-Hosted and OpenAI-Compatible Endpoints
 
-Because `OpenAIClient` builds every request URL from its configurable `baseUrl`, you can point it at any OpenAI-compatible server — including a locally hosted open-source model (Ollama, LM Studio, vLLM, llama.cpp, LocalAI):
+Because `OpenAIClient` builds every request URL from its configurable `baseUrl`, you can point it at any OpenAI-compatible server. That includes a locally hosted open-source model (Ollama, LM Studio, vLLM, llama.cpp, LocalAI):
 
 ```php
 $client = new OpenAIClient(new OpenAIClientConfig(
@@ -95,5 +95,4 @@ Feature availability then depends on what your local server implements (chat and
 
 ## Where to Next
 
-- [Configuration](learn/ai-configuration) — full configuration reference for each provider
-- [Basic Chat](learn/ai-basic-chat) — send messages and read responses
+See [Configuration](learn/ai-configuration) for the full configuration reference for each provider, or [Basic Chat](learn/ai-basic-chat) to start sending messages.

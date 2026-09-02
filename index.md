@@ -52,11 +52,15 @@ Here you will find topics which can help you to get started with WebFiori framew
 * [Coding Standards](learn/coding-standards) - Best practices
 
 ## AI (Add-on Library)
-The `webfiori/ai` package is a standalone, provider-agnostic AI library. It is not part of the framework core — install it with `composer require webfiori/ai`.
+The `webfiori/ai` package is a standalone, provider-agnostic AI library. It is not part of the framework core, so install it with `composer require webfiori/ai`.
 * [Introduction to WebFiori AI](learn/ai-introduction) - Overview, installation, and core concepts
 * [Basic Chat](learn/ai-basic-chat) - Send messages and read responses
 * [AI Providers](learn/ai-providers) - Supported providers and feature matrix
 * [AI Configuration](learn/ai-configuration) - Configure each provider client
+* [Streaming](learn/ai-streaming) - Stream responses token by token
+* [Tool Calling](learn/ai-tool-calling) - Let the model call your functions
+* [Embeddings](learn/ai-embeddings) - Vectorize text and run semantic search
+* [Image Generation](learn/ai-image-generation) - Generate images from prompts
 
 ## Quick Links
 - **New to WebFiori?** Start with [Introduction](learn/introduction) → [Installation](learn/installation)

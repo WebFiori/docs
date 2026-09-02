@@ -1,26 +1,28 @@
 # Introduction to WebFiori AI
 
-WebFiori AI (`webfiori/ai`) is a provider-agnostic AI library for PHP. It gives you a single, consistent interface for chat completions, streaming, embeddings, image generation, tool calling, and Retrieval-Augmented Generation (RAG) across multiple providers — OpenAI, Google (Gemini / Vertex AI), Anthropic, and AWS Bedrock.
+WebFiori AI (`webfiori/ai`) is a provider-agnostic AI library for PHP. It gives you one consistent interface for chat completions, streaming, embeddings, image generation, tool calling, and Retrieval-Augmented Generation (RAG). The same code works across OpenAI, Google (Gemini and Vertex AI), Anthropic, and AWS Bedrock.
 
 <meta name="description" content="Overview of the WebFiori AI library: a provider-agnostic PHP interface for chat, streaming, embeddings, images, tools, and RAG across OpenAI, Google, Anthropic, and AWS Bedrock.">
 
-> **Note.** `webfiori/ai` is a standalone library and is **not** a core part of the WebFiori framework. It does not ship with the framework — you must install it explicitly with Composer (see [Installation](#installation)). It has no dependency on the framework and can be used in any PHP project. The library follows its own semantic versioning, independent of the framework version this site otherwise documents.
+> **Note:** `webfiori/ai` is a standalone library and is **not** a core part of the WebFiori framework. It does not ship with the framework, so you must install it explicitly with Composer (see [Installation](#installation)). It has no dependency on the framework and works in any PHP project. It also follows its own semantic versioning, separate from the framework version this site otherwise documents.
 
 ## Why WebFiori AI
 
-- **Provider-agnostic** — the same code works across OpenAI, Google, Anthropic, and Bedrock. Switching provider is a configuration change, not a rewrite.
-- **Standalone** — the library has no dependency on the WebFiori framework; use it in any PHP project.
-- **Complete feature set** — chat, token-by-token streaming, embeddings with a built-in vector store, image generation, tool/function calling, and RAG.
-- **Production-ready** — retry logic, provider fallback with a circuit breaker, rate-limit awareness, caching, health checks, metrics, PII redaction, and audit logging.
+It is provider-agnostic, so the same code runs against OpenAI, Google, Anthropic, or Bedrock. Switching provider is a configuration change rather than a rewrite.
+
+It is standalone. There is no dependency on the WebFiori framework, so you can drop it into any PHP project.
+
+It covers the full feature set: chat, token-by-token streaming, embeddings with a built-in vector store, image generation, tool calling, and RAG.
+
+It is built for production, with retry logic, provider fallback backed by a circuit breaker, rate-limit awareness, caching, health checks, metrics, PII redaction, and audit logging.
 
 ## Requirements
 
-- PHP 8.1 or later
-- The `curl` and `json` extensions
+You need PHP 8.1 or later, plus the `curl` and `json` extensions.
 
 ## Installation
 
-`webfiori/ai` is a separate package — it is not bundled with the WebFiori framework. Add it to your project explicitly:
+Since `webfiori/ai` is a separate package that does not ship with the framework, add it to your project explicitly:
 
 ```bash
 composer require webfiori/ai
@@ -52,21 +54,22 @@ $response = $client->chat([
 echo $response->getMessage()->getContent();
 ```
 
-Every provider client implements the same `ProviderInterface`, so the code above changes only in its configuration when you switch providers.
+Every provider client implements the same `ProviderInterface`, so only the configuration changes when you switch providers.
 
 ## Core Concepts
 
-- **Provider client** — one class per provider (`OpenAIClient`, `GoogleClient`, `AnthropicClient`, `BedrockClient`). Each is constructed with a typed config object.
-- **`Message`** — a single conversation turn with a role (`system`, `user`, `assistant`, `tool`) and content. Content can be plain text or multi-modal parts (text, images, documents).
-- **`ChatResponse`** — the result of a chat call, exposing the assistant `Message`, token `Usage`, finish reason, and request ID.
-- **Options array** — per-call settings such as `model`, `temperature`, `max_tokens`, and `tools`, passed as the second argument to `chat()`.
+A **provider client** is one class per provider (`OpenAIClient`, `GoogleClient`, `AnthropicClient`, `BedrockClient`), each constructed with a typed config object.
+
+A **`Message`** is a single conversation turn with a role (`system`, `user`, `assistant`, or `tool`) and its content. Content can be plain text or multi-modal parts such as text, images, and documents.
+
+A **`ChatResponse`** is the result of a chat call. It exposes the assistant `Message`, token `Usage`, the finish reason, and the request ID.
+
+The **options array** holds per-call settings such as `model`, `temperature`, `max_tokens`, and `tools`. You pass it as the second argument to `chat()`.
 
 ## Feature Support by Provider
 
-Not every operation is available on every provider. Chat, streaming, tool calling, structured output, and vision are supported everywhere; embeddings and image generation are provider-specific. Calling an unsupported operation throws `UnsupportedFeatureException`. See the [Providers](learn/ai-providers) page for the full matrix.
+Not every operation is available on every provider. Chat, streaming, tool calling, structured output, and vision work everywhere, while embeddings and image generation are provider-specific. Calling an operation a provider does not support throws `UnsupportedFeatureException`. The [Providers](learn/ai-providers) page has the full matrix.
 
 ## Where to Next
 
-- [Basic Chat](learn/ai-basic-chat) — send messages and read responses
-- [Providers](learn/ai-providers) — supported providers and the feature matrix
-- [Configuration](learn/ai-configuration) — configure each provider client
+Start with [Basic Chat](learn/ai-basic-chat) to send messages and read responses. Then see [Providers](learn/ai-providers) for supported providers and the feature matrix, and [Configuration](learn/ai-configuration) to set up each provider client.

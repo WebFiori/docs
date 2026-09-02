@@ -14,7 +14,7 @@ Every config class extends `WebFiori\Ai\Provider\ClientConfig` and shares these 
 | `timeout`        | `int`    | `30`                 | Request timeout in seconds.          |
 | `connectTimeout` | `int`    | `10`                 | Connection timeout in seconds.       |
 
-## OpenAI — `OpenAIClientConfig`
+## OpenAI (`OpenAIClientConfig`)
 
 ```php
 use WebFiori\Ai\Provider\OpenAI\OpenAIClient;
@@ -35,9 +35,9 @@ $client = new OpenAIClient(new OpenAIClientConfig(
 | `embeddingModel` | `string`  | `text-embedding-3-small`    | Model used by `embed()`.                     |
 | `imageModel`     | `string`  | `dall-e-3`                  | Model used by `generateImage()`.             |
 
-The configurable `baseUrl` also lets you target any OpenAI-compatible server, including self-hosted models — see [Providers](learn/ai-providers).
+The configurable `baseUrl` also lets you target any OpenAI-compatible server, including self-hosted models. See [Providers](learn/ai-providers) for details.
 
-## Google — `GoogleClientConfig`
+## Google (`GoogleClientConfig`)
 
 Supports both the Gemini API (Google AI Studio) and Vertex AI. Authentication priority is `apiKey` > `accessToken` > `credentials`.
 
@@ -66,7 +66,7 @@ $client = new GoogleClient(new GoogleClientConfig(
 | `imageModel`     | `string`               | `gemini-2.5-flash-preview-image-generation` | Model used by `generateImage()`.                |
 | `publisher`      | `string`               | `google`                                    | Vertex Model Garden publisher (`anthropic`, `meta`, ...). |
 
-## Anthropic — `AnthropicClientConfig`
+## Anthropic (`AnthropicClientConfig`)
 
 ```php
 use WebFiori\Ai\Provider\Anthropic\AnthropicClient;
@@ -86,7 +86,7 @@ $client = new AnthropicClient(new AnthropicClientConfig(
 | `baseUrl`          | `string` | `https://api.anthropic.com` | API base URL.                |
 | `anthropicVersion` | `string` | `2023-06-01`                | API version header value.    |
 
-## AWS Bedrock — `BedrockClientConfig`
+## AWS Bedrock (`BedrockClientConfig`)
 
 Supports API-key auth or SigV4 (access/secret keys, session token, or a named AWS profile).
 
@@ -130,5 +130,4 @@ $client = new OpenAIClient(new OpenAIClientConfig(
 
 ## Where to Next
 
-- [Basic Chat](learn/ai-basic-chat) — send messages and read responses
-- [Providers](learn/ai-providers) — feature matrix and switching providers
+Head to [Basic Chat](learn/ai-basic-chat) to send messages and read responses, or [Providers](learn/ai-providers) for the feature matrix and how switching providers works.
