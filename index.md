@@ -61,6 +61,14 @@ The `webfiori/ai` package is a standalone, provider-agnostic AI library. It is n
 * [Tool Calling](learn/ai-tool-calling) - Let the model call your functions
 * [Embeddings](learn/ai-embeddings) - Vectorize text and run semantic search
 * [Image Generation](learn/ai-image-generation) - Generate images from prompts
+* [RAG](learn/ai-rag) - Ground answers in your own documents
+* [Conversations](learn/ai-conversations) - Manage multi-turn chat history
+* [Provider Fallback](learn/ai-provider-fallback) - Automatic failover across providers
+* [Model Aliases and Routing](learn/ai-model-routing) - Logical model names and request routing
+* [Caching](learn/ai-caching) - Cache responses to cut cost and latency
+* [Observability](learn/ai-observability) - Metrics, audit logging, and health checks
+* [Security and PII Redaction](learn/ai-security) - Keep secrets and PII out of logs
+* [Testing](learn/ai-testing) - Test without live API calls
 
 ## Quick Links
 - **New to WebFiori?** Start with [Introduction](learn/introduction) → [Installation](learn/installation)
