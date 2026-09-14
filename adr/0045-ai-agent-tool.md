@@ -4,9 +4,10 @@
 **Status:** Accepted
 
 > **Amended 2026-09-14:** `AgentProfile::output_format` now accepts `string|array`
-> (parity with `context`), and the inheritance strategy vocabulary was simplified
-> to `merge` / `replace` (`concat` retained as a deprecated alias). See Design
-> Decision 8 for the inheritance model.
+> (parity with `context`); `examples[].output` may be authored as an array of
+> strings (normalized to a newline-joined string); and the inheritance strategy
+> vocabulary was simplified to `merge` / `replace` (`concat` retained as a
+> deprecated alias). See Design Decision 8 for the inheritance model.
 
 ## Context
 
@@ -81,6 +82,12 @@ Content fields that render as free-form guidance accept flexible shapes:
 strings (arrays render as a bulleted list, one item per line), while `identity`
 is always a single string. List fields (`skills`, `instructions`,
 `constraints`) are always arrays.
+
+For few-shot `examples`, each entry's `output` may be authored as a string or an
+array of strings purely for readability; an array is normalized to a
+newline-joined string at construction, so the stored/rendered shape stays a
+single verbatim `Assistant:` response (no bullets are injected). This keeps the
+few-shot signal intact while making multi-line outputs easier to author in JSON.
 
 ```php
 use WebFiori\Ai\Tool\AgentProfile;
