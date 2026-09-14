@@ -3,6 +3,11 @@
 **Date:** 2026-08-25
 **Status:** Accepted
 
+> **Amended 2026-09-14:** `AgentProfile::output_format` now accepts `string|array`
+> (parity with `context`), and the inheritance strategy vocabulary was simplified
+> to `merge` / `replace` (`concat` retained as a deprecated alias). See Design
+> Decision 8 for the inheritance model.
+
 ## Context
 
 Complex tasks benefit from specialized agents. An orchestrator model should be
@@ -70,6 +75,12 @@ $response = $orchestrator->chat(
 skills, instructions, constraints, output format, context, and examples. It
 renders itself into a structured system prompt. This makes agent behavior
 inspectable, testable, and configurable.
+
+Content fields that render as free-form guidance accept flexible shapes:
+`context` and `output_format` may each be a plain string **or** an array of
+strings (arrays render as a bulleted list, one item per line), while `identity`
+is always a single string. List fields (`skills`, `instructions`,
+`constraints`) are always arrays.
 
 ```php
 use WebFiori\Ai\Tool\AgentProfile;
@@ -288,6 +299,61 @@ $agent->setMemory($memory);
 $agent->getRememberStrategy();
 $agent->setRememberStrategy(new KeywordRememberStrategy());
 ```
+
+**8. Profile inheritance via `extends` and `inheritance_strategy`**
+
+Profiles can inherit from a base profile using an `extends` key (the stem name
+of a sibling JSON file, without the `.json` extension). Inheritance resolves
+recursively, supports multi-level chains (A → B → C), and detects circular
+references (throwing `RuntimeException`). Merging is field-aware and controlled
+by two strategies:
+
+- **`merge`** — combine base and child. List fields (`skills`, `instructions`,
+  `constraints`, `examples`, `tools`) append; `metadata` merges by key (child
+  keys override); string-or-array fields (`context`, `output_format`)
+  concatenate, normalizing a plain string to a single-element list first.
+- **`replace`** — the child value wins wholesale, falling back to the base when
+  the child value is absent, `null`, or empty.
+
+Per-field defaults:
+
+| Field | Default strategy |
+|-------|------------------|
+| `identity` | `replace` (locked — cannot be overridden) |
+| `output_format` | `replace` |
+| `context` | `merge` |
+| `skills`, `instructions`, `constraints`, `examples`, `tools` | `merge` |
+| `metadata` | `merge` (by key) |
+
+`identity` is always `replace` — a single cohesive statement rarely benefits
+from concatenation, so it is not overridable via `inheritance_strategy`.
+`output_format` defaults to `replace` (preserving prior behavior) but, because
+it accepts arrays, may opt into `merge` to accumulate rules across a hierarchy —
+giving it full parity with `context`.
+
+```json
+{
+    "extends": "support-base",
+    "inheritance_strategy": {
+        "skills": "replace",
+        "output_format": "merge"
+    },
+    "identity": "You are a tier-1 support agent.",
+    "skills": ["Only these skills"],
+    "output_format": ["Additionally, end with a ticket reference."]
+}
+```
+
+The strategy vocabulary was deliberately reduced to two verbs (`merge` /
+`replace`). An earlier iteration exposed a third strategy, `concat`, that was
+functionally identical to `merge` for list fields; collapsing them removes a
+distinction without a difference. `concat` is still accepted as a **deprecated
+alias** for `merge` (mapped silently) to avoid breaking existing profiles, and
+is slated for removal in a future major version.
+
+`extends` and `inheritance_strategy` are resolution-time directives only — they
+are stripped from the resolved profile and never appear in `toArray()` /
+`toJson()` output.
 
 ## Alternatives Considered
 
