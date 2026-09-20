@@ -3,6 +3,19 @@
 **Date:** 2026-07-06
 **Status:** Accepted
 
+> **Amended 2026-09-20:** This callback-based logging standard is now also
+> applied to **`webfiori/err`** (closes webfiori/err#13). The error library
+> exposes the same mechanism — a per-handler `AbstractHandler::setLogCallback()`
+> and a global `Handler::setDefaultLogCallback()` — using the same
+> `fn(string $level, string $message, array $context)` signature and the same
+> `debug`/`info`/`warning`/`error` levels. When no callback is configured it
+> falls back to PHP's native `error_log()` (preserving prior behavior), and the
+> library's internal diagnostics route through the same callback. PSR-3 was
+> rejected there for the same zero-dependency reason stated below; PSR-3 users
+> bridge in one line: `Handler::setDefaultLogCallback([$logger, 'log'])`. Using
+> one shared standard across libraries keeps the developer experience
+> intuitive.
+
 ## Context
 
 The AI library needs to provide logging for requests, responses, errors, and operational events (token usage, latency). Developers need this for debugging and cost tracking.
