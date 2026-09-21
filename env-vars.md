@@ -7,6 +7,8 @@
 
 The framework have global constants which acts as environment variables and are used to configure some of the settings. They can be accessed anywhere within the scope of the application. Developer can modify the values of variables in application configuration.
 
+> **Since 3.1** — System environment variables now take priority over `app-config.json` values by default (`EnvResolutionStrategy::SYSTEM_FIRST`). Variables set in the OS or CI/CD pipeline are used automatically without deploy-time config changes. The framework also calls `putenv()` so all values are available via `getenv()`. Using `getenv('VAR_NAME')` is the preferred access pattern going forward; direct constant access (`VAR_NAME`) is deprecated and will be removed in v4. See [configuration.md](configuration) for the full config system documentation.
+
 ## Variables
 
 The following table lists all environment variables and for what each one is used.

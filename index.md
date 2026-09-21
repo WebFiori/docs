@@ -49,6 +49,7 @@ Here you will find topics which can help you to get started with WebFiori framew
 
 ## Configuration
 * [Environment Variables](learn/env-vars) - Configuration management
+* [Configuration](learn/configuration) - Config drivers, file composition with extends, write targets
 * [Coding Standards](learn/coding-standards) - Best practices
 
 ## AI (Add-on Library)
