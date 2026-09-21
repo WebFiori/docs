@@ -3,6 +3,47 @@
 **Date:** 2026-09-20
 **Status:** Proposed
 
+> **Amended 2026-09-21:** The original ADR is updated based on the concrete
+> production scenario and design decisions made during implementation planning:
+>
+> **Real motivating scenario — IIS/FastCGI multi-worker:** The race condition
+> is not hypothetical. Under IIS with FastCGI (or PHP-FPM with >1 worker),
+> two worker processes can serve requests for the same session concurrently.
+> Process 1 calls `set('notification', 'new-message')` mid-flight; Process 2
+> (already running, holding a stale in-memory snapshot) never sees it. When
+> Process 2 saves its whole-session blob at request end, it clobbers Process
+> 1's key. This is reproducible on any multi-process PHP host.
+>
+> **Design deviation 1 — Non-throwing default:** The original ADR defaulted
+> `set()` to `ConflictStrategy::REJECT` (throw `SessionConflictException`).
+> Amended: the default is `ConflictStrategy::LAST_WRITE_WINS` (overwrite, no
+> exception). `REJECT` and `RETRY_WITH_CALLBACK` are explicit opt-ins.
+> Rationale: existing `$session->set(...)` call sites must continue to work
+> without try/catch; the visibility fix (real-time reads) is the primary
+> requirement for the IIS scenario.
+>
+> **Design deviation 2 — Configurable read strategy:** Read strategy is
+> configurable at session level: `ReadStrategy::REALTIME` (default — every
+> `get()` hits storage), `SNAPSHOT_WITH_MISS` (snapshot at start, live read
+> on cache miss), `MANUAL_SYNC` (snapshot, developer calls `refresh()`
+> explicitly). Default is `REALTIME` — correct for IIS/FastCGI out of the box.
+>
+> **Configuration point — `StartSessionMiddleware` constructor:** Strategies
+> are passed as constructor arguments at route-registration time, not as
+> static setters. `new StartSessionMiddleware()` (no args) gives safe
+> defaults. Different routes may use different strategies.
+>
+> **Backward compatibility — `LegacySessionStorageAdapter`:** A shim wraps
+> the old `read()/save()` interface in the new per-key contract. It provides
+> NO conflict detection (concurrent writes may still lose data — last-writer-
+> wins on the whole session blob). Documented clearly. Migrate to a native
+> `SessionStorage` implementation to gain real-time reads and per-key
+> conflict resolution.
+>
+> **Test-first:** Failing tests (`SessionVisibilityTest`,
+> `SessionLostWriteTest`) are written before any implementation and confirmed
+> failing against the current snapshot-isolation code.
+
 ## Context
 
 The current WebFiori session implementation uses a **snapshot isolation** model:
