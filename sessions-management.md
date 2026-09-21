@@ -13,6 +13,7 @@ In this page:
 * [Retrieving Stored Data](#retrieving-stored-data)
 * [Generating New ID](#generating-new-id)
 * [Garbage Collection](#garbage-collection)
+* [Concurrency and Multi-Worker Support](#concurrency-and-multi-worker-support)
 * [Creating Custom Sessions Storage](#creating-custom-sessions-storage)
 * [Configuring Database Session Storage](#configuring-database-session-storage)
   * [Using Cache Session Storage (Redis)](#using-cache-session-storage-redis)
@@ -205,140 +206,231 @@ SessionsManager::setGCProbability(0, 0);
 
 You can also set the `SESSION_GC` environment variable to control the expiry threshold in seconds.
 
+## Concurrency and Multi-Worker Support
+
+> **Since 3.1**
+
+In multi-process environments — such as **IIS with FastCGI**, PHP-FPM with more than one worker, or any setup where multiple PHP processes can serve the same user session concurrently — the old snapshot-isolation model could silently lose writes. When two workers read the same session at the same time and both save it at the end of their request, the last writer overwrites the other's changes.
+
+Starting in 3.1, sessions use a **per-key real-time storage model**: every `set()` writes to storage immediately (no batch-save at request end), and every `get()` reads the current value from storage directly. This eliminates both problems:
+
+- **Visibility:** Process B immediately sees a key written by Process A — no stale snapshot.
+- **No lost writes:** Per-key writes mean two processes modifying different keys never clobber each other.
+
+### Read Strategies
+
+The read behaviour is controlled by `ReadStrategy`, configurable per session. The default is `REALTIME`, which is correct for multi-worker deployments.
+
+| Strategy | Behaviour | Use case |
+|---|---|---|
+| `REALTIME` (default) | Every `get()` reads from storage | IIS/FastCGI, any multi-worker host |
+| `SNAPSHOT_WITH_MISS` | Snapshot at start; reads storage on cache miss | Low-contention apps wanting fewer I/O calls |
+| `MANUAL_SYNC` | Snapshot at start; developer calls `refresh()` | Long-running requests (SSE streaming) with explicit sync points |
+
+### Conflict Strategies
+
+When two processes write the same key, the conflict resolution is controlled by `ConflictStrategy`. The default is `LAST_WRITE_WINS`, which preserves backward compatibility.
+
+| Strategy | Behaviour | Use case |
+|---|---|---|
+| `LAST_WRITE_WINS` (default) | Overwrite regardless — no exception | Most session writes (theme, cart, flash messages) |
+| `REJECT` | Throw `SessionConflictException` on version mismatch | Explicit conflict handling required |
+| `RETRY_WITH_CALLBACK` | Re-read current value, call callback to compute new value | Counters, aggregations |
+
+### Configuring Strategies via Middleware
+
+The cleanest way to configure strategies is through `StartSessionMiddleware` at route-registration time. Different routes can use different strategies.
+
+``` php
+use WebFiori\Framework\Middleware\StartSessionMiddleware;
+use WebFiori\Framework\Session\ReadStrategy;
+use WebFiori\Framework\Session\ConflictStrategy;
+
+// Normal API routes — real-time reads, last-write-wins (the defaults)
+new StartSessionMiddleware();
+
+// SSE / long-running streaming route — manual sync, explicit refresh
+new StartSessionMiddleware(
+    readStrategy: ReadStrategy::MANUAL_SYNC,
+    conflictStrategy: ConflictStrategy::LAST_WRITE_WINS
+);
+
+// Critical write path — reject concurrent modifications explicitly
+new StartSessionMiddleware(
+    readStrategy: ReadStrategy::REALTIME,
+    conflictStrategy: ConflictStrategy::REJECT
+);
+```
+
+### Manual Sync for SSE / Long-running Requests
+
+When using `MANUAL_SYNC`, call `Session::refresh()` at each sync boundary to pick up writes from other processes:
+
+``` php
+$session = SessionsManager::getActiveSession();
+
+// SSE event loop
+while (true) {
+    $session->refresh();   // pick up writes from other workers
+    $notification = $session->get('notification');
+
+    if ($notification) {
+        echo "data: $notification\n\n";
+        ob_flush(); flush();
+        $session->remove('notification');
+    }
+
+    sleep(1);
+}
+```
+
+### Conflict Handling with REJECT
+
+``` php
+use WebFiori\Framework\Session\SessionConflictException;
+
+try {
+    SessionsManager::set('counter', 42, ConflictStrategy::REJECT);
+} catch (SessionConflictException $e) {
+    // Another process modified 'counter' between our read and write.
+    // $e->getConflictKey(), $e->getExpectedVersion(), $e->getActualVersion()
+}
+```
+
+### Retry with Callback for Counters
+
+``` php
+use WebFiori\Framework\Session\ConflictStrategy;
+
+// Safely increment a counter even under concurrent access
+$session->set(
+    'page_views',
+    null,
+    ConflictStrategy::RETRY_WITH_CALLBACK,
+    fn($current) => ($current ?? 0) + 1
+);
+```
+
+### Testing with InMemorySessionStorage
+
+> **Since 3.1**
+
+`InMemorySessionStorage` ships with the framework and is ideal for application-level tests — no files or databases required:
+
+``` php
+use WebFiori\Framework\Session\InMemorySessionStorage;
+use WebFiori\Framework\Session\SessionsManager;
+
+// In your test setUp
+InMemorySessionStorage::reset();
+SessionsManager::setStorage(new InMemorySessionStorage());
+```
+
 ## Creating Custom Sessions Storage
 
 By default, the framework will use default sessions storage engine which is represented by the class [`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage). This storage engine will store all session data in files which will be found in the directory `[APP_DIR]/Storage/Sessions`.
 
-Creating new sessions storage is very simple. For example, the developer might want to use database to store session data.
+### New per-key interface (since 3.1)
 
-### Creating Database Table
+> **Since 3.1**
 
-First step, developer must create new database table class which will be used later on to store sessions.
+Starting in 3.1, the `SessionStorage` interface uses a **per-key contract** instead of a whole-session blob. Implement these six methods:
 
 ``` php
-namespace App\Database;
-
-use WebFiori\Database\MySql\MySQLTable;
-use WebFiori\Database\ColOption;
-use WebFiori\Database\DataType;
-
-class SessionsTable extends MySQLTable {
-    /**
-     * Creates new instance of the class.
-     */
-    public function __construct(){
-        parent::__construct('sessions');
-        $this->setComment('This table is used to store session related data');
-        $this->addColumns([
-            's-id' => [
-                ColOption::TYPE => DataType::VARCHAR,
-                ColOption::SIZE => 128,
-                ColOption::PRIMARY => true,
-                ColOption::UNIQUE => true,
-                ColOption::COMMENT => 'The unique ID of the session.',
-            ],
-            'started-at' => [
-                ColOption::TYPE => DataType::TIMESTAMP,
-                ColOption::DEFAULT => 'current_timestamp',
-                ColOption::COMMENT => 'The date and time at which the session started.',
-            ],
-            'last-used' => [
-                ColOption::TYPE => DataType::DATETIME,
-                ColOption::DEFAULT => 'current_timestamp',
-                ColOption::COMMENT => 'The date and time at which the user has activity during the session.',
-            ],
-            'session-data' => [
-                ColOption::TYPE => DataType::MEDIUMTEXT,
-                ColOption::COMMENT => 'Session state.',
-            ],
-        ]);
-    }
-}
-```
-
-### Implementing Database Access Methods
-
-Next step, the developer need to create a class which will be used to execute queries against the table to insert, update and delete sessions. Developer must extend the class [`DB`](https://webfiori.com/docs/WebFiori/Framework/DB) and add logic in the new class. In addition to that, developer must make the class implement the interface [SessionStorage](https://webfiori.com/docs/WebFiori/Framework/Session/SessionStorage). The interface has all methods needed to have a functional sessions storage engine.
-
-``` php 
-namespace App\Database;
-
-use WebFiori\Framework\DB;
-use App\Database\SessionsTable;
 use WebFiori\Framework\Session\SessionStorage;
+use WebFiori\Framework\Session\ConflictStrategy;
+use WebFiori\Framework\Session\SessionConflictException;
 
-class SessionsDatabase extends DB implements SessionStorage {
+class MyCustomStorage implements SessionStorage {
 
-    public function __construct() {
-         //Replace connection_to_use with the connection 
-         //of the database which will be used to store sessions.
-         parent::__construct('connection_to_use');
-         
-         //We need to add the table to the instance.
-         $this->addTable(new SessionsTable());
+    /**
+     * Read a single key. Returns ['value' => mixed, 'version' => int] or null.
+     */
+    public function read(string $sessionId, string $key): ?array {
+        // fetch from your backend
     }
-    
-    public function read($sId) {
-        $result = $this->table('sessions')->select()->where('s-id', $sId)->execute();
-        if ($result->getRowsCount() == 1) {
-            return $result->getRows()[0]['session_data'];
-        }
-        return null;
+
+    /**
+     * Read all keys for a session.
+     * Returns ['key1' => ['value' => ..., 'version' => int], ...]
+     */
+    public function readAll(string $sessionId): array {
+        // fetch all keys from your backend
     }
-    
-    public function save($sId, $session) {
-        $sData = $this->read($sId);
-        if ($sData !== null) {
-            $this->table('sessions')->update([
-                'session-data' => $session,
-                'last-used' => date('Y-m-d H:i:s')
-            ])->where('s-id', $sId)->execute();
-        } else {
-            $this->table('sessions')->insert([
-                's-id' => $sId,
-                'session-data' => $session,
-                'last-used' => date('Y-m-d H:i:s'),
-                'started-at' => date('Y-m-d H:i:s'),
-            ])->execute();
-        }
+
+    /**
+     * Write a single key. Returns the new version number.
+     * Throw SessionConflictException when strategy is REJECT and versions mismatch.
+     */
+    public function write(
+        string $sessionId,
+        string $key,
+        mixed $value,
+        string|int|null $expectedVersion,
+        ConflictStrategy $strategy
+    ): string|int {
+        // persist key; handle REJECT strategy
     }
-    
-    public function gc(string $olderThan, int $maxCount = 0) {
-        $ids = $this->getSessionsIDs($olderThan);
-        $removed = 0;
-        foreach ($ids as $id) {
-            if ($maxCount > 0 && $removed >= $maxCount) {
-                break;
-            }
-            $this->remove($id);
-            $removed++;
-        }
+
+    /**
+     * Remove a single key.
+     */
+    public function remove(string $sessionId, string $key): void {
+        // delete the key
     }
-    
-    public function remove($sId) {
-        $this->table('sessions')->delete()->where('s-id', $sId)->execute();
+
+    /**
+     * Destroy all keys for a session.
+     */
+    public function destroy(string $sessionId): void {
+        // delete the whole session
     }
-    
-    //Helper method for gc
-    public function getSessionsIDs($olderThan) {
-        $result = $this->table('sessions')->select(['s-id'])->where('last-used', $olderThan, '<=')->execute();
-        $ids = [];
-        foreach ($result as $record) {
-            $ids[] = $record['s-id'];
-        }
-        return $ids;
+
+    /**
+     * Garbage collect sessions older than $olderThan.
+     */
+    public function gc(string $olderThan, int $maxCount = 0): void {
+        // clean up expired sessions
     }
 }
 ```
 
-The last step is to use the newly created sessions storage engine. In order to have the framework use the new sessions manager, developer have to define the constant `WF_SESSION_STORAGE` in the class [`Env`](https://webfiori.com/docs/WebFiori/Ini/Config/Env). The value of the constant must be the value of the namespace and the class name of session storage (e.g. `\App\Database\SessionsDatabase`). Once done, the framework will use this engine.
+Then register it:
+
+``` php
+use WebFiori\Framework\Session\SessionsManager;
+
+SessionsManager::setStorage(new MyCustomStorage());
+```
+
+### Migrating a legacy custom storage driver
+
+> **Since 3.1**
+
+If you have an existing custom storage class that implements the old `read()/save()` contract, wrap it in `LegacySessionStorageAdapter` to keep it working without code changes. Note that the adapter provides **no conflict detection** — concurrent writes may still lose data. Migrate to the new interface to gain full real-time support.
+
+``` php
+use WebFiori\Framework\Session\LegacySessionStorageAdapter;
+use WebFiori\Framework\Session\SessionsManager;
+
+// MyOldStorage implements the old read()/save()/remove()/gc() interface
+SessionsManager::setStorage(
+    new LegacySessionStorageAdapter(new MyOldStorage())
+);
+```
+
+### Legacy interface (pre-3.1, deprecated)
+
+> **Deprecated since 3.1.** Use the new per-key `SessionStorage` interface above, or wrap existing implementations in `LegacySessionStorageAdapter`. The old contract will be removed in v4.
+
+The old interface required `read(string $sessionId): ?string`, `save(string $sessionId, string $serializedSession)`, `remove(string $sessionId)`, and `gc()`. Existing implementations using these signatures are still supported via `LegacySessionStorageAdapter`.
 
 ## Configuring Database Session Storage
 
 By default, the framework comes with three session storage engines:
-* **File-based** ([`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage)) — stores sessions as files in `[APP_DIR]/Storage/Sessions`.
-* **Database-backed** ([`DatabaseSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DatabaseSessionStorage)) — stores sessions in a database table.
-* **Cache-backed** ([`CacheSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/CacheSessionStorage)) — stores sessions using any cache backend (Redis, file cache, etc.).
+* **File-based** ([`DefaultSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DefaultSessionStorage)) — stores sessions as per-key entries in files in `[APP_DIR]/Storage/Sessions`.
+* **Database-backed** ([`DatabaseSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/DatabaseSessionStorage)) — stores each session key as a row in `session_kv_data`.
+* **Cache-backed** ([`CacheSessionStorage`](https://webfiori.com/docs/WebFiori/Framework/Session/CacheSessionStorage)) — stores each session key as a separate cache entry.
 
 ### Using Cache Session Storage (Redis)
 
@@ -381,9 +473,11 @@ The key prefix ensures session cache entries don't collide with application cach
 
 ### Configuring Database Session Storage
 
-* Setting the value of the constant `WF_SESSION_STORAGE` to `\WebFiori\Framework\Session\DatabaseSessionStorage`.
-* Adding a database connection with the name `sessions-connection` using the command `add:db-connection`.
-* Creating the table that will store the sessions using a migration.
+Setting up database session storage requires three steps:
+
+1. Setting the value of the constant `WF_SESSION_STORAGE` to `\WebFiori\Framework\Session\DatabaseSessionStorage`.
+2. Adding a database connection with the name `sessions-connection` using the command `add:db-connection`.
+3. Running the schema migration to create the required database tables.
 
 ### Setting the Value of The Constant `WF_SESSION_STORAGE`
 
@@ -402,9 +496,22 @@ When the command asks about connection name, enter `sessions-connection`.
 
 <img src="assets/images/add-sessions-db-connection.png" alt="add sessions connection" style="height:auto;max-width:100%;border:1px solid;">
 
-### Initializing Database Table
+### Initializing Database Tables
 
-The final step is to initialize the table that will hold sessions data. This can be done by creating a migration that sets up the sessions table, then running it with `php webfiori migrations:run`.
+> **Since 3.1**
+
+Run the `SessionSchemaMigration` helper once after deployment. It creates the `sessions` table and the `session_kv_data` per-key table, and safely adds the `version`/`updated_at` columns if upgrading from a previous installation.
+
+``` php
+use WebFiori\Framework\Session\SessionSchemaMigration;
+
+// Run once — safe to call on an existing installation
+SessionSchemaMigration::run('sessions-connection');
+```
+
+You can call this from a one-off CLI command or a migration script. It is idempotent: running it multiple times on the same database is safe.
+
+> **Upgrading from 3.0.x:** Existing sessions stored in the old blob format are not automatically migrated. Users will need to log in again after the migration. The old `session_data` table is preserved and not dropped.
 
 ## Related Articles
 
