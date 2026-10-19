@@ -53,3 +53,16 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0043 | [AI: SummarizingWindowStrategy — Summarize Old Context Instead of Truncating](0043-ai-summarizing-window-strategy.md) | Accepted | 2026-08-23 |
 | 0044 | [AI: Dynamic Temperature Strategy](0044-ai-dynamic-temperature-strategy.md) | Accepted | 2026-08-23 |
 | 0045 | [AI: RagProviderInterface — Provider-Agnostic RAG](0045-ai-rag-provider-interface.md) | Accepted | 2026-08-23 |
+| 0046 | [AI: AgentMemory — Persistent Learning for Agents and Clients](0046-ai-agent-memory.md) | Accepted | 2026-08-25 |
+| 0047 | [AI: AgentProfile Inheritance via `extends` Key](0047-ai-agent-profile-inheritance.md) | Proposed | 2026-08-26 |
+| 0047 | [Real-Time Session System with Conflict Resolution](0047-realtime-session-conflict-resolution.md) | Proposed | 2026-09-20 |
+| 0048 | [AI: Context Window Usage Tracking](0048-ai-context-usage-tracking.md) | Proposed | 2026-08-30 |
+| 0048 | [AI: Domain Boundaries — Guardrails for Off-Topic Questions](0048-ai-agent-domain-boundaries.md) | Accepted | 2026-09-20 |
+| 0049 | [AI: Semantic Response Caching](0049-ai-semantic-cache.md) | Proposed | 2026-08-31 |
+| 0050 | [HTTP: Per-Class Caching of WebService Annotation Configuration](0050-http-webservice-annotation-cache.md) | Accepted | 2026-09-21 |
+| 0051 | [Environment Variable Resolution Strategy](0051-env-resolution-strategy.md) | Accepted | 2026-09-21 |
+| 0052 | [Configuration System Design Review](0052-config-system-design-review.md) | Proposed | 2026-09-21 |
+| 0053 | [JsonDriver Config File Composition via `extends`](0053-json-config-extends.md) | Accepted | 2026-09-21 |
+| 0054 | [Per-Tool Outcome Reporting via Result Signal and Status Events](0054-ai-tool-outcome-reporting.md) | Accepted | 2026-09-29 |
+| 0055 | [Redaction Detection API — Active Rules and Offset-Based `detect()`](0055-ai-redaction-detect-and-active-rules.md) | Accepted | 2026-09-29 |
+| 0056 | [AI: Re-apply Context Window Strategy Between Tool Iterations](0056-ai-mid-loop-context-truncation.md) | Proposed | 2026-10-19 |
