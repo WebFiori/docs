@@ -36,3 +36,10 @@ A `CurlHttpClient` is the default implementation. A `FakeHttpClient` is provided
 - Testing is straightforward via `FakeHttpClient` — no network calls needed
 - Developers cannot plug in Guzzle or other HTTP clients without writing an adapter
 - The library owns its HTTP abstraction — this is a maintenance burden but gives full control over the streaming API
+
+> **Note (ADR-0057):** Request cancellation is threaded through this abstraction
+> *without* changing `HttpClientInterface::send()` / `sendStreaming()`. The
+> optional `CancellationToken` is carried on the `HttpRequest` value object (a
+> 5th constructor parameter + accessor), so `CurlHttpClient` can honor it
+> (progress-callback abort / write-callback abort) and the decorator clients
+> forward it unchanged. This preserves the signature stability this ADR relies on.

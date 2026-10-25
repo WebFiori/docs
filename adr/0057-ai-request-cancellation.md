@@ -59,12 +59,51 @@ changes** to `ProviderInterface::chat()` / `streamChat()` or
 `HttpClientInterface`. Every provider reads
 `$options[ChatOption::CANCELLATION_TOKEN] ?? null`.
 
+#### How the token reaches the transport
+
+`HttpClientInterface::send()` / `sendStreaming()` take only an `HttpRequest`
+(no options bag), and there are several `HttpClientInterface` implementations
+(cURL plus the Retryable / RateLimitAware / Recording / Replay decorators). To
+avoid changing any of those signatures (per ADR-0029), the token travels **on
+the `HttpRequest` value object itself**: an optional 5th constructor parameter
+`?CancellationToken $cancellationToken = null` plus a
+`getCancellationToken()` accessor, and an immutable
+`withCancellationToken(?CancellationToken): self` that returns a copy carrying
+the token (preserving the value object's immutability — the original is never
+mutated). The decorator clients forward the request unchanged.
+
+Providers build their `HttpRequest` through a variety of delegated helpers
+(per-provider formatters, Bedrock invocation strategies, the Google
+Interactions builder) behind shared interfaces. Rather than thread a token
+parameter through every one of those helpers and their interfaces — large
+surface, and a burden every *future* formatter would have to repeat — token
+wiring is centralised at the **single dispatch point** in `AbstractClient`:
+after calling the provider's `buildChatRequest()` / `buildStreamChatRequest()`,
+the shared flow applies
+`$request = $request->withCancellationToken($this->cancellationFrom($options))`
+before sending (`cancellationFrom()` extracts
+`$options[ChatOption::CANCELLATION_TOKEN]`). Every current and future provider
+therefore inherits cancellation automatically, with **no formatter/strategy or
+interface changes**. A **cross-provider guard test** asserts the token reaches
+the sent `HttpRequest` for every provider.
+
+Rejected alternatives: threading an explicit token through all formatters /
+strategies and their interfaces (most churn, and ongoing burden for new
+formatters); and an explicit token parameter on `send()` (signature churn
+across `HttpClientInterface` and all implementations). The immutable wither was
+chosen over per-builder construction specifically because the delegated
+build architecture makes a single central dispatch-point seam cleaner and more
+future-proof than editing every builder.
+
 ### 3. Non-streaming abort (blocking `curl_exec`)
 
-`CurlHttpClient::send()` sets `CURLOPT_NOPROGRESS = false` and a
-`CURLOPT_PROGRESSFUNCTION` that returns non-zero when the token is cancelled —
-cURL then aborts the transfer and closes the socket. The resulting
-`CURLE_ABORTED_BY_CALLBACK` (errno **42**) is mapped to
+`CurlHttpClient::send()` reads `$request->getCancellationToken()`; when present
+it sets `CURLOPT_NOPROGRESS = false` and a `CURLOPT_PROGRESSFUNCTION` that
+returns non-zero when the token is cancelled — cURL then aborts the transfer and
+closes the socket. When no token is present the progress options are left
+untouched (zero behaviour change for existing callers). The resulting
+`CURLE_ABORTED_BY_CALLBACK` (errno **42**) is mapped — **only when the token is
+actually cancelled** — to
 `OperationCancelledException` (distinct from a transport `HttpException`); all
 other errnos keep current behaviour. `chat()` surfaces
 `OperationCancelledException`.

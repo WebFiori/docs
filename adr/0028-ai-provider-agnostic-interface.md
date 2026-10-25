@@ -38,3 +38,12 @@ Authentication is handled internally by each provider implementation — the int
 - Features unsupported by a provider fail explicitly with a typed exception rather than silently
 - The `$options` array parameter provides an escape hatch for provider-specific parameters without bloating the interface
 - Adding a new provider requires implementing one interface — no framework changes needed
+
+> **Note (ADR-0057):** Request cancellation uses the `$options` escape hatch
+> described here — the token is passed under `ChatOption::CANCELLATION_TOKEN`,
+> so `ProviderInterface::chat()` / `streamChat()` signatures are unchanged.
+> Token extraction and wiring are centralised in `AbstractClient` (a shared
+> `cancellationFrom($options)` helper applied via
+> `HttpRequest::withCancellationToken()` at the single dispatch point), so every
+> provider — current and future — carries it with no formatter/strategy changes;
+> a cross-provider test guards this.
