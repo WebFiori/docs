@@ -67,3 +67,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0055 | [Redaction Detection API — Active Rules and Offset-Based `detect()`](0055-ai-redaction-detect-and-active-rules.md) | Accepted | 2026-09-29 |
 | 0056 | [AI: Re-apply Context Window Strategy Between Tool Iterations](0056-ai-mid-loop-context-truncation.md) | Proposed | 2026-10-19 |
 | 0057 | [AI: First-class request cancellation (`CancellationToken`)](0057-ai-request-cancellation.md) | Proposed | 2026-10-25 |
+| 0058 | [AI: SqlServerVectorStore — SQL Server-Backed VectorStorageInterface](0058-ai-sqlserver-vector-store.md) | Proposed | 2026-10-25 |
