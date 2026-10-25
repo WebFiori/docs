@@ -1,0 +1,146 @@
+# ADR-0057: AI: First-class request cancellation (`CancellationToken`)
+
+**Date:** 2026-10-25
+**Status:** Proposed
+
+## Context
+
+An in-flight AI request cannot be cancelled. `ProviderInterface::chat()` and
+`streamChat()` run to completion, and the only "stop" available is cooperative —
+throwing from a streaming `onToken` callback. That is insufficient:
+
+- it does nothing during the initial latency before the first token, nor during
+  tool execution;
+- it does **not** tear down the underlying HTTP request to the model, so the
+  provider keeps working and the token cost keeps accruing after the user has
+  abandoned the request;
+- the auto-execute tool loop (`AbstractClient`) makes several HTTP calls per
+  turn with no cancellation checkpoint between them.
+
+Callers (e.g. a chat UI with a "stop" button, or a server detecting
+`connection_aborted()`) need a **true** cancellation: abort the request, close
+the socket to the provider, stop the tool loop, and let interested parties run
+cleanup.
+
+The transport is cURL (`CurlHttpClient`): non-streaming uses a blocking
+`curl_exec` with `CURLOPT_RETURNTRANSFER`; streaming uses
+`CURLOPT_WRITEFUNCTION` with `RETURNTRANSFER=false` (and already aborts by
+returning `0` from the write callback). The Google provider (and the others) go
+through this shared client.
+
+## Decision
+
+Introduce a **first-class, cooperative cancellation primitive** in `webfiori/ai`.
+
+### 1. A self-contained pub/sub `CancellationToken`
+
+- `CancellationTokenSource::cancel()` is the **publisher**; `CancellationToken`
+  exposes `isCancelled()`, `throwIfCancelled()` (throws
+  `OperationCancelledException`), and `onCancel(callable)` to **subscribe**.
+- Multiple subscribers may register; on `cancel()` **all** fire so different
+  layers react independently (HTTP client closes the socket, the tool loop
+  stops, the application persists/handles the partial result, loggers record
+  it).
+- A subscriber registered **after** cancellation has already fired runs
+  immediately; a failing subscriber does not prevent the others; `cancel()` is
+  idempotent.
+- **It is deliberately self-contained — NOT built on `WebFiori/pubsub`.** That
+  package is still in progress; coupling a core framework capability to an
+  unstable dependency is avoided. A small internal listener list is used
+  instead. Migrating to `WebFiori/pubsub` once it stabilises is a documented
+  future option, not a v1 dependency.
+
+### 2. Passed via `$options` — no signature changes
+
+The token is passed through the existing `$options` array under a new
+`ChatOption::CANCELLATION_TOKEN` constant. This reuses the established
+`ChatOption` convention (discoverable, typo-safe) and means **no signature
+changes** to `ProviderInterface::chat()` / `streamChat()` or
+`HttpClientInterface`. Every provider reads
+`$options[ChatOption::CANCELLATION_TOKEN] ?? null`.
+
+### 3. Non-streaming abort (blocking `curl_exec`)
+
+`CurlHttpClient::send()` sets `CURLOPT_NOPROGRESS = false` and a
+`CURLOPT_PROGRESSFUNCTION` that returns non-zero when the token is cancelled —
+cURL then aborts the transfer and closes the socket. The resulting
+`CURLE_ABORTED_BY_CALLBACK` (errno **42**) is mapped to
+`OperationCancelledException` (distinct from a transport `HttpException`); all
+other errnos keep current behaviour. `chat()` surfaces
+`OperationCancelledException`.
+
+### 4. Streaming abort + partial result
+
+`CurlHttpClient::sendStreaming()` checks the token inside the existing
+`CURLOPT_WRITEFUNCTION` (returning `0` aborts — the existing rail) and also sets
+`CURLOPT_PROGRESSFUNCTION` so cancellation fires **before the first byte**. On
+cancel, `streamChat()` invokes a new **`onCancel`** callback with the
+**accumulated partial `ChatResponse`** (partial text + tokens-so-far + any tools
+already called); it does **not** invoke `onComplete`, and cancellation is **not**
+surfaced through `onError`. A cancel before any text yields a partial response
+with empty text but valid structure.
+
+### 5. Tool-loop propagation
+
+`AbstractClient`'s auto-execute loop checks the token at the top of each
+iteration and before executing each tool, and threads the token into every
+nested `chat()`/`streamChat()` call, so a cancel during a long multi-tool turn
+aborts promptly rather than only at the next HTTP boundary.
+
+### 6. Granularity (the guarantee)
+
+Cancellation is **best-effort, near-immediate (~sub-second)**: the request is
+aborted and the socket torn down within a few hundred milliseconds of
+`cancel()`, bounded by cURL's progress-callback cadence. It is a *real* teardown
+that stops provider work and cost — but it is **not** a literally-instantaneous
+kill. A hard/immediate guarantee would require a different transport model
+(threads/processes or a cancellable async client) and is explicitly out of
+scope.
+
+### 7. Outcome semantics (all providers)
+
+- **Non-streaming:** throws `OperationCancelledException`.
+- **Streaming:** invokes `onCancel(partial)`; never `onComplete`; not an error.
+- **Tool loop:** surfaces `OperationCancelledException`.
+
+The primitive lives in `ProviderInterface` / `HttpClientInterface` /
+`CurlHttpClient` (shared), so Google/OpenAI/Anthropic/Bedrock/Fallback inherit
+it; Google is the priority, the rest verified.
+
+## Alternatives considered
+
+- **Cooperative-only (throw from `onToken`) — rejected.** Does not cover
+  initial latency or tool execution and does not tear down the socket or stop
+  cost. It is a workaround, not cancellation.
+- **Build the pub/sub on `WebFiori/pubsub` — deferred.** The package is still in
+  progress; the primitive stays self-contained to avoid coupling a core
+  capability to an unstable dependency. Revisit when `WebFiori/pubsub` is
+  stable.
+- **Explicit `?CancellationToken` parameter on the methods — rejected in favour
+  of `$options`.** The `ChatOption` convention already carries request options
+  discoverably; using it avoids signature churn across the interface and every
+  provider while remaining typed via the constant.
+- **Hard/immediate kill — out of scope.** Not achievable on a single blocking
+  `curl_exec` without a different transport; the best-effort near-immediate
+  teardown is sufficient (it stops work and cost).
+- **Surface nothing on stream cancel — rejected.** Returning the accumulated
+  partial `ChatResponse` lets callers persist/assess partial work; the partial
+  is already in hand at cancel time.
+
+## Consequences
+
+- True cancellation: real socket teardown, tool-loop aware, provider-agnostic.
+- Fully additive and backward compatible — new class(es), one `ChatOption`
+  constant, and internal HTTP wiring; existing callers are unaffected (token
+  optional, absent by default).
+- Cancellation is cooperative at the cURL boundary, so it is near-immediate, not
+  instantaneous — documented as such.
+- A small internal pub/sub implementation is maintained in `webfiori/ai` until
+  (optionally) migrated to `WebFiori/pubsub`.
+
+## Tracking
+
+WebFiori/ai milestone **v1.5.0 - Request Cancellation**; Epic **#176**;
+sub-issues **#177** (core primitive), **#178** (non-streaming abort), **#179**
+(streaming abort + partial), **#180** (tool-loop propagation), **#181** (docs +
+example).
