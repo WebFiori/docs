@@ -138,6 +138,20 @@ it; Google is the priority, the rest verified.
 - A small internal pub/sub implementation is maintained in `webfiori/ai` until
   (optionally) migrated to `WebFiori/pubsub`.
 
+## Future considerations
+
+- **An `OnCancelListener` OO contract.** `onCancel()` currently accepts a plain
+  `callable`, matching the library's callback convention (`onToken`,
+  `onComplete`, metrics callback, etc.) and already supporting object listeners
+  via `[$service, 'onCancel']`. A dedicated `OnCancelListener` interface (with
+  `onCancel()` accepting `callable|OnCancelListener`, additively) would give an
+  explicit, type-hintable OO contract — worthwhile only if the library ships a
+  set of reusable, built-in listener objects (e.g. socket-teardown or
+  partial-response-persistence listeners). Deferred: not added to the v1
+  primitive to avoid two ways of doing the same thing; revisit if #178/#179
+  surface a genuine need for shippable listener types. Any addition must remain
+  additive so existing closure listeners keep working.
+
 ## Tracking
 
 WebFiori/ai milestone **v1.5.0 - Request Cancellation**; Epic **#176**;
