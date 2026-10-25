@@ -113,11 +113,21 @@ other errnos keep current behaviour. `chat()` surfaces
 `CurlHttpClient::sendStreaming()` checks the token inside the existing
 `CURLOPT_WRITEFUNCTION` (returning `0` aborts — the existing rail) and also sets
 `CURLOPT_PROGRESSFUNCTION` so cancellation fires **before the first byte**. On
-cancel, `streamChat()` invokes a new **`onCancel`** callback with the
+cancel, `streamChat()` invokes an **`onCancel`** callback with the
 **accumulated partial `ChatResponse`** (partial text + tokens-so-far + any tools
 already called); it does **not** invoke `onComplete`, and cancellation is **not**
 surfaced through `onError`. A cancel before any text yields a partial response
 with empty text but valid structure.
+
+The `onCancel` callback is passed via `$options` under a new
+`ChatOption::ON_CANCEL` constant — **not** as a new `streamChat()` parameter.
+This keeps the `streamChat()` signature frozen (consistent with how the token
+itself rides `$options`) and reuses the discoverable, typo-safe `ChatOption`
+convention. `streamChat()` already accepts `onToken` / `onComplete` / `onError`
+as explicit parameters; `onCancel` deliberately travels with the cancellation
+feature's other option (`ChatOption::CANCELLATION_TOKEN`) instead, so the whole
+cancellation surface is additive via `$options` and no signature changes are
+required anywhere.
 
 ### 5. Tool-loop propagation
 
@@ -139,7 +149,8 @@ scope.
 ### 7. Outcome semantics (all providers)
 
 - **Non-streaming:** throws `OperationCancelledException`.
-- **Streaming:** invokes `onCancel(partial)`; never `onComplete`; not an error.
+- **Streaming:** invokes the `ChatOption::ON_CANCEL` callback with the partial
+  `ChatResponse`; never `onComplete`; not an error.
 - **Tool loop:** surfaces `OperationCancelledException`.
 
 The primitive lives in `ProviderInterface` / `HttpClientInterface` /
