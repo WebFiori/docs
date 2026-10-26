@@ -131,10 +131,18 @@ required anywhere.
 
 ### 5. Tool-loop propagation
 
-`AbstractClient`'s auto-execute loop checks the token at the top of each
-iteration and before executing each tool, and threads the token into every
-nested `chat()`/`streamChat()` call, so a cancel during a long multi-tool turn
-aborts promptly rather than only at the next HTTP boundary.
+`AbstractClient`'s auto-execute loop checks the token at three points: at the
+**top of each iteration**, **before executing each tool** (inside
+`executeTools`, ahead of the per-tool try/catch so the cancellation propagates
+rather than being captured as a tool failure), and **after tool execution,
+before the next provider round-trip** (so a cancel that lands while a tool is
+running stops the loop immediately rather than waiting for — or issuing — the
+next HTTP call). The token is also carried on every nested request (via the
+`withCancellationToken` wither), so an in-flight provider call during the loop
+aborts at the HTTP layer too. A cancellation detected in the loop surfaces as
+`OperationCancelledException`, which `chat()` records as a **cancellation** (a
+`request.cancelled` metric + `Status::CANCELLED` status + a cancelled audit
+entry — not `request.failed`) before rethrowing to the caller.
 
 ### 6. Granularity (the guarantee)
 
