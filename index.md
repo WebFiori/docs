@@ -59,6 +59,7 @@ The `webfiori/ai` package is a standalone, provider-agnostic AI library. It is n
 * [AI Providers](learn/ai-providers) - Supported providers and feature matrix
 * [AI Configuration](learn/ai-configuration) - Configure each provider client
 * [Streaming](learn/ai-streaming) - Stream responses token by token
+* [Request Cancellation](learn/ai-cancellation) - Abort in-flight requests with a CancellationToken
 * [Tool Calling](learn/ai-tool-calling) - Let the model call your functions
 * [Embeddings](learn/ai-embeddings) - Vectorize text and run semantic search
 * [Image Generation](learn/ai-image-generation) - Generate images from prompts

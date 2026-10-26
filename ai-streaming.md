@@ -102,4 +102,6 @@ try {
 
 ## Where to Next
 
+To abort a stream in flight (and receive the partial response generated so far), see [Request Cancellation](learn/ai-cancellation).
+
 See [Tool Calling](learn/ai-tool-calling) to let the model call your functions, or [Basic Chat](learn/ai-basic-chat) for the non-streaming equivalent.
