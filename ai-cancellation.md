@@ -163,6 +163,15 @@ the source is cancelled through the normal path: listeners fire once.
   interval can add up to a further interval of delay.
 - The interval defaults to 500 ms. An injectable `clock` (milliseconds) is
   available for deterministic tests.
+- Measured against a real `CurlHttpClient` waiting on an idle server
+  (libcurl 8.5.0): with a 500 ms interval a stop was noticed after 91–1002 ms
+  (median ~580 ms); with 1000 ms after 249–1841 ms; with 2000 ms after up to
+  ~2250 ms. Streaming behaved the same as non-streaming. Keep the interval at
+  or below ~500 ms.
+- If the poller reads a flag **file**, call `clearstatcache(true, $path)` first.
+  PHP caches `filesize()`/`is_file()` results within a request, so a flag
+  written while the request is running can otherwise go unnoticed. Cache and
+  database stores are not affected.
 - Without a poller the behaviour is unchanged.
 
 ## Observability
