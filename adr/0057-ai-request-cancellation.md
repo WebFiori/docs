@@ -12,6 +12,15 @@
 > `curl_exec`; a stop requested from a different request is not observed. See
 > WebFiori/ai#185 (external stop signal) and WebFiori/ai#186 (cancellation
 > through tools, `AgentTool` and retry backoff).
+>
+> **Amended 2026-11-04 (transport):** Requests that carry a token now run on a
+> `curl_multi` loop (`curl_multi_select` with a 100 ms timeout) instead of a
+> blocking `curl_exec`, so the token is re-checked about every 100 ms regardless
+> of libcurl's progress-callback cadence. This supersedes the ~1 s bound above:
+> measured cancel latency is ~100 ms (21–86 ms with a 50 ms poll interval).
+> Requests without a token keep the plain `curl_exec` path. A single multi handle
+> is kept when connection reuse is enabled so the connection cache survives
+> across requests (verified: without it every request opens a new connection).
 
 ## Context
 
@@ -156,19 +165,17 @@ entry — not `request.failed`) before rethrowing to the caller.
 
 ### 6. Granularity (the guarantee)
 
-Cancellation is **best-effort and bounded by about one second**: the request is
-aborted and the socket torn down at the next cURL progress-callback tick after
-`cancel()`. libcurl calls that callback roughly once per second while a transfer
-is idle (measured on libcurl 8.5.0: ticks ~1000 ms apart; cancel-to-abort
-latency 1–876 ms, median ~500 ms), and more often while data flows. The
-bound is therefore just under 1 s for an idle wait, not a few hundred
-milliseconds. The signal must be raised in the blocked process: `cancel()` is
-observed only through the progress/write callbacks, so a stop requested from a
-different request is not seen. It is a *real* teardown
-that stops provider work and cost — but it is **not** a literally-instantaneous
-kill. A hard/immediate guarantee would require a different transport model
-(threads/processes or a cancellable async client) and is explicitly out of
-scope.
+Cancellation is **best-effort and near-immediate**: a request with a token runs
+on a `curl_multi` loop that returns control to PHP about every 100 ms and
+re-checks the token, so the request is aborted and the socket torn down about
+100 ms after `cancel()` (measured 21–86 ms on libcurl 8.5.0 with a 50 ms poll
+interval). (The libcurl progress callback alone would give only ~1 s while a
+transfer is idle, measured on libcurl 8.5.0; it is kept as an additional
+trigger.) The signal must be raised in the blocked process or reported by a
+poller (`CancellationTokenSource` poller, #185): `cancel()` from a different
+request is not seen otherwise. It is a *real* teardown that stops provider work
+and cost, but it is **not** a literally-instantaneous kill; a hard guarantee
+would require threads/processes or an async client and is out of scope.
 
 ### 7. Outcome semantics (all providers)
 
@@ -195,9 +202,8 @@ it; Google is the priority, the rest verified.
   discoverably; using it avoids signature churn across the interface and every
   provider while remaining typed via the constant.
 - **Hard/immediate kill — out of scope.** Not achievable on a single blocking
-  `curl_exec` without a different transport (a `curl_multi` loop that regains
-  control every ~100 ms is a possible follow-up, tracked in #185); the
-  best-effort teardown, bounded by about one second, is sufficient (it stops work and cost).
+  `curl_exec`; the `curl_multi` loop (see the transport amendment) regains
+  control every ~100 ms, which is sufficient (it stops work and cost).
 - **Surface nothing on stream cancel — rejected.** Returning the accumulated
   partial `ChatResponse` lets callers persist/assess partial work; the partial
   is already in hand at cancel time.

@@ -157,17 +157,19 @@ the source is cancelled through the normal path: listeners fire once.
   reported through `logCallback` once per failure streak (not on every poll), so
   a broken store does not stay silent. Pass a log callback if the stop button
   matters to you.
-- The poller only runs when a checkpoint calls `isCancelled()`. While a request
-  waits for the model, libcurl calls its progress callback about once per
-  second, so an interval below that does not make the stop faster, and a longer
-  interval can add up to a further interval of delay.
+- The poller only runs when a checkpoint calls `isCancelled()`. A request that
+  carries a token runs on a `curl_multi` loop that returns control to PHP about
+  every 100 ms, so the token (and the poller, subject to its interval) is
+  checked at that cadence even while the provider sends nothing. A longer
+  interval adds up to that interval of delay.
 - The interval defaults to 500 ms. An injectable `clock` (milliseconds) is
   available for deterministic tests.
-- Measured against a real `CurlHttpClient` waiting on an idle server
-  (libcurl 8.5.0): with a 500 ms interval a stop was noticed after 91–1002 ms
-  (median ~580 ms); with 1000 ms after 249–1841 ms; with 2000 ms after up to
-  ~2250 ms. Streaming behaved the same as non-streaming. Keep the interval at
-  or below ~500 ms.
+- Measured against a local server that stays idle for 12 s (libcurl 8.5.0): with
+  a 50 ms interval a stop written by another process was noticed after 21–86 ms,
+  streaming and non-streaming alike. Against the Anthropic API, a stop requested
+  1.0 s into a long non-streaming request aborted it after 1.02 s. The worst
+  case is roughly the poll interval plus ~100 ms; the default of 500 ms is a
+  reasonable balance between promptness and the cost of the poller.
 - If the poller reads a flag **file**, call `clearstatcache(true, $path)` first.
   PHP caches `filesize()`/`is_file()` results within a request, so a flag
   written while the request is running can otherwise go unnoticed. Cache and
@@ -183,15 +185,16 @@ metric.
 
 ## Guarantee
 
-Cancellation is **best-effort, bounded by about one second**: the request is
-aborted and the socket torn down at the next cURL progress-callback tick after
-`cancel()`. libcurl calls that callback roughly once per second while a request
-is waiting for the model, so expect up to ~1 s (about 0.5 s on average). Also,
-`cancel()` only takes effect when called in the same process that is waiting on
-the request; a stop issued from a different HTTP request is not seen. It is a real teardown
-that stops provider work and cost — but it is **not** a literally-instantaneous
-kill. A hard/immediate guarantee would require a different transport model and
-is out of scope.
+Cancellation is **best-effort, near-immediate**: a request that carries a token
+is run on a `curl_multi` loop that re-checks the token about every 100 ms, so the
+request is aborted and the socket torn down roughly 100 ms after `cancel()` (or,
+with a poller, after the poller reports a stop: roughly the poll interval plus
+100 ms). Measured on libcurl 8.5.0 against an idle server: 21–86 ms with a 50 ms
+poll interval. `cancel()` still only takes effect when it is called in the
+process that is waiting on the request; a stop issued from a different HTTP
+request needs a poller. It is a real teardown that stops provider work and cost,
+but it is **not** a literally-instantaneous kill. Requests without a token run
+on a plain blocking `curl_exec` as before.
 
 ## Notes
 
