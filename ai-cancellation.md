@@ -113,6 +113,58 @@ each iteration, before each tool runs, and after tool execution — so a cancel
 during a long multi-tool turn stops promptly rather than only at the next HTTP
 boundary. The tool loop surfaces `OperationCancelledException`.
 
+If the outer token is cancelled while a tool is running, an exception thrown by
+that tool (including `OperationCancelledException`) stops the run; it is not
+recorded as a tool failure. A tool that throws `OperationCancelledException`
+for its own reasons (for example its own deadline token) while the outer token
+is still active is treated as an ordinary tool failure and the model continues.
+
+`AgentTool` receives the outer run's token for the duration of its execution
+and passes it to the sub-agent's `chat()` call, so cancelling the outer run also
+aborts the nested one. The outer token takes precedence over a token supplied in
+the tool's constructor options.
+
+Retry backoff (`RetryableHttpClient`) also observes the token: a cancel during
+the wait before a retry stops the retry promptly instead of after the full
+delay, and a cancellation is never retried.
+
+## Stopping from another request (external stop signal)
+
+`cancel()` runs in the process that calls it. A running `chat()` is blocked
+inside `curl_exec`, so a "stop" issued from a **different** HTTP request cannot
+call `cancel()` on that request's source. To support this, give the source a
+poller that reports whether a stop was requested, for example by reading a flag
+the stop request wrote to a shared store:
+
+```php
+$source = new CancellationTokenSource(
+    poller: fn (): bool => $store->isStopRequested($turnId),
+    pollIntervalMs: 500,
+    logCallback: $logger, // function (string $level, string $message, array $context)
+);
+
+$client->chat($messages, [
+    ChatOption::CANCELLATION_TOKEN => $source->getToken(),
+]);
+```
+
+`isCancelled()` (and so `throwIfCancelled()` and every library checkpoint)
+consults the poller at most once per `pollIntervalMs`. When it returns `true`
+the source is cancelled through the normal path: listeners fire once.
+
+- The poller must be **cheap**; it can run inside the cURL progress callback.
+- An exception thrown by the poller is treated as "not cancelled". It is
+  reported through `logCallback` once per failure streak (not on every poll), so
+  a broken store does not stay silent. Pass a log callback if the stop button
+  matters to you.
+- The poller only runs when a checkpoint calls `isCancelled()`. While a request
+  waits for the model, libcurl calls its progress callback about once per
+  second, so an interval below that does not make the stop faster, and a longer
+  interval can add up to a further interval of delay.
+- The interval defaults to 500 ms. An injectable `clock` (milliseconds) is
+  available for deterministic tests.
+- Without a poller the behaviour is unchanged.
+
 ## Observability
 
 A cancelled request is recorded as a **cancellation**, not a failure: a
@@ -122,9 +174,12 @@ metric.
 
 ## Guarantee
 
-Cancellation is **best-effort, near-immediate** (~sub-second): the request is
-aborted and the socket torn down within a few hundred milliseconds of
-`cancel()`, bounded by cURL's progress-callback cadence. It is a real teardown
+Cancellation is **best-effort, bounded by about one second**: the request is
+aborted and the socket torn down at the next cURL progress-callback tick after
+`cancel()`. libcurl calls that callback roughly once per second while a request
+is waiting for the model, so expect up to ~1 s (about 0.5 s on average). Also,
+`cancel()` only takes effect when called in the same process that is waiting on
+the request; a stop issued from a different HTTP request is not seen. It is a real teardown
 that stops provider work and cost — but it is **not** a literally-instantaneous
 kill. A hard/immediate guarantee would require a different transport model and
 is out of scope.

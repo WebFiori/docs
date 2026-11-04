@@ -3,6 +3,16 @@
 **Date:** 2026-10-25
 **Status:** Proposed
 
+> **Amended 2026-11-04:** The latency guarantee in §6 was overstated. Measured
+> on libcurl 8.5.0 (PHP 8.3), the progress callback fires about once per second
+> while a transfer is idle, so a cancellation requested while no data is flowing
+> is observed up to ~1 s later (median ~0.5 s), not "a few hundred
+> milliseconds". §6 and the related wording were corrected. Cancellation also
+> only takes effect when `cancel()` runs in the process that is blocked in
+> `curl_exec`; a stop requested from a different request is not observed. See
+> WebFiori/ai#185 (external stop signal) and WebFiori/ai#186 (cancellation
+> through tools, `AgentTool` and retry backoff).
+
 ## Context
 
 An in-flight AI request cannot be cancelled. `ProviderInterface::chat()` and
@@ -146,9 +156,15 @@ entry — not `request.failed`) before rethrowing to the caller.
 
 ### 6. Granularity (the guarantee)
 
-Cancellation is **best-effort, near-immediate (~sub-second)**: the request is
-aborted and the socket torn down within a few hundred milliseconds of
-`cancel()`, bounded by cURL's progress-callback cadence. It is a *real* teardown
+Cancellation is **best-effort and bounded by about one second**: the request is
+aborted and the socket torn down at the next cURL progress-callback tick after
+`cancel()`. libcurl calls that callback roughly once per second while a transfer
+is idle (measured on libcurl 8.5.0: ticks ~1000 ms apart; cancel-to-abort
+latency 1–876 ms, median ~500 ms), and more often while data flows. The
+bound is therefore just under 1 s for an idle wait, not a few hundred
+milliseconds. The signal must be raised in the blocked process: `cancel()` is
+observed only through the progress/write callbacks, so a stop requested from a
+different request is not seen. It is a *real* teardown
 that stops provider work and cost — but it is **not** a literally-instantaneous
 kill. A hard/immediate guarantee would require a different transport model
 (threads/processes or a cancellable async client) and is explicitly out of
@@ -179,8 +195,9 @@ it; Google is the priority, the rest verified.
   discoverably; using it avoids signature churn across the interface and every
   provider while remaining typed via the constant.
 - **Hard/immediate kill — out of scope.** Not achievable on a single blocking
-  `curl_exec` without a different transport; the best-effort near-immediate
-  teardown is sufficient (it stops work and cost).
+  `curl_exec` without a different transport (a `curl_multi` loop that regains
+  control every ~100 ms is a possible follow-up, tracked in #185); the
+  best-effort teardown, bounded by about one second, is sufficient (it stops work and cost).
 - **Surface nothing on stream cancel — rejected.** Returning the accumulated
   partial `ChatResponse` lets callers persist/assess partial work; the partial
   is already in hand at cancel time.
@@ -191,8 +208,8 @@ it; Google is the priority, the rest verified.
 - Fully additive and backward compatible — new class(es), one `ChatOption`
   constant, and internal HTTP wiring; existing callers are unaffected (token
   optional, absent by default).
-- Cancellation is cooperative at the cURL boundary, so it is near-immediate, not
-  instantaneous — documented as such.
+- Cancellation is cooperative at the cURL boundary, so it takes effect within about
+  one second, not instantly — documented as such.
 - A small internal pub/sub implementation is maintained in `webfiori/ai` until
   (optionally) migrated to `WebFiori/pubsub`.
 
