@@ -82,12 +82,17 @@ matching tool results. The synthesis request therefore sends the conversation
 dropped — then asks the model to answer. A cross-provider guard test asserts the
 resulting request is wire-valid on every provider.
 
-### 5. Both streaming and non-streaming
+### 5. Non-streaming now; streaming via ADR-0060
 
-v1 covers both `chat()` and `streamChat()`. For streaming, the synthesis pass
-runs on the `doStreamChat` path (separate from the non-streaming loop and wired
-independently), and the synthesized text is delivered through the normal
-`onToken` / `onComplete` callbacks, exactly like a non-synthesized response.
+The non-streaming `chat()` path ships first and is the implemented scope of this
+ADR. The streaming path was initially intended for the same version, but a code
+audit showed `streamChat()` has **no auto-execute tool loop** and therefore no
+iteration cap to trigger synthesis from — and that streamed tool calls are not
+even surfaced on some providers (OpenAI, Google generateContent). The streaming
+final-synthesis pass is therefore **deferred to and delivered with ADR-0060
+(Streaming Auto-Execute Tool Loop)**: once that loop exists, this ADR's trigger
+(cap hit + pending tool calls → one tools-off request) applies to it, with the
+synthesized tokens flowing through `onToken` / `onComplete`.
 
 ### 6. Cross-cutting behavior
 
