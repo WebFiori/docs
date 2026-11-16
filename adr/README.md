@@ -70,3 +70,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0058 | [AI: SqlServerVectorStore — SQL Server-Backed VectorStorageInterface](0058-ai-sqlserver-vector-store.md) | Proposed | 2026-10-25 |
 | 0059 | [AI: Final Synthesis Pass When the Tool-Call Loop Hits Its Iteration Cap](0059-ai-final-synthesis-on-max-iterations.md) | Accepted | 2026-11-05 |
 | 0060 | [AI: Streaming Auto-Execute Tool Loop](0060-ai-streaming-tool-loop.md) | Accepted | 2026-11-05 |
+| 0061 | [Session Expiry as Storage Data via `ExpiringSessionStorage`](0061-session-expiring-storage.md) | Accepted | 2026-11-16 |
