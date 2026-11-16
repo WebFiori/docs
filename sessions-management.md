@@ -13,6 +13,7 @@ In this page:
 * [Retrieving Stored Data](#retrieving-stored-data)
 * [Generating New ID](#generating-new-id)
 * [Garbage Collection](#garbage-collection)
+  * [How GC Decides What to Remove](#how-gc-decides-what-to-remove)
 * [Concurrency and Multi-Worker Support](#concurrency-and-multi-worker-support)
 * [Creating Custom Sessions Storage](#creating-custom-sessions-storage)
 * [Configuring Database Session Storage](#configuring-database-session-storage)
@@ -204,7 +205,25 @@ To disable GC entirely (e.g., if you handle cleanup externally via cron):
 SessionsManager::setGCProbability(0, 0);
 ```
 
-You can also set the `SESSION_GC` environment variable to control the expiry threshold in seconds.
+### How GC Decides What to Remove
+
+> **Since 3.2**
+
+Each session is removed when its own lifetime ends:
+
+* A session with refresh enabled expires one full duration after its last request.
+* A session without refresh expires one full duration after it started.
+
+The session records this expiry time in storage whenever it is created, resumed, closed, or changed with `setDuration()` or `setIsRefresh()`. All built-in storages support it. For database storage, run the [schema migration](#initializing-database-tables) once after upgrading.
+
+Sessions that have no recorded expiry fall back to an idle threshold. Examples are sessions created before the upgrade, sessions with a duration of 0, and sessions in custom storages that don't support expiry. These are removed once they have been idle for 4 hours. To change the idle period, set the `SESSION_GC` environment variable or constant to a number of seconds:
+
+``` php
+// Remove sessions without a recorded expiry after one week of inactivity
+define('SESSION_GC', 604800);
+```
+
+> **Changed in 3.2:** `SESSION_GC` used to be read as an absolute Unix timestamp. It is now a duration in seconds.
 
 ## Concurrency and Multi-Worker Support
 
@@ -403,6 +422,36 @@ use WebFiori\Framework\Session\SessionsManager;
 SessionsManager::setStorage(new MyCustomStorage());
 ```
 
+### Supporting per-session expiry (since 3.2)
+
+A storage that only implements `SessionStorage` gets the idle threshold in `gc()`, so it cannot tell a 7 day session from a 2 hour one. To remove each session when its own lifetime ends, implement `ExpiringSessionStorage` instead. It adds two methods. The session calls `setExpiry()` with the time it expires. Your storage keeps that time and uses it in `gc()`:
+
+``` php
+use WebFiori\Framework\Session\ExpiringSessionStorage;
+
+class MyCustomStorage implements ExpiringSessionStorage {
+    // ... the six SessionStorage methods ...
+
+    /**
+     * Returns the recorded expiry as a Unix timestamp, or null if none is recorded.
+     */
+    public function getExpiry(string $sessionId): ?int {
+        // read the stored expiry
+    }
+
+    /**
+     * Records when the session expires. Null clears the recorded expiry.
+     */
+    public function setExpiry(string $sessionId, ?int $expiresAt): void {
+        // store the expiry, ideally where gc() can query it efficiently
+    }
+}
+```
+
+In `gc()`, remove sessions whose recorded expiry has passed. Remove sessions without a recorded expiry using `$olderThan`, as before.
+
+> `ExpiringSessionStorage` is an optional interface so existing storages keep working in 3.x. A future major version is expected to move these methods into `SessionStorage` itself. See [ADR-0061](https://github.com/WebFiori/docs/blob/main/adr/0061-session-expiring-storage.md).
+
 ### Migrating a legacy custom storage driver
 
 > **Since 3.1**
@@ -453,7 +502,7 @@ $redis->connect('127.0.0.1', 6379);
 $storage = new CacheSessionStorage(
     new RedisStorage($redis),  // Any cache Storage implementation
     'wf_session:',             // Key prefix (default)
-    7200                       // TTL in seconds (default: 2 hours)
+    7200                       // Default TTL in seconds (default: 2 hours)
 );
 SessionsManager::setStorage($storage);
 ```
@@ -470,6 +519,8 @@ SessionsManager::setStorage($storage);
 ```
 
 The key prefix ensures session cache entries don't collide with application cache data.
+
+Since 3.2, the TTL is only a default. Once a session records its expiry, all its cache entries use the remaining lifetime of that session as their TTL, so a 7 day session is not cut off after 2 hours.
 
 ### Configuring Database Session Storage
 
@@ -500,7 +551,7 @@ When the command asks about connection name, enter `sessions-connection`.
 
 > **Since 3.1**
 
-Run the `SessionSchemaMigration` helper once after deployment. It creates the `sessions` table and the `session_kv_data` per-key table, and safely adds the `version`/`updated_at` columns if upgrading from a previous installation.
+Run the `SessionSchemaMigration` helper once after deployment. It creates the `sessions` table and the `session_kv_data` per-key table. On an existing installation it adds any missing columns: `version` and `updated_at` (since 3.1), and `sessions.expires_at` with its index (since 3.2).
 
 ``` php
 use WebFiori\Framework\Session\SessionSchemaMigration;
@@ -510,6 +561,8 @@ SessionSchemaMigration::run('sessions-connection');
 ```
 
 You can call this from a one-off CLI command or a migration script. It is idempotent: running it multiple times on the same database is safe.
+
+> **Upgrading from 3.1.x:** Run the migration again to add `sessions.expires_at`. Until you do, garbage collection keeps using the idle threshold for every session. Existing sessions get an expiry the next time they are resumed.
 
 > **Upgrading from 3.0.x:** Existing sessions stored in the old blob format are not automatically migrated. Users will need to log in again after the migration. The old `session_data` table is preserved and not dropped.
 
