@@ -1,7 +1,7 @@
 # ADR-0062: AI: Cached Input Token Usage and Pricing
 
 **Date:** 2026-11-17
-**Status:** Proposed
+**Status:** Accepted
 
 ## Context
 
@@ -111,10 +111,14 @@ inputCost = uncached × input
 
 ### 6. Audit and metrics
 
-Success-path audit entries (`chat()`, `streamChat()`) add `cached` and
-`cache_write` to the `tokens` array. The `request.completed` metrics event adds
-`cached_tokens` and `cache_write_tokens`. `prompt` keeps its meaning (total
-input). Failure and cancellation paths keep their null values.
+The success audit entry of `chat()` adds `cached` and `cache_write` to its
+`tokens` array. The `request.completed` metrics event and the completion log
+entry add `cached_tokens` and `cache_write_tokens`. `prompt` keeps its meaning
+(total input). Failure and cancellation paths keep their null values.
+
+`streamChat()` audit entries are unchanged: they record only an estimated
+completion count and carry no provider usage, so there is nothing cached to
+report. `embed()` is unchanged as well.
 
 ### 7. Provider mapping
 
@@ -124,7 +128,11 @@ non-streaming responses:
 - Google: `usageMetadata.cachedContentTokenCount` and
   `usage.total_cached_tokens` (Interactions). Prompt totals already include
   cached tokens.
-- OpenAI: `usage.prompt_tokens_details.cached_tokens`.
+- OpenAI: `usage.prompt_tokens_details.cached_tokens`. Streaming requests now
+  send `stream_options: {"include_usage": true}`. Without it, Chat Completions
+  streams carry no usage, so streamed responses reported none at all. The final
+  usage chunk has an empty `choices` array and is read before the
+  empty-choices early return.
 - Anthropic: `cache_read_input_tokens`, `cache_creation_input_tokens`; streaming
   input usage arrives in `message_start`.
 - Bedrock: Converse `cacheReadInputTokens` and `cacheWriteInputTokens`;
@@ -179,6 +187,13 @@ what existing consumers read.
   TTL-specific pricing is out of scope.
 - Cached and cache-write prices are user-configured and can go stale, the same
   tradeoff as the rest of `PricingConfig`.
+- OpenAI streaming requests gain a `stream_options` field. OpenAI and Gemini's
+  OpenAI-compatible endpoint accept it; a third-party OpenAI-compatible server
+  that rejects unknown fields would need it removed.
+- Anthropic and Bedrock only cache when requests carry cache markers
+  (`cache_control`, `cachePoint`), which the library does not send. They report
+  0 cached tokens until cache-marker support is added. The mapping itself was
+  verified against both live APIs using hand-built requests with markers.
 
 ### Future direction: `ModelPricing`
 

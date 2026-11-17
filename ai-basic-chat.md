@@ -54,6 +54,32 @@ if ($usage !== null) {
 }
 ```
 
+### Cached tokens and cost
+
+Providers can serve part of a prompt from a cache and bill those tokens at a lower rate. `getPromptTokens()` is always the full input. Two counts are subsets of it:
+
+```php
+$usage->getCachedTokens();      // input tokens read from the provider's cache
+$usage->getCacheWriteTokens();  // input tokens written to the cache (0 if not reported)
+```
+
+To get a cost that reflects cache discounts, configure prices per million tokens. `cached_input` and `cache_write` are optional. When one is missing, those tokens are charged at the normal `input` price.
+
+```php
+use WebFiori\Ai\PricingConfig;
+
+$client->setPricing(new PricingConfig([
+    'gpt-4o' => ['input' => 2.50, 'output' => 10.00, 'cached_input' => 1.25],
+]));
+
+$cost = $client->chat($messages)->getCost();
+echo $cost->getInputCost();        // total input cost, including cached parts
+echo $cost->getCachedInputCost();  // the part for cached tokens
+echo $cost->getCacheWriteCost();   // the part for cache-write tokens
+```
+
+OpenAI and Gemini cache automatically. Anthropic and Bedrock cache only when the request carries cache markers, which the library does not send yet, so they normally report 0.
+
 ## Multi-Turn Conversations
 
 To continue a conversation, append the assistant's reply and the next user message, then send the full history again:

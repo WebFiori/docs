@@ -71,4 +71,4 @@ Use [0000-template.md](0000-template.md) when creating a new ADR.
 | 0059 | [AI: Final Synthesis Pass When the Tool-Call Loop Hits Its Iteration Cap](0059-ai-final-synthesis-on-max-iterations.md) | Accepted | 2026-11-05 |
 | 0060 | [AI: Streaming Auto-Execute Tool Loop](0060-ai-streaming-tool-loop.md) | Accepted | 2026-11-05 |
 | 0061 | [Session Expiry as Storage Data via `ExpiringSessionStorage`](0061-session-expiring-storage.md) | Accepted | 2026-11-16 |
-| 0062 | [AI: Cached Input Token Usage and Pricing](0062-ai-cached-token-usage-and-pricing.md) | Proposed | 2026-11-17 |
+| 0062 | [AI: Cached Input Token Usage and Pricing](0062-ai-cached-token-usage-and-pricing.md) | Accepted | 2026-11-17 |
